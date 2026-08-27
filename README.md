@@ -132,3 +132,5 @@ The design was studied against *UCIe Specification Revision 2.0, Version 1.0*, A
 ## Contributing and status
 
 Before changing RTL or verification, read [CONTRIBUTING.md](CONTRIBUTING.md). Known documentation gaps and evidence still requiring review are tracked in [DOCUMENTATION_STATUS.md](DOCUMENTATION_STATUS.md).
+
+The three-task design, verification, and GitHub publication sequence is defined in the [incremental development workflow](docs/development_workflow.md).

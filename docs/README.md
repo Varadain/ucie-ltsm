@@ -15,6 +15,7 @@ Supporting material:
 
 - [Requirements traceability](requirements_traceability.md)
 - [Repository audit and migration map](repository_audit.md)
+- [Incremental design, verification, and release workflow](development_workflow.md)
 - [Research/journal plan](journal_plan.md) - proposed work, not completed evidence
 - [Repository-wide documentation status](../DOCUMENTATION_STATUS.md)
 

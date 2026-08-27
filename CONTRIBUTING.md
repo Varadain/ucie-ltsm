@@ -17,6 +17,8 @@ This project evolves in small, evidence-backed milestones. Changes should preser
 4. Run the directed test and the UVM regression.
 5. Check every changed relative link and filename.
 
+For cross-task work, follow the [incremental development workflow](docs/development_workflow.md). Design, verification, and release tasks operate sequentially because they share one workspace.
+
 ## Verification expectations
 
 A change is not described as verified merely because it compiles. Document the stimulus, expected behavior, pass condition, test name, and observed result. If a tool or environment is unavailable, mark the evidence as missing.
