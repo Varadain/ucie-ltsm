@@ -4,6 +4,8 @@ module tb_ucie_ltsm_uvm;
   import ucie_ltsm_pkg::*;
   import ucie_ltsm_uvm_pkg::*;
   logic clk=0;
+  logic sb_tx_valid, sb_busy, sb_protocol_error, sb_retry;
+  sb_msg_e sb_tx_message;
   always #5 clk=~clk;
   ucie_ltsm_if intf(clk);
   ucie_ltsm #(.CLK_HZ(100_000_000),.RESET_MIN_US(1),.TIMEOUT_US(2)) dut(
@@ -15,6 +17,9 @@ module tb_ucie_ltsm_uvm;
     .sideband_tx_idle_i(intf.sideband_tx_idle),.rdi_active_i(intf.rdi_active),
     .retrain_req_i(intf.retrain_req),.retrain_target_i(intf.retrain_target),
     .pm_l1_req_i(intf.pm_l1_req),.pm_l2_req_i(intf.pm_l2_req),.pm_exit_i(intf.pm_exit),
+    .sb_tx_valid_o(sb_tx_valid),.sb_tx_message_o(sb_tx_message),.sb_tx_ready_i(1'b0),
+    .sb_rx_valid_i(1'b0),.sb_rx_message_i(SB_MSG_NOP),.sb_busy_o(sb_busy),
+    .sb_protocol_error_o(sb_protocol_error),.sb_retry_o(sb_retry),
     .state_o(intf.state),.mbinit_state_o(intf.mbi),.mbtrain_state_o(intf.mbt),
     .timeout_o(intf.timeout),.link_up_o(intf.link_up),
     .mainband_tristate_o(intf.mainband_tristate),.sideband_enable_o(intf.sideband_enable));

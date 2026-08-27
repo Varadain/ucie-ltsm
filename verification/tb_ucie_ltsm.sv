@@ -11,6 +11,9 @@ module tb_ucie_ltsm;
   mbinit_state_e mbi;
   mbtrain_state_e mbt;
   logic timeout, link_up, mainband_tristate, sideband_enable;
+  logic sb_tx_valid_o, sb_tx_ready_i, sb_rx_valid_i;
+  logic sb_busy_o, sb_protocol_error_o, sb_retry_o;
+  sb_msg_e sb_tx_message_o, sb_rx_message_i;
 
   always #5 clk = ~clk;
   ucie_ltsm #(.CLK_HZ(100_000_000), .RESET_MIN_US(1), .TIMEOUT_US(2)) dut (.*,
@@ -37,6 +40,7 @@ module tb_ucie_ltsm;
     link_train_trigger=0; phase_done=0; stall=0; fatal_error=0; error_handshake_done=0;
     error_escalated=0; sideband_tx_idle=1; rdi_active=0; retrain_req=0;
     retrain_target=RETRAIN_TXSELFCAL; pm_l1_req=0; pm_l2_req=0; pm_exit=0;
+    sb_tx_ready_i=0; sb_rx_valid_i=0; sb_rx_message_i=SB_MSG_NOP;
     repeat(3) @(posedge clk); rst_n=1;
     supplies_stable=1; sideband_clk_ok=1; internal_clks_ok=1; link_train_trigger=1;
     wait(state==LTSM_SBINIT); pulse_done(); expect_state(LTSM_MBINIT);
