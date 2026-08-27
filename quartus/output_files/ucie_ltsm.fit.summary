@@ -1,0 +1,16 @@
+Fitter Status : Successful - Thu Aug 27 15:39:43 2026
+Quartus Prime Version : 23.1std.1 Build 993 05/14/2024 SC Lite Edition
+Revision Name : ucie_ltsm
+Top-level Entity Name : ucie_ltsm
+Family : Cyclone 10 LP
+Device : 10CL025YU256C8G
+Timing Models : Final
+Total logic elements : 152 / 24,624 ( < 1 % )
+    Total combinational functions : 152 / 24,624 ( < 1 % )
+    Dedicated logic registers : 48 / 24,624 ( < 1 % )
+Total registers : 48
+Total pins : 35 / 151 ( 23 % )
+Total virtual pins : 0
+Total memory bits : 0 / 608,256 ( 0 % )
+Embedded Multiplier 9-bit elements : 0 / 132 ( 0 % )
+Total PLLs : 0 / 4 ( 0 % )

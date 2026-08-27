@@ -1,0 +1,54 @@
+# Private or copyrighted reference material
+/references_private/
+/UCIe*.pdf
+/UCIe_spec.txt
+/ltsm_extract.txt
+
+# Questa / ModelSim generated files
+/work/
+**/work/
+/transcript
+/vish_stacktrace.vstf
+*.wlf
+*.vcd
+*.ucdb
+*.log
+
+# Quartus generated databases and programming files
+/db/
+**/db/
+**/incremental_db/
+**/output_files/*
+!quartus/output_files/*.summary
+*.sof
+*.pof
+*.jdi
+*.sld
+*.qws
+
+# Legacy root-level Quartus project/output copies
+/ucie_ltsm.qpf
+/ucie_ltsm.qsf
+/ucie_ltsm.*.rpt
+/ucie_ltsm.*.summary
+
+# Cadence and common EDA generated data
+INCA_libs/
+xcelium.d/
+waves.shm/
+*.shm/
+*.dsn
+*.trn
+*.key
+
+# Editor, cache, and operating-system files
+.vscode/
+.idea/
+*.swp
+*.tmp
+*.bak
+*~
+.DS_Store
+Thumbs.db
+__pycache__/
+.pytest_cache/
