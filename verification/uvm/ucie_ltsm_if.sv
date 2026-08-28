@@ -10,6 +10,8 @@ interface ucie_ltsm_if(input logic clk);
   mbinit_state_e mbi;
   mbtrain_state_e mbt;
   logic timeout, link_up, mainband_tristate, sideband_enable;
+  logic sb_tx_valid, sb_tx_ready, sb_rx_valid, sb_busy, sb_protocol_error, sb_retry;
+  sb_msg_e sb_tx_message, sb_rx_message;
 
   task automatic clear_controls();
     supplies_stable=0; sideband_clk_ok=0; internal_clks_ok=0; firmware_reset=0;
@@ -17,5 +19,6 @@ interface ucie_ltsm_if(input logic clk);
     error_handshake_done=0; error_escalated=0; sideband_tx_idle=1;
     rdi_active=0; retrain_req=0; retrain_target=RETRAIN_TXSELFCAL;
     pm_l1_req=0; pm_l2_req=0; pm_exit=0;
+    sb_tx_ready=0; sb_rx_valid=0; sb_rx_message=SB_MSG_NOP;
   endtask
 endinterface
