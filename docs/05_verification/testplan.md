@@ -30,4 +30,4 @@
 | PLAN-07 | Simultaneous ACTIVE requests | Verify retrain priority over PM entry |
 | PLAN-08 | Functional coverage | Cross top-level transitions, substates, retrain targets, timeout origins, and recovery outcomes |
 
-Future tests must reflect the implemented interface at that milestone. They should not model sideband packets before a sideband engine exists.
+Future sideband tests must distinguish the implemented transaction-level interface from physical packet behavior. Framing, CRC, credits, repair, and broader message scenarios should not be modeled as DUT functionality until corresponding RTL exists.

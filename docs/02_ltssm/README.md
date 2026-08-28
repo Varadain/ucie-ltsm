@@ -8,7 +8,7 @@ The controller has nine top-level states. MBINIT and MBTRAIN each carry a separa
 stateDiagram-v2
     [*] --> RESET
     RESET --> SBINIT: minimum time + readiness + trigger
-    SBINIT --> MBINIT: phase_done_i
+    SBINIT --> MBINIT: expected sideband response or phase_done_i bypass
     MBINIT --> MBTRAIN: final MBINIT phase_done_i
     MBTRAIN --> LINKINIT: final MBTRAIN phase_done_i
     LINKINIT --> ACTIVE: rdi_active_i
@@ -20,13 +20,14 @@ stateDiagram-v2
     TRAINERROR --> RESET: not escalated and sideband idle
 
     SBINIT --> TRAINERROR: timeout or accepted fatal error
+    SBINIT --> TRAINERROR: sideband response error or retry exhaustion
     MBINIT --> TRAINERROR: timeout or accepted fatal error
     MBTRAIN --> TRAINERROR: timeout or accepted fatal error
     LINKINIT --> TRAINERROR: timeout or accepted fatal error
     PHYRETRAIN --> TRAINERROR: timeout or accepted fatal error
 ```
 
-Fatal errors can also move ACTIVE or L1L2 to TRAINERROR after the abstract error handshake completes. RESET ignores `fatal_error_i`. See [states.md](states.md) for the exact implemented conditions.
+Fatal errors can also move ACTIVE or L1L2 to TRAINERROR after the abstract error handshake completes. A sideband protocol error participates in the same non-RESET error priority. RESET ignores both. See [states.md](states.md) for the exact implemented conditions.
 
 ## Ordered substates
 
@@ -45,7 +46,7 @@ VALVREF -> DATAVREF -> SPEEDIDLE -> TXSELFCAL -> RXCLKCAL
 -> LINKSPEED -> REPAIR
 ```
 
-These labels and order exist in the RTL. The project does not yet implement each label's physical operation; `phase_done_i` represents completion.
+These labels and order exist in the RTL. The project does not yet implement each label's physical operation; `phase_done_i` represents completion for MBINIT and MBTRAIN. Version 0.2 adds only the bounded SBINIT-done exchange.
 
 ## Continue reading
 

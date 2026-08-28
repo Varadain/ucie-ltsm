@@ -4,7 +4,7 @@ This roadmap separates demonstrated work from intended work. A planned item is n
 
 ```mermaid
 flowchart TD
-    V01["v0.1 - Basic LTSM<br/>Stable"] --> V02["v0.2 - Sideband sequencing<br/>Planned"]
+    V01["v0.1 - Basic LTSM<br/>Stable"] --> V02["v0.2 - Sideband sequencing<br/>Stable"]
     V02 --> V03["v0.3 - Training engines<br/>Planned"]
     V03 --> V04["v0.4 - Recovery and error expansion<br/>Planned"]
     V04 --> V10["v1.0 - Integrated verified controller<br/>Future"]
@@ -22,11 +22,13 @@ Status: **stable within the abstract controller scope**
 
 ## v0.2 - Sideband sequencing
 
-Status: **planned**
+Status: **stable within the bounded SBINIT transaction scope**
 
-- Replace selected uses of `phase_done_i` with a real, separately verified sideband request/response sequencer.
-- Define message interfaces only after the implementation is present.
-- Add directed and UVM tests for timeout, retry, malformed response, and partner latency as supported by the implementation.
+- Integrates a ready/valid `SBINIT_DONE_REQ`/`SBINIT_DONE_RESP` sequencer into SBINIT.
+- Holds the outbound request under backpressure and checks the expected response.
+- Implements configurable response timeout, one bounded retry by default, retry exhaustion, malformed-response error, and abort.
+- Preserves the four v0.1 UVM scenarios and adds four sideband-specific UVM tests plus an isolated directed test.
+- Publishes VCD-derived sideband waveforms, updated connection diagrams, fresh Quartus summaries, and a versioned functional netlist.
 
 ## v0.3 - Training-operation engines
 

@@ -2,11 +2,11 @@
 
 A synthesizable SystemVerilog model of the UCIe 2.0 Link Training State Machine (LTSM), developed as a progressive design-and-verification project.
 
-> **Current stable milestone:** `v0.1-basic-ltssm`
+> **Current stable milestone:** `v0.2-sideband`
 >
 > **Reference:** UCIe Specification Revision 2.0, Version 1.0 (August 6, 2024)
 >
-> **Scope:** LTSM control flow with abstract completion/error handshakes - not a complete UCIe PHY and not a claim of UCIe compliance.
+> **Scope:** LTSM control flow plus one bounded SBINIT sideband request/response sequence - not a complete UCIe PHY and not a claim of UCIe compliance.
 
 ## What is implemented
 
@@ -14,12 +14,14 @@ A synthesizable SystemVerilog model of the UCIe 2.0 Link Training State Machine 
 - Six ordered `MBINIT` substates and thirteen ordered `MBTRAIN` substates.
 - Parameterized RESET residence and state/substate timeout counters.
 - Stall-driven timeout restart, ACTIVE retraining, power-management exit paths, and error recovery.
+- A synthesizable ready/valid sequencer for `SBINIT_DONE_REQ`/`SBINIT_DONE_RESP`, with backpressure, response matching, bounded retry, timeout, abort, and protocol-error reporting.
 - A self-checking directed testbench and five SystemVerilog properties/coverage properties.
-- A reusable UVM agent, monitor, scoreboard, four scenario tests, and fresh passing regression logs.
+- A standalone sideband directed test with three protocol assertions.
+- A reusable UVM agent, monitor, scoreboard, eight scenario tests, and fresh passing regression logs.
 - A Quartus project for Cyclone 10 LP with successful fitting and timing analysis.
-- A versioned v0.1 evidence pack with Questa-derived waveform SVGs, RTL/UVM connection diagrams, and a Quartus functional Verilog netlist.
+- Versioned v0.1 and v0.2 evidence packs with Questa-derived waveform SVGs, RTL/UVM connection diagrams, and Quartus functional Verilog netlists.
 
-The model uses `phase_done_i` to represent the completion of work that a complete design would perform using sideband messages, calibration logic, repair algorithms, training-pattern engines, and analog PHY controls. Those components are not yet implemented.
+Version 0.2 replaces the normal SBINIT completion abstraction with a real transaction-level request/response path. `phase_done_i` remains as a compatibility bypass in SBINIT and still represents MBINIT, MBTRAIN, and PHYRETRAIN operations whose calibration, repair, pattern, and analog-PHY engines are not implemented.
 
 ## Start here
 
@@ -48,41 +50,41 @@ flowchart LR
 
 ## Architecture at this milestone
 
-![v0.1 RTL connection diagram](assets/diagrams/v0.1-basic-ltssm/rtl-connections.svg)
+![v0.2 RTL connection diagram](assets/diagrams/v0.2-sideband/rtl-connections.svg)
 
-The diagram shows only implemented ports and control partitions. The v0.1 scope box explicitly identifies planned blocks that do not yet exist.
+The diagram shows the implemented ready/valid channel, bounded sequencer, LTSM feedback paths, and the remaining v0.2 scope boundary.
 
-## v0.1 evidence pack
+## v0.2 evidence pack
 
 | Artifact | Published file | Provenance |
 |---|---|---|
-| Nominal waveform | [SVG](assets/waveforms/v0.1-basic-ltssm/nominal-training.svg) | Questa VCD from the directed self-checking test |
-| Retrain/error waveform | [SVG](assets/waveforms/v0.1-basic-ltssm/retrain-error-recovery.svg) | Same directed Questa run |
-| RTL connections | [SVG](assets/diagrams/v0.1-basic-ltssm/rtl-connections.svg) | `ucie_ltsm.sv` ports and internal partitions |
-| Verification connections | [SVG](assets/diagrams/v0.1-basic-ltssm/verification-connections.svg) | Actual UVM package/top and SVA connections |
-| Quartus netlist | [Verilog](synthesis/quartus/netlists/v0.1-basic-ltssm/ucie_ltsm.vo) | Quartus 23.1 functional EDA netlist for the checked Cyclone 10 LP target |
+| Success/retry waveform | [SVG](assets/waveforms/v0.2-sideband/success-bounded-retry.svg) | Questa VCD from the standalone sequencer test |
+| Error/abort waveform | [SVG](assets/waveforms/v0.2-sideband/exhaustion-mismatch-abort.svg) | Same sideband-directed Questa run |
+| RTL connections | [SVG](assets/diagrams/v0.2-sideband/rtl-connections.svg) | `ucie_ltsm` and `ucie_sb_sequencer` integration |
+| Verification connections | [SVG](assets/diagrams/v0.2-sideband/verification-connections.svg) | Eight UVM tests, event monitor/scoreboard, SVA, and standalone directed test |
+| Quartus netlist | [Verilog](synthesis/quartus/netlists/v0.2-sideband/ucie_ltsm.vo) | Quartus 23.1 functional EDA netlist for the checked Cyclone 10 LP target |
 | Signal/function guide | [Documentation](docs/02_ltssm/signals.md#waveform-signal-guide) | Definitions and functional interpretation for every plotted signal |
 
-![v0.1 nominal link-training waveform](assets/waveforms/v0.1-basic-ltssm/nominal-training.svg)
+![v0.2 sideband success and bounded retry waveform](assets/waveforms/v0.2-sideband/success-bounded-retry.svg)
 
-The [v0.1 milestone page](docs/versions/v0.1_basic_ltssm.md) presents both waveforms and both connection diagrams with interpretation and limitations.
+The [v0.2 milestone page](docs/versions/v0.2_sideband.md) presents both waveforms and both connection diagrams with interpretation and limitations. The [v0.1 page](docs/versions/v0.1_basic_ltssm.md) and tag preserve the earlier baseline.
 
 ## Versions
 
 | Version | Base | New addition | Verification | Status |
 |---|---|---|---|---|
 | v0.1 | Initial | Basic hierarchical LTSM controller | Directed + four UVM tests + SVA | Stable within stated scope |
-| v0.2 | v0.1 | Sideband message sequencing | To be defined with implementation | Planned |
+| v0.2 | v0.1 | Bounded SBINIT sideband sequencing | Directed + eight UVM tests + SVA | Stable within stated scope |
 | v0.3 | v0.2 | Concrete training-operation engines | To be defined with implementation | Planned |
 | v0.4 | v0.3 | Expanded recovery and error reporting | To be defined with implementation | Planned |
 | v1.0 | Later milestones | Integrated verified controller | Evidence not yet available | Future |
 
-See the [roadmap](ROADMAP.md), [changelog](CHANGELOG.md), and [v0.1 milestone page](docs/versions/v0.1_basic_ltssm.md).
+See the [roadmap](ROADMAP.md), [changelog](CHANGELOG.md), and [v0.2 milestone page](docs/versions/v0.2_sideband.md).
 
 ## Repository structure
 
 ```text
-rtl/                 Synthesizable package and LTSM controller
+rtl/                 Synthesizable package, LTSM controller, and sideband sequencer
 verification/        Directed testbench, SVA, and UVM environment
 scripts/             Questa directed and UVM run scripts
 quartus/             Reproducible Quartus project and selected summaries
@@ -106,6 +108,14 @@ From the repository root:
 
 Expected evidence: `PASS: nominal training, retrain, and error recovery`, followed by zero simulator errors.
 
+Run the standalone sideband protocol test:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/run_sb_directed.do
+```
+
+Expected evidence: `PASS: sideband backpressure, success, retry, exhaustion, mismatch, and abort`.
+
 To regenerate the release waveform figures:
 
 ```powershell
@@ -115,13 +125,20 @@ python scripts/render_waveforms.py
 
 The intermediate VCD is ignored; the two reviewed SVG figures are versioned.
 
+Regenerate the v0.2 sideband waveform figures:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/capture_sideband_waveform.do
+python scripts/render_sideband_waveforms.py
+```
+
 ### UVM regression
 
 ```powershell
 .\scripts\run_uvm_regression.ps1
 ```
 
-The script runs `nominal_test`, `timeout_test`, `recovery_test`, and `pm_test`, and rejects a log that does not report zero UVM errors and fatals.
+The script runs the four preserved controller tests plus `sb_success_test`, `sb_retry_test`, `sb_error_test`, and `sb_exhaust_test`. It rejects any log that does not report zero UVM errors and fatals.
 
 ### Quartus
 
@@ -136,12 +153,13 @@ The checked project targets `10CL025YU256C8G` and constrains `clk_i` to 12.5 ns 
 To rebuild and export the reviewed functional netlist:
 
 ```powershell
-.\scripts\export_quartus_netlist.ps1
+.\scripts\export_quartus_netlist.ps1 -Version v0.2-sideband
 ```
 
 ## Current limitations
 
-- Sideband packet transport and the SBINIT physical procedure are abstracted.
+- Only the SBINIT-done request/response pair is implemented; physical sideband detection, repair, framing, CRC, credits, and the broader message set are absent.
+- `phase_done_i` can still bypass the SBINIT sideband handshake.
 - Mainband calibration, pattern generation/checking, lane repair/degrade, and analog PHY controls are abstracted.
 - RDI, DVSEC/CSR, management transport, detailed error logging, and compliance testing are absent.
 - UVM functional covergroups and per-substate coverage closure are absent.

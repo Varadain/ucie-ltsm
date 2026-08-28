@@ -173,7 +173,8 @@ def merged_segments(changes, signal, start_ps, end_ps, qualifier=None):
 
 
 def render_figure(changes, output: Path, title: str, subtitle: str,
-                  start_ns: int, end_ns: int, rows):
+                  start_ns: int, end_ns: int, rows,
+                  source: str = "verification/tb_ucie_ltsm.sv"):
     width = 1400
     left, right, top, row_height = 210, 34, 132, 58
     plot_width = width - left - right
@@ -199,7 +200,7 @@ def render_figure(changes, output: Path, title: str, subtitle: str,
         '<rect width="100%" height="100%" fill="#ffffff"/>',
         f'<text class="title" x="24" y="34">{html.escape(title)}</text>',
         f'<text class="subtitle" x="24" y="60">{html.escape(subtitle)}</text>',
-        '<text class="subtitle" x="24" y="82">Source: Questa 2023.3 · verification/tb_ucie_ltsm.sv · timescale 1 ps</text>',
+        f'<text class="subtitle" x="24" y="82">Source: Questa 2023.3 · {html.escape(source)} · timescale 1 ps</text>',
         f'<a href="{SIGNAL_GUIDE}#waveform-signal-guide"><text class="guide" x="1376" y="82" text-anchor="end">Signal definitions and functionality ↗</text></a>',
     ]
 
@@ -214,7 +215,7 @@ def render_figure(changes, output: Path, title: str, subtitle: str,
     for index, row in enumerate(rows):
         center = top + index * row_height + 18
         row_color = row.get("color", SCALAR_COLORS.get(row["signal"], "#172033"))
-        label_text = f'<text class="label" style="fill:{row_color};text-decoration:underline" x="{left - 18}" y="{center + 5}" text-anchor="end">{html.escape(row["label"])}</text>'
+        label_text = f'<text class="label" style="fill:{row_color}" x="{left - 18}" y="{center + 5}" text-anchor="end">{html.escape(row["label"])}</text>'
         if row.get("href"):
             label_text = f'<a href="{html.escape(row["href"], quote=True)}">{label_text}</a>'
         svg.append(label_text)

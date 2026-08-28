@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">UCIe LTSM v0.2 verification connection diagram</title>
+  <desc id="desc">Eight UVM tests drive the integrated LTSM and sideband interface. A monitor records transitions and sideband events, a scoreboard checks legal behavior, SVA observes invariants, and a standalone directed test isolates the sequencer protocol.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#52657a"/></marker><filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.12"/></filter></defs>
+  <style>
+    text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}.title{font-size:30px;font-weight:700}.subtitle{font-size:15px;fill:#59697d}.group-title{font-size:17px;font-weight:700}.node-title{font-size:16px;font-weight:700}.body{font-size:14px}.small{font-size:12px;fill:#56667a}.mono{font-family:Consolas,Menlo,monospace;font-size:13px}
+    .tests{fill:#eef6ff;stroke:#3b82f6;stroke-width:1.5}.feature{fill:#f5f3ff;stroke:#8b5cf6;stroke-width:1.5}.env{fill:#faf8ff;stroke:#7c3aed;stroke-width:2.5}.node{fill:#fff;stroke:#a8b4c4;stroke-width:1.5}.observe{fill:#edf9f0;stroke:#22a05a;stroke-width:1.5}.dut{fill:#fff4e8;stroke:#d97706;stroke-width:2}.sva{fill:#fff0f2;stroke:#dc4155;stroke-width:1.5}.evidence{fill:#f8fafc;stroke:#cbd5e1;stroke-width:1.5}
+    .wire{fill:none;stroke:#52657a;stroke-width:2;marker-end:url(#arrow)}.analysis{fill:none;stroke:#15803d;stroke-width:3;marker-end:url(#arrow)}.bind{fill:none;stroke:#7c3aed;stroke-width:2;stroke-dasharray:7 6;marker-end:url(#arrow)}
+  </style>
+  <rect width="1600" height="980" fill="#fff"/><text class="title" x="50" y="52">v0.2 verification connection diagram</text>
+  <text class="subtitle" x="50" y="80">Regression preservation + feature-specific success, retry, error, exhaustion, backpressure, and abort evidence</text>
+
+  <g filter="url(#shadow)">
+    <rect class="tests" x="50" y="125" width="320" height="270" rx="14"/><text class="group-title" x="74" y="158">Preserved UVM regression</text>
+    <text class="mono" x="74" y="200">nominal_test</text><text class="mono" x="74" y="230">timeout_test</text><text class="mono" x="74" y="260">recovery_test</text><text class="mono" x="74" y="290">pm_test</text>
+    <line x1="74" y1="318" x2="346" y2="318" stroke="#b7c5d6"/><text class="small" x="74" y="348">Existing LTSM behavior remains green.</text><text class="small" x="74" y="374">Fresh independent Questa invocation per test.</text>
+
+    <rect class="feature" x="50" y="430" width="320" height="300" rx="14"/><text class="group-title" x="74" y="464">New integrated sideband tests</text>
+    <text class="mono" x="74" y="506">sb_success_test</text><text class="mono" x="74" y="536">sb_retry_test</text><text class="mono" x="74" y="566">sb_error_test</text><text class="mono" x="74" y="596">sb_exhaust_test</text>
+    <line x1="74" y1="624" x2="346" y2="624" stroke="#c4b5fd"/><text class="small" x="74" y="652">Checks accepted requests, response matches,</text><text class="small" x="74" y="674">retry count, protocol errors, and TRAINERROR.</text><text class="small" x="74" y="704">UVM errors/fatals: 0 / 0</text>
+
+    <rect class="sva" x="50" y="765" width="320" height="120" rx="14"/><text class="group-title" x="74" y="799">Standalone directed sequencer test</text>
+    <text class="small" x="74" y="830">Backpressure · success · retry · exhaustion</text><text class="small" x="74" y="854">mismatch · abort · three protocol assertions</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect class="env" x="420" y="125" width="690" height="680" rx="18"/><text class="group-title" x="446" y="160">uvm_test_top.env</text>
+    <rect class="tests" x="465" y="205" width="170" height="110" rx="10"/><text class="node-title" x="550" y="239" text-anchor="middle">sequencer</text><text class="mono" x="550" y="270" text-anchor="middle">ltsm_item</text><text class="small" x="550" y="296" text-anchor="middle">base + sideband ops</text>
+    <rect class="tests" x="700" y="205" width="170" height="110" rx="10"/><text class="node-title" x="785" y="239" text-anchor="middle">driver</text><text class="body" x="785" y="270" text-anchor="middle">LTSM + sideband pins</text><text class="small" x="785" y="296" text-anchor="middle">latency/error scenarios</text>
+    <rect class="observe" x="700" y="505" width="170" height="130" rx="10"/><text class="node-title" x="785" y="539" text-anchor="middle">monitor</text><text class="body" x="785" y="569" text-anchor="middle">state + SB events</text><text class="small" x="785" y="596" text-anchor="middle">requests / responses</text><text class="small" x="785" y="618" text-anchor="middle">retries / errors</text>
+    <rect class="observe" x="925" y="505" width="150" height="130" rx="10"/><text class="node-title" x="1000" y="539" text-anchor="middle">scoreboard</text><text class="body" x="1000" y="569" text-anchor="middle">legal transitions</text><text class="small" x="1000" y="596" text-anchor="middle">scenario flags</text><text class="small" x="1000" y="618" text-anchor="middle">illegal = 0</text>
+    <rect class="evidence" x="465" y="690" width="610" height="80" rx="10"/><text class="node-title" x="770" y="721" text-anchor="middle">Feature event evidence</text><text class="small" x="770" y="750" text-anchor="middle">accepted request · expected response · retry · protocol error · TRAINERROR</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect class="evidence" x="1160" y="125" width="390" height="680" rx="18"/><text class="group-title" x="1186" y="160">tb_ucie_ltsm_uvm</text>
+    <rect class="node" x="1205" y="205" width="300" height="140" rx="10"/><text class="node-title" x="1355" y="239" text-anchor="middle">ucie_ltsm_if</text><text class="body" x="1355" y="270" text-anchor="middle">base controls + ready/valid channel</text><text class="small" x="1355" y="298" text-anchor="middle">sideband messages and status exposed</text><text class="small" x="1355" y="323" text-anchor="middle">virtual interface via config_db</text>
+    <rect class="dut" x="1205" y="400" width="300" height="150" rx="10"/><text class="node-title" x="1355" y="435" text-anchor="middle">DUT: ucie_ltsm</text><text class="body" x="1355" y="466" text-anchor="middle">hierarchical LTSM</text><text class="body" x="1355" y="492" text-anchor="middle">+ ucie_sb_sequencer</text><text class="small" x="1355" y="522" text-anchor="middle">reduced simulation timing parameters</text>
+    <rect class="sva" x="1205" y="610" width="300" height="130" rx="10"/><text class="node-title" x="1355" y="644" text-anchor="middle">SVA and protocol properties</text><text class="small" x="1355" y="674" text-anchor="middle">LTSM safety/liveness checks</text><text class="small" x="1355" y="698" text-anchor="middle">request stability · retry reissue</text><text class="small" x="1355" y="722" text-anchor="middle">completion follows expected response</text>
+  </g>
+
+  <g filter="url(#shadow)"><rect class="evidence" x="420" y="850" width="1130" height="92" rx="14"/><text class="group-title" x="446" y="884">Published evidence</text><text class="body" x="446" y="915">Eight UVM logs · directed PASS transcript · event counters · colorful VCD-derived waveforms · Quartus fit/timing reports · functional netlist</text></g>
+
+  <path class="wire" d="M370 262 H465"/><path class="wire" d="M370 560 H402 V286 H465"/><path class="wire" d="M635 260 H700"/><path class="wire" d="M870 260 H1175 V275 H1205"/>
+  <path class="wire" d="M1355 345 V400"/><path class="wire" d="M1205 480 H1120 V465 H785 V505"/><path class="analysis" d="M870 570 H925"/><path class="wire" d="M1000 635 V690"/>
+  <path class="wire" d="M1355 550 V610"/><path class="bind" d="M1205 235 H1134 V182 H785 V205"/><path class="bind" d="M1205 320 H1135 V660 H785 V635"/>
+  <path class="wire" d="M770 770 V850"/><path class="wire" d="M1355 740 V824 H1250 V850"/><path class="wire" d="M370 825 H395 V896 H420"/>
+  <text class="small" x="384" y="247">sequence start</text><text class="small" x="648" y="247">items</text><text class="small" x="898" y="247">virtual-interface writes</text><text class="small" x="888" y="552">analysis port</text>
+</svg>

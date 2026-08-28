@@ -1,11 +1,13 @@
 param(
-  [string]$QuartusBin = 'C:\intelFPGA_lite\23.1std\quartus\bin64'
+  [string]$QuartusBin = 'C:\intelFPGA_lite\23.1std\quartus\bin64',
+  [ValidatePattern('^v[0-9]+\.[0-9]+-[a-z0-9-]+$')]
+  [string]$Version = 'v0.1-basic-ltssm'
 )
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $projectDir = Join-Path $repoRoot 'quartus'
-$targetDir = Join-Path $repoRoot 'synthesis\quartus\netlists\v0.1-basic-ltssm'
+$targetDir = Join-Path $repoRoot (Join-Path 'synthesis\quartus\netlists' $Version)
 $tempRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath())
 $stagingDir = Join-Path $tempRoot ("ucie_ltsm_netlist_" + [guid]::NewGuid().ToString('N'))
 

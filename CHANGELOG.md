@@ -2,6 +2,46 @@
 
 All notable project milestones are documented here. Source snapshots are preserved by Git tags rather than duplicated version folders.
 
+## v0.2 - Sideband Integration
+
+### Added
+
+- Synthesizable `ucie_sb_sequencer` with ready/valid transmit handling, response matching, configurable timeout, bounded retry, abort, completion, and protocol-error outputs.
+- Transaction-level `SB_MSG_SBINIT_DONE_REQ` and `SB_MSG_SBINIT_DONE_RESP` message labels.
+- Integrated SBINIT completion through the sideband sequencer, with error escalation into TRAINERROR.
+- Standalone sequencer test covering backpressure, success, retry, retry exhaustion, unexpected response, and abort.
+- Four UVM scenarios for integrated sideband success, retry, malformed response, and retry exhaustion.
+- Color-coded sideband waveform figures with clickable links to signal/function descriptions.
+- v0.2 RTL and verification connection diagrams and a Quartus functional Verilog netlist.
+
+### Modified
+
+- `ucie_ltsm` now exposes the ready/valid sideband channel and observable sequencer status.
+- Questa, UVM, and Quartus source lists now compile `ucie_sb_sequencer.sv`.
+- The UVM monitor and scoreboard record sideband request, response, retry, and protocol-error events.
+- Architecture, algorithm, RTL, verification, result, roadmap, and traceability documentation now explain the v0.2 delta.
+
+### Preserved
+
+- All v0.1 state encodings, MBINIT/MBTRAIN ordering, timeout, retrain, power-management, and recovery behavior.
+- `phase_done_i` remains available for compatibility and for later unimplemented training-operation engines.
+- The four v0.1 UVM scenarios remain in the regression and pass unchanged.
+
+### Verification
+
+- Legacy directed Questa scenario: pass at 1276 ns.
+- Sideband-directed Questa scenario: pass at 376 ns; no assertion failures.
+- Eight-test UVM regression: pass with zero errors, zero fatals, and zero illegal transitions.
+- Quartus 23.1 full compilation: successful; 196 logic elements, 66 registers, +1.617 ns slow-85 C setup slack, and 0.000 ns TNS at the checked 80 MHz constraint.
+- Both waveforms and both connection diagrams received four-pass structural and rendered visual review.
+
+### Known limitations
+
+- Only the SBINIT-done message pair is modeled; encodings are internal transaction-level labels, not a complete physical packet format.
+- Physical sideband detection/repair, framing, CRC, credits, and remote-request responder behavior are absent.
+- `phase_done_i` can bypass the SBINIT exchange.
+- No merged UCDB coverage closure, randomized corruption campaign, fully constrained FPGA I/O timing, or Cadence evidence exists.
+
 ## v0.1 - Basic LTSM
 
 ### Added

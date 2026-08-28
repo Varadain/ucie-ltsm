@@ -15,26 +15,31 @@ Source: *UCIe Specification Revision 2.0, Version 1.0*, August 6, 2024.
 | Retrain resolves to TXSELFCAL, SPEEDIDLE, or REPAIR | Tables 4-10 through 4-12 | Implemented and SPEEDIDLE path tested |
 | TRAINERROR handshake/timeout and return to RESET | 4.5.3.8 | Abstract handshake implemented; recovery tested |
 | L1 exits to MBTRAIN.SPEEDIDLE; L2 exits to RESET | 4.5.3.9 | Implemented; L1 path covered in UVM, L2 test pending |
+| SBINIT completion coordination | 4.5.3.2 | Bounded transaction-level request/response implemented; success, retry, malformed response, exhaustion, and abort tested; physical packet format not implemented |
 
 ## UVM verification status
 
 The reusable UVM agent drives abstract LTSM operations and the passive monitor sends observed
 top-level state transitions to a scoreboard. The scoreboard rejects transitions outside Figure 4-33.
-The UVM regression currently passes four tests with zero UVM errors/fatals:
+The UVM regression currently passes eight tests with zero UVM errors/fatals:
 
 - Nominal RESET-to-ACTIVE initialization.
 - SBINIT residency timeout through TRAINERROR and RESET.
 - ACTIVE-to-PHYRETRAIN, SPEEDIDLE selection, and fatal-error recovery.
 - ACTIVE-to-L1/L2 and L1 exit to MBTRAIN.SPEEDIDLE.
+- SBINIT completion through an expected sideband response.
+- Response timeout followed by one retry and successful completion.
+- Unexpected-response error entry through TRAINERROR.
+- Retry-budget exhaustion through TRAINERROR.
 
 The existing SVA module runs alongside UVM. Detailed functional covergroups for all MBINIT and
 MBTRAIN substates are a subsequent verification milestone.
 
 ## Deliberately abstracted components
 
-The present controller does not claim full protocol compliance. `phase_done_i` represents successful completion of each state's normative sideband request/response sequence and any associated analog operation. The next implementation stage must replace it with:
+The present controller does not claim full protocol compliance. Version 0.2 replaces the normal SBINIT-done abstraction with one internal transaction-level request/response pair. `phase_done_i` remains a compatibility bypass in SBINIT and still represents the unimplemented work in MBINIT, MBTRAIN, and PHYRETRAIN. Remaining components include:
 
-1. A sideband message sequencer using encodings from Tables 7-9 and 7-11.
+1. Physical sideband detection, repair, framing, CRC, credits, partner-request response, and the broader normative message set.
 2. Pattern generation/checking and calibration control for Section 4.5.1.
 3. Package-specific repair/degrade algorithms for MBINIT and MBTRAIN.
 4. RDI state and stall handshakes from Chapter 10.

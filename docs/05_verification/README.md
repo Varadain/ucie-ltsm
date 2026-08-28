@@ -2,7 +2,7 @@
 
 The project uses a self-checking directed test first, followed by a reusable UVM environment. Assertions run alongside both testbench tops.
 
-![v0.1 verification connection diagram](../../assets/diagrams/v0.1-basic-ltssm/verification-connections.svg)
+![v0.2 verification connection diagram](../../assets/diagrams/v0.2-sideband/verification-connections.svg)
 
 ## Verification flow
 
@@ -51,11 +51,11 @@ All UVM classes are currently collected in [`verification/uvm/ucie_ltsm_uvm_pkg.
 Implemented UVM components:
 
 - operation sequence item and sequencer;
-- driver for start, completion, timeout wait, retrain, fatal-error, stall, and PM operations;
-- passive top-level-state transition monitor;
+- driver for start, completion, timeout wait, retrain, fatal-error, stall, PM, and sideband response operations;
+- passive top-level-state transition and sideband-event monitor;
 - scoreboard that rejects transitions outside the modeled top-level graph;
 - agent and environment;
-- nominal, timeout, recovery, and PM sequences/tests.
+- nominal, timeout, recovery, PM, sideband success, sideband retry, malformed-response, and retry-exhaustion sequences/tests.
 
 ## Current UVM scenarios
 
@@ -65,6 +65,10 @@ Implemented UVM components:
 | `timeout_test` | Leave SBINIT through timeout | Scoreboard sees TRAINERROR | Pass |
 | `recovery_test` | Exercise retrain, SPEEDIDLE re-entry, and fatal-error recovery | Scoreboard sees PHYRETRAIN and TRAINERROR | Pass |
 | `pm_test` | Exercise L1 entry and exit | Scoreboard sees L1L2; RTL returns through MBTRAIN | Pass |
+| `sb_success_test` | Complete SBINIT through the expected response | One accepted request and successful MBINIT entry | Pass |
+| `sb_retry_test` | Withhold the first response and then complete | Two accepted requests, one retry, successful MBINIT entry | Pass |
+| `sb_error_test` | Return an unexpected response | Protocol error and TRAINERROR observed | Pass |
+| `sb_exhaust_test` | Withhold both response opportunities | One retry, protocol error, and TRAINERROR observed | Pass |
 
 See [testplan.md](testplan.md) for exact coverage and missing scenarios.
 
@@ -82,4 +86,4 @@ See [testplan.md](testplan.md) for exact coverage and missing scenarios.
 
 ## Coverage boundary
 
-There are no functional covergroups and no checked-in UCDB/coverage report. The scoreboard records only top-level transitions. It does not prove every MBINIT/MBTRAIN substate, every timeout location, all retrain targets, or every error combination.
+There are no functional covergroups and no checked-in UCDB/coverage report. The monitor records scenario event counters, not coverage percentages. The evidence does not prove every MBINIT/MBTRAIN substate, every timeout location, all retrain targets, or every error combination.

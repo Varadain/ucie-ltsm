@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">UCIe LTSM v0.2 RTL sideband connection diagram</title>
+  <desc id="desc">The v0.1 hierarchical LTSM now contains a bounded SBINIT request-response sequencer. Ready-valid sideband inputs and outputs connect to the sequencer, whose completion and error results feed the controller.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#52657a"/></marker>
+    <marker id="violet-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7c3aed"/></marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.12"/></filter>
+  </defs>
+  <style>
+    text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}.title{font-size:30px;font-weight:700}.subtitle{font-size:15px;fill:#59697d}
+    .group-title{font-size:17px;font-weight:700}.node-title{font-size:18px;font-weight:700}.body{font-size:14px}.small{font-size:12px;fill:#56667a}.mono{font-family:Consolas,Menlo,monospace;font-size:13px}
+    .group{fill:#f8fafc;stroke:#cbd5e1;stroke-width:1.5}.core{fill:#f5f3ff;stroke:#7c3aed;stroke-width:2.5}.block{fill:#fff;stroke:#a8b4c4;stroke-width:1.5}
+    .sideband{fill:#eef6ff;stroke:#2563eb;stroke-width:2}.success{fill:#edf9f0;stroke:#22a05a;stroke-width:1.5}.error{fill:#fff0f2;stroke:#dc4155;stroke-width:1.5}.note{fill:#fff8e8;stroke:#d39b24;stroke-width:1.5}.pkg{fill:#eef6ff;stroke:#3b82f6;stroke-width:1.5}
+    .wire{fill:none;stroke:#52657a;stroke-width:2;marker-end:url(#arrow)}.bus{fill:none;stroke:#52657a;stroke-width:4;marker-end:url(#arrow)}.internal{fill:none;stroke:#7c3aed;stroke-width:2.5;marker-end:url(#violet-arrow)}.feedback{fill:none;stroke:#15803d;stroke-width:2.5;marker-end:url(#arrow)}
+  </style>
+  <rect width="1600" height="980" fill="#fff"/>
+  <text class="title" x="50" y="52">v0.2 RTL connection diagram</text>
+  <text class="subtitle" x="50" y="80">v0.1 hierarchical LTSM + bounded SBINIT sideband request/response sequencing</text>
+
+  <g filter="url(#shadow)">
+    <rect class="group" x="50" y="125" width="330" height="220" rx="14"/>
+    <text class="group-title" x="74" y="158">Readiness and training controls</text>
+    <text class="mono" x="74" y="194">clk_i, rst_ni</text><text class="mono" x="74" y="222">supplies_stable_i</text>
+    <text class="mono" x="74" y="250">sideband_clk_ok_i</text><text class="mono" x="74" y="278">internal_clks_ok_i</text>
+    <text class="mono" x="74" y="306">link_train_trigger_i</text><text class="mono" x="74" y="334">phase_done_i, stall_i</text>
+
+    <rect class="sideband" x="50" y="380" width="330" height="270" rx="14"/>
+    <text class="group-title" x="74" y="414">Sideband channel inputs</text>
+    <text class="mono" x="74" y="452">sb_tx_ready_i</text><text class="small" x="74" y="474">accepts the outbound request</text>
+    <text class="mono" x="74" y="512">sb_rx_valid_i</text><text class="mono" x="74" y="540">sb_rx_message_i[7:0]</text>
+    <text class="small" x="74" y="566">expected: SBINIT_DONE_RESP</text>
+    <text class="body" x="74" y="606">Ready/valid transaction boundary</text>
+    <text class="small" x="74" y="630">Physical framing and CRC remain external.</text>
+
+    <rect class="group" x="50" y="685" width="330" height="225" rx="14"/>
+    <text class="group-title" x="74" y="718">Recovery, retrain, and power</text>
+    <text class="mono" x="74" y="754">fatal_error_i</text><text class="mono" x="74" y="782">error_handshake_done_i</text>
+    <text class="mono" x="74" y="810">retrain_req_i, retrain_target_i</text><text class="mono" x="74" y="838">pm_l1_req_i, pm_l2_req_i</text>
+    <text class="mono" x="74" y="866">pm_exit_i, sideband_tx_idle_i</text><text class="mono" x="74" y="894">error_escalated_i, rdi_active_i</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect class="core" x="450" y="125" width="710" height="785" rx="18"/>
+    <text class="node-title" x="805" y="162" text-anchor="middle">ucie_ltsm</text>
+    <text class="small" x="805" y="186" text-anchor="middle">rtl/ucie_ltsm.sv</text>
+
+    <rect class="block" x="500" y="218" width="610" height="190" rx="12"/>
+    <text class="group-title" x="805" y="250" text-anchor="middle">Hierarchical controller and shared timer</text>
+    <rect x="530" y="278" width="260" height="98" rx="9" fill="#eef6ff" stroke="#4f7db8"/>
+    <text class="body" x="660" y="306" text-anchor="middle" font-weight="700">Top-level + MBINIT/MBTRAIN FSMs</text>
+    <text class="small" x="660" y="334" text-anchor="middle">SBINIT starts sideband exchange</text>
+    <text class="small" x="660" y="358" text-anchor="middle">done → MBINIT · error → TRAINERROR</text>
+    <rect x="820" y="278" width="260" height="98" rx="9" fill="#fff8e8" stroke="#d39b24"/>
+    <text class="body" x="950" y="306" text-anchor="middle" font-weight="700">RESET/state timeout counter</text>
+    <text class="small" x="950" y="334" text-anchor="middle">restarts on state/substate/stall</text>
+    <text class="small" x="950" y="358" text-anchor="middle">independent of sequencer timeout</text>
+
+    <rect class="sideband" x="500" y="465" width="610" height="250" rx="12"/>
+    <text class="group-title" x="805" y="498" text-anchor="middle">ucie_sb_sequencer</text>
+    <text class="small" x="805" y="520" text-anchor="middle">rtl/ucie_sb_sequencer.sv</text>
+    <rect class="block" x="530" y="548" width="160" height="126" rx="9"/>
+    <text class="body" x="610" y="578" text-anchor="middle" font-weight="700">SEND</text><text class="small" x="610" y="606" text-anchor="middle">hold valid + request</text>
+    <text class="small" x="610" y="630" text-anchor="middle">until ready</text><text class="small" x="610" y="654" text-anchor="middle">SBINIT_DONE_REQ</text>
+    <rect class="block" x="725" y="548" width="160" height="126" rx="9"/>
+    <text class="body" x="805" y="578" text-anchor="middle" font-weight="700">WAIT</text><text class="small" x="805" y="606" text-anchor="middle">match response</text>
+    <text class="small" x="805" y="630" text-anchor="middle">count timeout</text><text class="small" x="805" y="654" text-anchor="middle">bounded retry</text>
+    <rect class="block" x="920" y="548" width="160" height="126" rx="9"/>
+    <text class="body" x="1000" y="578" text-anchor="middle" font-weight="700">RESULT</text><text class="small" x="1000" y="606" text-anchor="middle">done pulse</text>
+    <text class="small" x="1000" y="630" text-anchor="middle">retry pulse</text><text class="small" x="1000" y="654" text-anchor="middle">protocol error</text>
+
+    <rect class="block" x="500" y="770" width="610" height="105" rx="12"/>
+    <text class="group-title" x="805" y="802" text-anchor="middle">Registered state</text>
+    <text class="mono" x="805" y="832" text-anchor="middle">state_q · mbi_q · mbt_q · timer_q · sequencer registers</text>
+    <text class="small" x="805" y="856" text-anchor="middle">abort clears an outstanding transaction when the LTSM leaves SBINIT</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect class="pkg" x="500" y="925" width="610" height="42" rx="10"/>
+    <text class="body" x="805" y="952" text-anchor="middle"><tspan font-weight="700">ucie_ltsm_pkg</tspan> · LTSM/substate, retrain, and sideband-message enumerations</text>
+
+    <rect class="success" x="1230" y="150" width="320" height="250" rx="14"/>
+    <text class="group-title" x="1254" y="184">Sideband outputs</text>
+    <text class="mono" x="1254" y="222">sb_tx_valid_o</text><text class="mono" x="1254" y="250">sb_tx_message_o[7:0]</text>
+    <text class="mono" x="1254" y="292">sb_busy_o</text><text class="mono" x="1254" y="320">sb_retry_o</text>
+    <text class="mono" x="1254" y="348">sb_protocol_error_o</text><text class="small" x="1254" y="378">observable transaction status</text>
+
+    <rect class="success" x="1230" y="445" width="320" height="205" rx="14"/>
+    <text class="group-title" x="1254" y="479">LTSM and physical status</text>
+    <text class="mono" x="1254" y="517">state_o, mbinit_state_o</text><text class="mono" x="1254" y="545">mbtrain_state_o</text>
+    <text class="mono" x="1254" y="573">timeout_o, link_up_o</text><text class="mono" x="1254" y="601">mainband_tristate_o</text>
+    <text class="mono" x="1254" y="629">sideband_enable_o</text>
+
+    <rect class="note" x="1230" y="700" width="320" height="210" rx="14"/>
+    <text class="group-title" x="1254" y="734">v0.2 scope boundary</text>
+    <text class="body" x="1254" y="770">Only SBINIT-done is sequenced.</text><text class="body" x="1254" y="798">phase_done_i remains as a bypass.</text>
+    <text class="body" x="1254" y="826">No framing, CRC, credits, or repair.</text><text class="body" x="1254" y="854">No physical sideband implementation.</text>
+    <text class="small" x="1254" y="886">Transaction-level encodings are internal.</text>
+  </g>
+
+  <path class="bus" d="M380 238 H430 V306 H530"/><path class="bus" d="M380 520 H420 V610 H530"/><path class="bus" d="M380 800 H426 V352 H530"/>
+  <path class="internal" d="M660 376 V440 H610 V548"/><text class="small" x="555" y="432">sb_start / abort</text>
+  <path class="internal" d="M690 612 H725"/><path class="internal" d="M885 612 H920"/>
+  <path class="feedback" d="M1000 548 V438 H760 V376"/><text class="small" x="874" y="430">done / protocol error</text>
+  <path class="wire" d="M1110 588 H1192 V272 H1230"/><path class="wire" d="M1110 826 H1188 V548 H1230"/><path class="wire" d="M805 925 V875"/>
+  <text class="small" x="392" y="224">controller controls</text><text class="small" x="390" y="504">ready/valid receive path</text><text class="small" x="1136" y="256">request + status</text>
+</svg>

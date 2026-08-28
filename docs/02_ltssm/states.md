@@ -7,7 +7,7 @@ This page describes the checked RTL, not every behavior in the UCIe specificatio
 | State | Purpose and actions | Entry | Exit | Timer/error behavior | Current test evidence |
 |---|---|---|---|---|---|
 | `LTSM_RESET` | Initializes MBINIT to `PARAM`, MBTRAIN to `VALVREF`; holds mainband tristated. | Asynchronous reset, L2 exit, TRAINERROR recovery, or default recovery | After minimum RESET time, stable supplies, sideband/internal clocks ready, firmware reset clear, and link-training trigger set | No timeout; minimum-residence counter still runs | Directed and `nominal_test`; TRAINERROR return in directed/recovery; L2 entry untested |
-| `LTSM_SBINIT` | Represents sideband initialization; sideband enabled and mainband tristated | RESET readiness condition | `phase_done_i` -> MBINIT/`PARAM` | Eligible for timeout; fatal error enters TRAINERROR immediately in this state | Nominal progression; `timeout_test` |
+| `LTSM_SBINIT` | Starts and supervises the bounded SBINIT-done request/response; sideband enabled and mainband tristated | RESET readiness condition | Expected response or compatibility `phase_done_i` -> MBINIT/`PARAM` | Eligible for LTSM timeout; wrong response or exhausted sequencer retries enters TRAINERROR | Nominal/timeout tests plus sideband success, retry, malformed-response, and exhaustion tests |
 | `LTSM_MBINIT` | Advances the six ordered mainband-initialization labels | SBINIT completion | A non-stalled `phase_done_i` advances a substate; completion of `REPAIRMB` -> MBTRAIN/`VALVREF` | Timer restarts for every substate and while stalled; eligible for timeout | Ordered path exercised by directed and nominal UVM tests; no per-substate coverage report |
 | `LTSM_MBTRAIN` | Advances the thirteen ordered mainband-training labels | MBINIT completion, retrain completion, or L1 exit | `phase_done_i` advances a substate; completion of `REPAIR` -> LINKINIT | Timer restarts for every substate; eligible for timeout | Full ordered path exercised by nominal tests; SPEEDIDLE re-entry exercised |
 | `LTSM_LINKINIT` | Waits for the external RDI/link-initialization result | MBTRAIN completion | `rdi_active_i` -> ACTIVE | Eligible for timeout | Directed and `nominal_test` |
@@ -53,7 +53,7 @@ Each `phase_done_i` advances one step:
 
 The combinational logic applies priority in this order:
 
-1. An accepted non-RESET fatal error.
+1. An accepted non-RESET fatal error or sideband protocol error.
 2. An enabled timeout.
 3. Normal state-specific progress.
 

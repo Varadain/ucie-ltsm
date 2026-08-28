@@ -58,17 +58,17 @@ Selected source reports are retained as compact `*.summary` files in `quartus/ou
 
 ## Functional netlist evidence
 
-The v0.1 evidence pack retains the Quartus functional Verilog simulation netlist:
+The v0.2 evidence pack retains the Quartus functional Verilog simulation netlist for the integrated LTSM and sideband sequencer:
 
-- [`synthesis/quartus/netlists/v0.1-basic-ltssm/ucie_ltsm.vo`](../../synthesis/quartus/netlists/v0.1-basic-ltssm/ucie_ltsm.vo)
-- [generation metadata and limitations](../../synthesis/quartus/netlists/v0.1-basic-ltssm/README.md)
+- [`synthesis/quartus/netlists/v0.2-sideband/ucie_ltsm.vo`](../../synthesis/quartus/netlists/v0.2-sideband/ucie_ltsm.vo)
+- [generation metadata and limitations](../../synthesis/quartus/netlists/v0.2-sideband/README.md)
 
 Regenerate it from the repository root:
 
 ```powershell
-.\scripts\export_quartus_netlist.ps1
+.\scripts\export_quartus_netlist.ps1 -Version v0.2-sideband
 ```
 
 The exporter runs a full Quartus compile and the 23.1 EDA Netlist Writer in functional Verilog mode. The `.vo` file contains Intel device primitives for the checked Cyclone 10 LP target and is intended for Questa Intel FPGA with matching simulation libraries. It is not editable RTL, an ASIC standard-cell netlist, a programming image, or board-level signoff evidence.
 
-![v0.1 RTL connection diagram](../../assets/diagrams/v0.1-basic-ltssm/rtl-connections.svg)
+![v0.2 RTL connection diagram](../../assets/diagrams/v0.2-sideband/rtl-connections.svg)

@@ -12,7 +12,7 @@ The design stores three pieces of progress:
 - an MBINIT substate; and
 - an MBTRAIN substate.
 
-One saturating counter measures RESET residence or the time spent in an eligible state/substate. External handshakes abstract the physical and protocol work performed around the controller.
+One saturating counter measures RESET residence or the time spent in an eligible state/substate. A separate bounded sequencer performs the v0.2 SBINIT-done transaction. External handshakes still abstract the remaining physical and training work.
 
 ## Behavioral flow
 
@@ -54,7 +54,7 @@ on each clock:
 to choose the next state:
     keep every state unchanged by default
 
-    if fatal_error is asserted outside RESET:
+    if fatal_error or sideband_protocol_error is asserted outside RESET:
         if current state is SBINIT,
            or the error handshake completed,
            or timeout is active:
@@ -69,7 +69,8 @@ to choose the next state:
                     go to SBINIT
 
             SBINIT:
-                if phase is done:
+                if the sideband response completed,
+                   or the compatibility phase_done input is asserted:
                     go to MBINIT at PARAM
 
             MBINIT:
@@ -106,6 +107,16 @@ to choose the next state:
                         go to RESET
                     else:
                         go to MBTRAIN at SPEEDIDLE
+
+sideband sequencer:
+    on start, latch SBINIT_DONE_REQ and expected SBINIT_DONE_RESP
+    hold transmit-valid and the request until transmit-ready
+    wait for a valid response
+    if it matches, pulse done
+    if it is wrong, pulse protocol_error
+    if response timeout expires and retries remain, pulse retry and resend
+    if the retry budget is exhausted, pulse protocol_error
+    if abort is asserted, clear the outstanding transaction
 ```
 
 ## Mapping to RTL concepts
@@ -118,5 +129,7 @@ to choose the next state:
 | Restart per operation | `state_changed`, `substate_changed`, or `stall_i` |
 | Express status | Continuous assignments for `timeout_o`, `link_up_o`, and physical-control outputs |
 | Encode legal labels | Enumerated types in `ucie_ltsm_pkg` |
+| Sequence SBINIT exchange | `ucie_sb_sequencer` registered SEND/WAIT/error control |
+| Bound response waiting | Sequencer timer and retry-count registers |
 
 The next page explains the source organization: [RTL guide](../04_rtl/README.md).

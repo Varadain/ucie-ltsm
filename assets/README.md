@@ -2,6 +2,31 @@
 
 This directory contains small, reviewed artifacts intended for GitHub display. Raw simulator databases, VCD files, and Quartus build databases remain generated and ignored.
 
+## v0.2 sideband waveforms
+
+The SVGs under [`waveforms/v0.2-sideband`](waveforms/v0.2-sideband/) are rendered from the standalone sequencer test's Questa VCD:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/capture_sideband_waveform.do
+python scripts/render_sideband_waveforms.py
+```
+
+- [`success-bounded-retry.svg`](waveforms/v0.2-sideband/success-bounded-retry.svg) shows request stability under backpressure, expected-response completion, a response timeout, one retry, and successful completion.
+- [`exhaustion-mismatch-abort.svg`](waveforms/v0.2-sideband/exhaustion-mismatch-abort.svg) shows retry-budget exhaustion, wrong-response rejection, and cancellation of an outstanding request.
+
+The waveform bus labels `DONE_REQ` and `DONE_RESP` abbreviate the RTL enum labels `SB_MSG_SBINIT_DONE_REQ` and `SB_MSG_SBINIT_DONE_RESP` so short response windows remain legible.
+
+Every underlined signal name links to the [canonical signal/function guide](../docs/02_ltssm/signals.md#waveform-signal-guide). The [Questa page](../docs/06_results/questa.md#v02-sideband-signal-pointers) provides normal Markdown fallback links.
+
+## v0.2 connection diagrams
+
+The SVGs under [`diagrams/v0.2-sideband`](diagrams/v0.2-sideband/) describe only implemented connections:
+
+- the `ucie_ltsm`/`ucie_sb_sequencer` control and ready/valid integration; and
+- the eight-test UVM environment, sideband event monitoring, scoreboard, SVA, and standalone sequencer test.
+
+Their scope boxes explicitly exclude physical sideband framing, CRC, credits, repair, and the broader UCIe message set.
+
 ## v0.1 waveforms
 
 The SVGs under [`waveforms/v0.1-basic-ltssm`](waveforms/v0.1-basic-ltssm/) are rendered from the VCD produced by the self-checking directed test:

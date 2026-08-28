@@ -6,12 +6,13 @@ Last audited: **August 28, 2026**
 
 - Repository landing page, navigation, scope, and private-reference policy.
 - UCIe 2.0 reference identity and implementation/compliance boundary.
-- Current architecture, state hierarchy, transitions, signal groups, timers, and pseudocode.
+- Current architecture, state hierarchy, transitions, sideband signals, timers, and pseudocode.
 - RTL module hierarchy and algorithm-to-SystemVerilog mapping.
 - Directed test, UVM topology, assertions, scenario table, and traceability.
-- Fresh Questa evidence and existing Quartus resource/timing summaries.
+- Fresh legacy/sideband Questa evidence, eight-test UVM evidence, and fresh Quartus resource/timing summaries.
 - Reviewed Questa-derived waveform figures, RTL/UVM connection diagrams, and a Quartus functional netlist for v0.1.
-- v0.1 milestone page, roadmap, and changelog.
+- Reviewed v0.2 sideband waveform figures, updated RTL/verification connection diagrams, and a Quartus functional netlist.
+- v0.1 and v0.2 milestone pages, roadmap, and changelog.
 
 ## Incomplete documentation or evidence
 
@@ -22,7 +23,7 @@ Last audited: **August 28, 2026**
 | MBINIT/MBTRAIN substate coverage | Ordered progression exercised indirectly | Functional covergroups and coverage report |
 | Timeout breadth | SBINIT timeout tested | Tests for every eligible state/substate |
 | Stall behavior | RTL implemented | Directed/UVM test proving timeout restart |
-| Sideband functionality | Abstract `phase_done_i` only | RTL sequencer, protocol-specific tests, and updated architecture |
+| Sideband breadth | Bounded SBINIT-done transaction verified | Physical framing/CRC/credits, wider message set, partner responder, randomized latency/corruption, and coverage closure |
 | Cadence flow | No files or reports found | Scripts, constraints, library/corner identity, and real reports |
 | Power data | No report found | Tool setup, assumptions, activity source, and result |
 | Board-level timing | Internal clock paths are constrained; I/O delays and exact pin assignments are absent | Board interface timing and pin constraints |
@@ -34,6 +35,7 @@ Last audited: **August 28, 2026**
 - Legacy root-level Quartus project files and generated `db/` content remain on disk but are ignored; remove them only after confirming they are no longer needed.
 - Generated simulator logs are intentionally ignored. Re-run the scripts to reproduce them.
 - Raw VCDs and Quartus databases are intentionally ignored; reviewed SVG waveforms and the release functional netlist are retained under `assets/` and `synthesis/`.
+- `phase_done_i` remains a compatibility bypass for SBINIT and the abstraction for later training operations; decide when to restrict or remove the bypass.
 
 ## Link and claim checks
 

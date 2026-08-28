@@ -85,6 +85,42 @@ Observed result: `PASS: sideband backpressure, success, retry, exhaustion, misma
 The test also runs assertions that the request remains stable under transmit backpressure,
 a retry reissues transmit-valid, and completion follows the expected response.
 
+### Sideband waveform evidence
+
+The reviewed v0.2 figures are generated from the same standalone directed test:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/capture_sideband_waveform.do
+python scripts/render_sideband_waveforms.py
+```
+
+![v0.2 sideband success and bounded retry](../../assets/waveforms/v0.2-sideband/success-bounded-retry.svg)
+
+The first figure proves that transmit valid and the request remain presented while ready is low, then separates request acceptance from the expected response. Its second transaction shows one response timeout, one retry pulse, a retransmitted request, and successful completion.
+
+![v0.2 sideband exhaustion, mismatch, and abort](../../assets/waveforms/v0.2-sideband/exhaustion-mismatch-abort.svg)
+
+The second figure shows the terminal paths: retry-budget exhaustion, rejection of an unexpected `NOP` response, and abort cancellation of an outstanding request without a completion or protocol-error pulse.
+
+<a id="v02-sideband-signal-pointers"></a>
+### v0.2 sideband signal pointers
+
+Signal labels inside the SVGs are clickable. These normal Markdown links provide the same explanation when SVG interaction is disabled.
+
+| Waveform label | Function | Detailed explanation |
+|---|---|---|
+| `start_i` | Launches one sequencer transaction | [Sequencer start](../02_ltssm/signals.md#wave-sb-start) |
+| `abort_i` | Cancels an outstanding transaction | [Sequencer abort](../02_ltssm/signals.md#wave-sb-abort) |
+| `sb_tx_valid_o` | Presents a stable outbound request | [Transmit valid](../02_ltssm/signals.md#wave-sb-tx-valid) |
+| `sb_tx_ready_i` | Accepts the outbound request | [Transmit ready](../02_ltssm/signals.md#wave-sb-tx-ready) |
+| `sb_tx_message_o` | Carries `SBINIT_DONE_REQ` | [Transmit message](../02_ltssm/signals.md#wave-sb-tx-message) |
+| `sb_rx_valid_i` | Marks a received response as valid | [Receive valid](../02_ltssm/signals.md#wave-sb-rx-valid) |
+| `sb_rx_message_i` | Carries the expected or malformed response | [Receive message](../02_ltssm/signals.md#wave-sb-rx-message) |
+| `sb_busy_o` | Covers SEND and WAIT residence | [Busy status](../02_ltssm/signals.md#wave-sb-busy) |
+| `sb_retry_o` | Marks a bounded retransmission | [Retry indication](../02_ltssm/signals.md#wave-sb-retry) |
+| `completion pulse` | Reports the expected response | [Internal completion](../02_ltssm/signals.md#wave-sb-done) |
+| `sb_protocol_error_o` | Reports wrong response or exhausted retries | [Protocol error](../02_ltssm/signals.md#wave-sb-protocol-error) |
+
 ## Interpretation
 
 These runs support the named controller scenarios. Feature-event counters provide scenario evidence,

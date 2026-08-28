@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="746" viewBox="0 0 1400 746" role="img" aria-labelledby="title desc">
+<title id="title">v0.2 sideband success and bounded retry</title>
+<desc id="desc">Backpressure hold, accepted SBINIT request, expected response, and retry completion Generated from the directed Questa VCD.</desc>
+<style>
+text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}
+.title{font-size:24px;font-weight:700}.subtitle{font-size:14px;fill:#536179}
+.label{font-size:14px;font-weight:600}.tick{font-size:12px;fill:#64748b}
+.guide{font-size:13px;font-weight:600;fill:#2563eb;text-decoration:underline}
+.bus{font-size:10px;font-weight:600;fill:#fff}.bus-dark{font-size:10px;font-weight:600;fill:#172033}
+.grid{stroke:#dbe2ea;stroke-width:1}.axis{stroke:#94a3b8;stroke-width:1}
+.digital{fill:none;stroke-width:2.5;stroke-linejoin:miter}
+</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text class="title" x="24" y="34">v0.2 sideband success and bounded retry</text>
+<text class="subtitle" x="24" y="60">Backpressure hold, accepted SBINIT request, expected response, and retry completion</text>
+<text class="subtitle" x="24" y="82">Source: Questa 2023.3 · verification/tb_ucie_sb_sequencer.sv · timescale 1 ps</text>
+<a href="../../../docs/02_ltssm/signals.md#waveform-signal-guide"><text class="guide" x="1376" y="82" text-anchor="end">Signal definitions and functionality ↗</text></a>
+<line class="grid" x1="210.00" y1="114" x2="210.00" y2="644"/>
+<text class="tick" x="210.00" y="105" text-anchor="middle">20</text>
+<line class="grid" x1="342.11" y1="114" x2="342.11" y2="644"/>
+<text class="tick" x="342.11" y="105" text-anchor="middle">40</text>
+<line class="grid" x1="474.23" y1="114" x2="474.23" y2="644"/>
+<text class="tick" x="474.23" y="105" text-anchor="middle">60</text>
+<line class="grid" x1="606.34" y1="114" x2="606.34" y2="644"/>
+<text class="tick" x="606.34" y="105" text-anchor="middle">80</text>
+<line class="grid" x1="738.46" y1="114" x2="738.46" y2="644"/>
+<text class="tick" x="738.46" y="105" text-anchor="middle">100</text>
+<line class="grid" x1="870.57" y1="114" x2="870.57" y2="644"/>
+<text class="tick" x="870.57" y="105" text-anchor="middle">120</text>
+<line class="grid" x1="1002.69" y1="114" x2="1002.69" y2="644"/>
+<text class="tick" x="1002.69" y="105" text-anchor="middle">140</text>
+<line class="grid" x1="1134.80" y1="114" x2="1134.80" y2="644"/>
+<text class="tick" x="1134.80" y="105" text-anchor="middle">160</text>
+<line class="grid" x1="1266.91" y1="114" x2="1266.91" y2="644"/>
+<text class="tick" x="1266.91" y="105" text-anchor="middle">180</text>
+<text class="tick" x="788.00" y="724" text-anchor="middle">simulation time (ns)</text>
+<a href="../../../docs/02_ltssm/signals.md#wave-sb-start"><text class="label" style="fill:#7c3aed" x="192" y="155" text-anchor="end">start_i</text></a>
+<line class="axis" x1="210" y1="150" x2="1366" y2="150"/>
+<path class="digital" style="stroke:#7c3aed" d="M 210.00 163 H 243.03 V 137 H 315.69 V 163 H 771.49 V 137 H 844.15 V 163 H 1366.00"/>
+<text class="tick" style="fill:#7c3aed" x="215" y="133">1</text>
+<text class="tick" style="fill:#7c3aed" x="215" y="159">0</text>
+<a href="../../../docs/02_ltssm/signals.md#wave-sb-tx-valid"><text class="label" style="fill:#2563eb" x="192" y="213" text-anchor="end">sb_tx_valid_o</text></a>
+<line class="axis" x1="210" y1="208" x2="1366" y2="208"/>
+<path class="digital" style="stroke:#2563eb" d="M 210.00 221 H 309.09 V 195 H 507.26 V 221 H 837.54 V 195 H 903.60 V 221 H 1167.83 V 195 H 1233.89 V 221 H 1366.00"/>
+<text class="tick" style="fill:#2563eb" x="215" y="191">1</text>
+<text class="tick" style="fill:#2563eb" x="215" y="217">0</text>
+<a href="../../../docs/02_ltssm/signals.md#wave-sb-tx-ready"><text class="label" style="fill:#0284c7" x="192" y="271" text-anchor="end">sb_tx_ready_i</text></a>
+<line class="axis" x1="210" y1="266" x2="1366" y2="266"/>
+<path class="digital" style="stroke:#0284c7" d="M 210.00 279 H 441.20 V 253 H 513.86 V 279 H 844.15 V 253 H 910.21 V 279 H 1167.83 V 253 H 1240.49 V 279 H 1366.00"/>
+<text class="tick" style="fill:#0284c7" x="215" y="249">1</text>
+<text class="tick" style="fill:#0284c7" x="215" y="275">0</text>
+<a href="../../../docs/02_ltssm/signals.md#wave-sb-tx-message"><text class="label" style="fill:#1d4ed8" x="192" y="329" text-anchor="end">sb_tx_message_o</text></a>
+<line class="axis" x1="210" y1="324" x2="1366" y2="324"/>
+<rect x="210.00" y="308" width="99.09" height="32" fill="#64748b" stroke="#ffffff"/>
+<text class="bus" x="259.54" y="328" text-anchor="middle">NOP</text>
+<rect x="309.09" y="308" width="1056.91" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="837.54" y="328" text-anchor="middle">DONE_REQ</text>
+<a href="../../../docs/02_ltssm/signals.md#wave-sb-rx-valid"><text class="label" style="fill:#0f766e" x="192" y="387" text-anchor="end">sb_rx_valid_i</text></a>
+<line class="axis" x1="210" y1="382" x2="1366" y2="382"/>
+<path class="digital" style="stroke:#0f766e" d="M 210.00 395 H 639.37 V 369 H 712.03 V 395 H 1240.49 V 369 H 1306.55 V 395 H 1366.00"/>
+<text class="tick" style="fill:#0f766e" x="215" y="365">1</text>
+<text class="tick" style="fill:#0f766e" x="215" y="391">0</text>
+<a href="../../../docs/02_ltssm/signals.md#wave-sb-rx-message"><text class="label" style="fill:#15803d" x="192" y="445" text-anchor="end">sb_rx_message_i</text></a>
+<line class="axis" x1="210" y1="440" x2="1366" y2="440"/>
+<rect x="210.00" y="424" width="429.37" height="32" fill="#64748b" stroke="#ffffff"/>
+<text class="bus" x="424.69" y="444" text-anchor="middle">NOP</text>
+<rect x="639.37" y="424" width="72.66" height="32" fill="#15803d" stroke="#ffffff"/>
+<text class="bus" x="675.70" y="444" text-anchor="middle">DONE_RESP</text>
+<rect x="712.03" y="424" width="528.46" height="32" fill="#64748b" stroke="#ffffff"/>
+<text class="bus" x="976.26" y="444" text-anchor="middle">NOP</text>
+<rect x="1240.49" y="424" width="66.06" height="32" fill="#15803d" stroke="#ffffff"/>
+<text class="bus" x="1273.52" y="444" text-anchor="middle">DONE_RESP</text>
+<rect x="1306.55" y="424" width="59.45" height="32" fill="#64748b" stroke="#ffffff"/>
+<text class="bus" x="1336.27" y="444" text-anchor="middle">NOP</text>
+<a href="../../../docs/02_ltssm/signals.md#wave-sb-busy"><text class="label" style="fill:#475569" x="192" y="503" text-anchor="end">sb_busy_o</text></a>
+<line class="axis" x1="210" y1="498" x2="1366" y2="498"/>
+<path class="digital" style="stroke:#475569" d="M 210.00 511 H 309.09 V 485 H 705.43 V 511 H 837.54 V 485 H 1299.94 V 511 H 1366.00"/>
+<text class="tick" style="fill:#475569" x="215" y="481">1</text>
+<text class="tick" style="fill:#475569" x="215" y="507">0</text>
+<a href="../../../docs/02_ltssm/signals.md#wave-sb-retry"><text class="label" style="fill:#c2410c" x="192" y="561" text-anchor="end">sb_retry_o</text></a>
+<line class="axis" x1="210" y1="556" x2="1366" y2="556"/>
+<path class="digital" style="stroke:#c2410c" d="M 210.00 569 H 1167.83 V 543 H 1233.89 V 569 H 1366.00"/>
+<text class="tick" style="fill:#c2410c" x="215" y="539">1</text>
+<text class="tick" style="fill:#c2410c" x="215" y="565">0</text>
+<a href="../../../docs/02_ltssm/signals.md#wave-sb-done"><text class="label" style="fill:#15803d" x="192" y="619" text-anchor="end">completion pulse</text></a>
+<line class="axis" x1="210" y1="614" x2="1366" y2="614"/>
+<path class="digital" style="stroke:#15803d" d="M 210.00 627 H 705.43 V 601 H 771.49 V 627 H 1299.94 V 601 H 1366.00"/>
+<text class="tick" style="fill:#15803d" x="215" y="597">1</text>
+<text class="tick" style="fill:#15803d" x="215" y="623">0</text>
+<rect x="210" y="114" width="1156" height="520" fill="none" stroke="#94a3b8"/>
+</svg>
