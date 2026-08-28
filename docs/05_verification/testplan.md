@@ -10,7 +10,7 @@
 | UVM-01 | SBINIT timeout | Start training; withhold completion until timeout | SBINIT -> TRAINERROR -> RESET | `timeout_test` | Pass |
 | UVM-02 | L1 exit | Request L1, then PM exit | ACTIVE -> L1L2 -> MBTRAIN/`SPEEDIDLE` | `pm_test` | Pass |
 
-“Pass” reflects the fresh August 27, 2026 Questa runs described in [questa.md](../06_results/questa.md).
+“Pass” reflects the fresh August 28, 2026 Questa runs described in [questa.md](../06_results/questa.md).
 
 ## Planned scenarios required for stronger confidence
 

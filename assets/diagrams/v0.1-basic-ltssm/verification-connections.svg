@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="920" viewBox="0 0 1600 920" role="img" aria-labelledby="title desc">
+  <title id="title">UCIe LTSM v0.1 verification connection diagram</title>
+  <desc id="desc">UVM tests create sequences that flow through a sequencer and driver to the virtual interface and DUT. The monitor sends state samples to the legal-transition scoreboard. Assertions observe selected DUT signals directly.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#52657a"/></marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.12"/></filter>
+  </defs>
+  <style>
+    text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}
+    .title{font-size:30px;font-weight:700}.subtitle{font-size:15px;fill:#59697d}
+    .group-title{font-size:17px;font-weight:700}.node-title{font-size:16px;font-weight:700}
+    .body{font-size:14px}.small{font-size:12px;fill:#56667a}.mono{font-family:Consolas,Menlo,monospace;font-size:13px}
+    .env{fill:#f5f3ff;stroke:#8b5cf6;stroke-width:2}.node{fill:#fff;stroke:#a8b4c4;stroke-width:1.5}
+    .stim{fill:#eef6ff;stroke:#3b82f6;stroke-width:1.5}.observe{fill:#edf9f0;stroke:#22a05a;stroke-width:1.5}
+    .dut{fill:#fff4e8;stroke:#d97706;stroke-width:2}.sva{fill:#fff0f2;stroke:#dc4155;stroke-width:1.5}
+    .top{fill:#f8fafc;stroke:#cbd5e1;stroke-width:2}.wire{fill:none;stroke:#52657a;stroke-width:2;marker-end:url(#arrow)}
+    .analysis{fill:none;stroke:#15803d;stroke-width:3;marker-end:url(#arrow)}.bind{fill:none;stroke:#8b5cf6;stroke-width:2;stroke-dasharray:7 6;marker-end:url(#arrow)}
+  </style>
+  <rect width="1600" height="920" fill="#ffffff"/>
+  <text class="title" x="52" y="54">v0.1 verification connection diagram</text>
+  <text class="subtitle" x="52" y="82">Questa UVM stimulus, passive observation, legal-transition checking, and SVA connectivity</text>
+
+  <g filter="url(#shadow)">
+    <rect class="stim" x="52" y="150" width="270" height="278" rx="14"/>
+    <text class="group-title" x="76" y="184">UVM tests and sequences</text>
+    <text class="mono" x="76" y="224">nominal_test</text>
+    <text class="mono" x="76" y="254">timeout_test</text>
+    <text class="mono" x="76" y="284">recovery_test</text>
+    <text class="mono" x="76" y="314">pm_test</text>
+    <line x1="76" y1="338" x2="298" y2="338" stroke="#b7c5d6"/>
+    <text class="body" x="76" y="370">operation sequences</text>
+    <text class="small" x="76" y="396">START · DONE · RDI_ACTIVE</text>
+    <text class="small" x="76" y="416">RETRAIN · FATAL · STALL · PM</text>
+
+    <rect class="env" x="386" y="126" width="726" height="586" rx="18"/>
+    <text class="group-title" x="410" y="160">uvm_test_top.env</text>
+
+    <rect class="stim" x="430" y="206" width="184" height="106" rx="10"/>
+    <text class="node-title" x="522" y="240" text-anchor="middle">sequencer</text>
+    <text class="mono" x="522" y="270" text-anchor="middle">ltsm_item</text>
+    <text class="small" x="522" y="294" text-anchor="middle">operation + target + cycles</text>
+
+    <rect class="stim" x="682" y="206" width="184" height="106" rx="10"/>
+    <text class="node-title" x="774" y="240" text-anchor="middle">driver</text>
+    <text class="body" x="774" y="270" text-anchor="middle">pin-level controls</text>
+    <text class="small" x="774" y="294" text-anchor="middle">through virtual interface</text>
+
+    <rect class="observe" x="682" y="508" width="184" height="106" rx="10"/>
+    <text class="node-title" x="774" y="542" text-anchor="middle">monitor</text>
+    <text class="body" x="774" y="572" text-anchor="middle">state transitions</text>
+    <text class="small" x="774" y="596" text-anchor="middle">passive sampling</text>
+
+    <rect class="observe" x="914" y="508" width="154" height="140" rx="10"/>
+    <text class="node-title" x="991" y="542" text-anchor="middle">scoreboard</text>
+    <text class="body" x="991" y="572" text-anchor="middle">legal transition</text>
+    <text class="body" x="991" y="596" text-anchor="middle">checker + flags</text>
+    <text class="small" x="991" y="624" text-anchor="middle">illegal == 0</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect class="top" x="1160" y="126" width="388" height="586" rx="18"/>
+    <text class="group-title" x="1184" y="160">tb_ucie_ltsm_uvm</text>
+
+    <rect class="node" x="1208" y="204" width="292" height="136" rx="10"/>
+    <text class="node-title" x="1354" y="238" text-anchor="middle">ucie_ltsm_if</text>
+    <text class="body" x="1354" y="268" text-anchor="middle">clock, reset, controls, and status</text>
+    <text class="small" x="1354" y="294" text-anchor="middle">config_db supplies virtual interface</text>
+    <text class="small" x="1354" y="318" text-anchor="middle">to driver and monitor</text>
+
+    <rect class="dut" x="1208" y="398" width="292" height="130" rx="10"/>
+    <text class="node-title" x="1354" y="434" text-anchor="middle">DUT: ucie_ltsm</text>
+    <text class="body" x="1354" y="466" text-anchor="middle">controls in · state/status out</text>
+    <text class="small" x="1354" y="496" text-anchor="middle">100 MHz simulation override</text>
+
+    <rect class="sva" x="1208" y="578" width="292" height="102" rx="10"/>
+    <text class="node-title" x="1354" y="612" text-anchor="middle">ucie_ltsm_sva</text>
+    <text class="body" x="1354" y="642" text-anchor="middle">properties + cover properties</text>
+    <text class="small" x="1354" y="666" text-anchor="middle">clock/reset/state/timeout/link/fatal</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect class="node" x="386" y="770" width="1162" height="104" rx="14"/>
+    <text class="group-title" x="410" y="806">Observed evidence</text>
+    <text class="body" x="410" y="838">Questa transcript summaries · PASS/FAIL assertions · UVM error/fatal counts · transition totals and scenario flags</text>
+    <text class="small" x="410" y="862">Raw simulator databases/logs are regenerated locally; curated SVGs and result documentation are versioned.</text>
+  </g>
+
+  <path class="wire" d="M322 258 H430"/>
+  <path class="wire" d="M614 259 H682"/>
+  <path class="wire" d="M866 259 H1176 V272 H1208"/>
+  <path class="wire" d="M1354 340 V398"/>
+  <path class="wire" d="M1208 476 H1144 V454 H774 V508"/>
+  <path class="analysis" d="M866 561 H914"/>
+  <path class="wire" d="M1354 528 V578"/>
+  <path class="wire" d="M991 648 V744 H1080 V770"/>
+  <path class="wire" d="M1354 680 V744 H1260 V770"/>
+  <path class="bind" d="M1208 224 H1132 V184 H774 V206"/>
+  <path class="bind" d="M1208 312 H1128 V670 H774 V614"/>
+
+  <text class="small" x="338" y="246">sequence start</text>
+  <text class="small" x="626" y="246">seq_item</text>
+  <text class="small" x="902" y="246">virtual interface writes</text>
+  <text class="small" x="880" y="492">state_sample analysis port</text>
+  <text class="small" x="1010" y="438">interface reads</text>
+  <text class="small" x="914" y="175">config_db virtual-interface binding</text>
+</svg>

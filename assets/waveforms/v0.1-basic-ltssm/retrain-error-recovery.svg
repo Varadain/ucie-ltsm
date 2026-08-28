@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="630" viewBox="0 0 1400 630" role="img" aria-labelledby="title desc">
+<title id="title">v0.1 retrain and fatal-error recovery</title>
+<desc id="desc">ACTIVE to PHYRETRAIN, MBTRAIN.SPEEDIDLE, TRAINERROR, and RESET Generated from the directed Questa VCD.</desc>
+<style>
+text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}
+.title{font-size:24px;font-weight:700}.subtitle{font-size:14px;fill:#536179}
+.label{font-size:14px;font-weight:600}.tick{font-size:12px;fill:#64748b}
+.bus{font-size:10px;font-weight:600;fill:#fff}.bus-dark{font-size:10px;font-weight:600;fill:#172033}
+.grid{stroke:#dbe2ea;stroke-width:1}.axis{stroke:#94a3b8;stroke-width:1}
+.digital{fill:none;stroke:#0f5ea8;stroke-width:2;stroke-linejoin:miter}
+</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text class="title" x="24" y="34">v0.1 retrain and fatal-error recovery</text>
+<text class="subtitle" x="24" y="60">ACTIVE to PHYRETRAIN, MBTRAIN.SPEEDIDLE, TRAINERROR, and RESET</text>
+<text class="subtitle" x="24" y="82">Source: Questa 2023.3 · verification/tb_ucie_ltsm.sv · timescale 1 ps</text>
+<line class="grid" x1="210.00" y1="114" x2="210.00" y2="528"/>
+<text class="tick" x="210.00" y="105" text-anchor="middle">1210</text>
+<line class="grid" x1="375.14" y1="114" x2="375.14" y2="528"/>
+<text class="tick" x="375.14" y="105" text-anchor="middle">1220</text>
+<line class="grid" x1="540.29" y1="114" x2="540.29" y2="528"/>
+<text class="tick" x="540.29" y="105" text-anchor="middle">1230</text>
+<line class="grid" x1="705.43" y1="114" x2="705.43" y2="528"/>
+<text class="tick" x="705.43" y="105" text-anchor="middle">1240</text>
+<line class="grid" x1="870.57" y1="114" x2="870.57" y2="528"/>
+<text class="tick" x="870.57" y="105" text-anchor="middle">1250</text>
+<line class="grid" x1="1035.71" y1="114" x2="1035.71" y2="528"/>
+<text class="tick" x="1035.71" y="105" text-anchor="middle">1260</text>
+<line class="grid" x1="1200.86" y1="114" x2="1200.86" y2="528"/>
+<text class="tick" x="1200.86" y="105" text-anchor="middle">1270</text>
+<line class="grid" x1="1366.00" y1="114" x2="1366.00" y2="528"/>
+<text class="tick" x="1366.00" y="105" text-anchor="middle">1280</text>
+<text class="tick" x="788.00" y="608" text-anchor="middle">simulation time (ns)</text>
+<text class="label" x="192" y="155" text-anchor="end">LTSM state</text>
+<line class="axis" x1="210" y1="150" x2="1366" y2="150"/>
+<rect x="210.00" y="134" width="247.71" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="333.86" y="154" text-anchor="middle">MBTRAIN</text>
+<rect x="457.71" y="134" width="165.14" height="32" fill="#b45309" stroke="#ffffff"/>
+<text class="bus" x="540.29" y="154" text-anchor="middle">LINKINIT</text>
+<rect x="622.86" y="134" width="165.14" height="32" fill="#15803d" stroke="#ffffff"/>
+<text class="bus" x="705.43" y="154" text-anchor="middle">ACTIVE</text>
+<rect x="788.00" y="134" width="165.14" height="32" fill="#c2410c" stroke="#ffffff"/>
+<text class="bus" x="870.57" y="154" text-anchor="middle">PHYRETRAIN</text>
+<rect x="953.14" y="134" width="165.14" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="1035.71" y="154" text-anchor="middle">MBTRAIN</text>
+<rect x="1118.29" y="134" width="165.14" height="32" fill="#b91c1c" stroke="#ffffff"/>
+<text class="bus" x="1200.86" y="154" text-anchor="middle">TRAINERROR</text>
+<rect x="1283.43" y="134" width="82.57" height="32" fill="#64748b" stroke="#ffffff"/>
+<text class="bus" x="1324.71" y="154" text-anchor="middle">RESET</text>
+<text class="label" x="192" y="213" text-anchor="end">MBTRAIN substate</text>
+<line class="axis" x1="210" y1="208" x2="1366" y2="208"/>
+<rect x="210.00" y="192" width="82.57" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="251.29" y="212" text-anchor="middle">LSPD</text>
+<rect x="292.57" y="192" width="165.14" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="375.14" y="212" text-anchor="middle">REPAIR</text>
+<rect x="457.71" y="192" width="495.43" height="32" fill="#eef2f6" stroke="#ffffff"/>
+<text class="bus-dark" x="705.43" y="212" text-anchor="middle">—</text>
+<rect x="953.14" y="192" width="165.14" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="1035.71" y="212" text-anchor="middle">SPDIDL</text>
+<rect x="1118.29" y="192" width="247.71" height="32" fill="#eef2f6" stroke="#ffffff"/>
+<text class="bus-dark" x="1242.14" y="212" text-anchor="middle">—</text>
+<text class="label" x="192" y="271" text-anchor="end">retrain_req_i</text>
+<line class="axis" x1="210" y1="266" x2="1366" y2="266"/>
+<path class="digital" d="M 210.00 279 H 639.37 V 253 H 804.51 V 279 H 1366.00"/>
+<text class="tick" x="215" y="249">1</text>
+<text class="tick" x="215" y="275">0</text>
+<text class="label" x="192" y="329" text-anchor="end">phase_done_i</text>
+<line class="axis" x1="210" y1="324" x2="1366" y2="324"/>
+<path class="digital" d="M 210.00 311 H 309.09 V 311 H 474.23 V 337 H 804.51 V 311 H 969.66 V 337 H 1366.00"/>
+<text class="tick" x="215" y="307">1</text>
+<text class="tick" x="215" y="333">0</text>
+<text class="label" x="192" y="387" text-anchor="end">fatal_error_i</text>
+<line class="axis" x1="210" y1="382" x2="1366" y2="382"/>
+<path class="digital" d="M 210.00 395 H 969.66 V 369 H 1134.80 V 395 H 1366.00"/>
+<text class="tick" x="215" y="365">1</text>
+<text class="tick" x="215" y="391">0</text>
+<text class="label" x="192" y="445" text-anchor="end">error_handshake_done_i</text>
+<line class="axis" x1="210" y1="440" x2="1366" y2="440"/>
+<path class="digital" d="M 210.00 453 H 969.66 V 427 H 1134.80 V 453 H 1366.00"/>
+<text class="tick" x="215" y="423">1</text>
+<text class="tick" x="215" y="449">0</text>
+<text class="label" x="192" y="503" text-anchor="end">link_up_o</text>
+<line class="axis" x1="210" y1="498" x2="1366" y2="498"/>
+<path class="digital" d="M 210.00 511 H 622.86 V 485 H 788.00 V 511 H 1366.00"/>
+<text class="tick" x="215" y="481">1</text>
+<text class="tick" x="215" y="507">0</text>
+<rect x="210" y="114" width="1156" height="404" fill="none" stroke="#94a3b8"/>
+</svg>

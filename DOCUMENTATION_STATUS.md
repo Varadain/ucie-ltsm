@@ -1,6 +1,6 @@
 # Documentation Status
 
-Last audited: **August 27, 2026**
+Last audited: **August 28, 2026**
 
 ## Completed
 
@@ -10,6 +10,7 @@ Last audited: **August 27, 2026**
 - RTL module hierarchy and algorithm-to-SystemVerilog mapping.
 - Directed test, UVM topology, assertions, scenario table, and traceability.
 - Fresh Questa evidence and existing Quartus resource/timing summaries.
+- Reviewed Questa-derived waveform figures, RTL/UVM connection diagrams, and a Quartus functional netlist for v0.1.
 - v0.1 milestone page, roadmap, and changelog.
 
 ## Incomplete documentation or evidence
@@ -32,6 +33,7 @@ Last audited: **August 27, 2026**
 - `docs/journal_plan.md` is a research plan, not a record of completed experiments.
 - Legacy root-level Quartus project files and generated `db/` content remain on disk but are ignored; remove them only after confirming they are no longer needed.
 - Generated simulator logs are intentionally ignored. Re-run the scripts to reproduce them.
+- Raw VCDs and Quartus databases are intentionally ignored; reviewed SVG waveforms and the release functional netlist are retained under `assets/` and `synthesis/`.
 
 ## Link and claim checks
 

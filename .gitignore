@@ -5,6 +5,7 @@
 /ltsm_extract.txt
 
 # Questa / ModelSim generated files
+/build/
 /work/
 **/work/
 /transcript

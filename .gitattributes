@@ -1,0 +1,3 @@
+# Preserve vendor-generated netlists byte-for-byte. Quartus emits intentional
+# trailing spaces in its banner and equation comments.
+synthesis/quartus/netlists/**/*.vo -text whitespace=-trailing-space

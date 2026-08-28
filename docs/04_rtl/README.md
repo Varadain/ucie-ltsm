@@ -14,6 +14,10 @@ flowchart TD
 
 There is one synthesizable module and one package. No sideband, RDI, training-engine, CSR, or analog-PHY module exists in this milestone.
 
+![v0.1 RTL connection diagram](../../assets/diagrams/v0.1-basic-ltssm/rtl-connections.svg)
+
+The diagram groups the exact public inputs and outputs and shows the four internal control partitions used in the source. Its scope box distinguishes absent future integration blocks from current RTL.
+
 ## `ucie_ltsm_pkg.sv`
 
 [`rtl/ucie_ltsm_pkg.sv`](../../rtl/ucie_ltsm_pkg.sv) defines:

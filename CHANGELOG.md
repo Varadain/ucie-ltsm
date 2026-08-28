@@ -12,6 +12,9 @@ All notable project milestones are documented here. Source snapshots are preserv
 - Retrain, fatal-error recovery, and L1/L2 exit control paths.
 - Directed testbench, SystemVerilog assertions, UVM environment, and Quartus project.
 - Beginner-oriented architecture, algorithm, RTL, verification, results, and version documentation.
+- Questa-derived nominal and retrain/error waveform SVGs with reproducible capture/render scripts.
+- RTL and verification connection diagrams based on the implemented source topology.
+- Quartus functional Verilog simulation netlist with a reproducible export script and scope notes.
 
 ### Modified
 
@@ -27,9 +30,10 @@ All notable project milestones are documented here. Source snapshots are preserv
 
 ### Verification
 
-- Fresh directed Questa run passed on August 27, 2026.
-- Fresh UVM regression passed all four tests with zero UVM errors and zero UVM fatals on August 27, 2026.
+- Fresh directed Questa run passed on August 28, 2026.
+- Fresh UVM regression passed all four tests with zero UVM errors and zero UVM fatals on August 28, 2026.
 - Fresh Quartus 23.1 build reports successful fitting and positive internal clock timing slack at the checked 80 MHz constraint; external I/O timing is not fully constrained.
+- Release evidence was visually reviewed at full and reduced render sizes; waveform and connection-diagram labels are separated and unclipped.
 
 ### Known limitations
 

@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="572" viewBox="0 0 1400 572" role="img" aria-labelledby="title desc">
+<title id="title">v0.1 nominal link training</title>
+<desc id="desc">RESET residence through SBINIT, MBINIT, MBTRAIN, LINKINIT, and ACTIVE Generated from the directed Questa VCD.</desc>
+<style>
+text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}
+.title{font-size:24px;font-weight:700}.subtitle{font-size:14px;fill:#536179}
+.label{font-size:14px;font-weight:600}.tick{font-size:12px;fill:#64748b}
+.bus{font-size:10px;font-weight:600;fill:#fff}.bus-dark{font-size:10px;font-weight:600;fill:#172033}
+.grid{stroke:#dbe2ea;stroke-width:1}.axis{stroke:#94a3b8;stroke-width:1}
+.digital{fill:none;stroke:#0f5ea8;stroke-width:2;stroke-linejoin:miter}
+</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text class="title" x="24" y="34">v0.1 nominal link training</text>
+<text class="subtitle" x="24" y="60">RESET residence through SBINIT, MBINIT, MBTRAIN, LINKINIT, and ACTIVE</text>
+<text class="subtitle" x="24" y="82">Source: Questa 2023.3 · verification/tb_ucie_ltsm.sv · timescale 1 ps</text>
+<line class="grid" x1="210.00" y1="114" x2="210.00" y2="470"/>
+<text class="tick" x="210.00" y="105" text-anchor="middle">1000</text>
+<line class="grid" x1="304.37" y1="114" x2="304.37" y2="470"/>
+<text class="tick" x="304.37" y="105" text-anchor="middle">1020</text>
+<line class="grid" x1="398.73" y1="114" x2="398.73" y2="470"/>
+<text class="tick" x="398.73" y="105" text-anchor="middle">1040</text>
+<line class="grid" x1="493.10" y1="114" x2="493.10" y2="470"/>
+<text class="tick" x="493.10" y="105" text-anchor="middle">1060</text>
+<line class="grid" x1="587.47" y1="114" x2="587.47" y2="470"/>
+<text class="tick" x="587.47" y="105" text-anchor="middle">1080</text>
+<line class="grid" x1="681.84" y1="114" x2="681.84" y2="470"/>
+<text class="tick" x="681.84" y="105" text-anchor="middle">1100</text>
+<line class="grid" x1="776.20" y1="114" x2="776.20" y2="470"/>
+<text class="tick" x="776.20" y="105" text-anchor="middle">1120</text>
+<line class="grid" x1="870.57" y1="114" x2="870.57" y2="470"/>
+<text class="tick" x="870.57" y="105" text-anchor="middle">1140</text>
+<line class="grid" x1="964.94" y1="114" x2="964.94" y2="470"/>
+<text class="tick" x="964.94" y="105" text-anchor="middle">1160</text>
+<line class="grid" x1="1059.31" y1="114" x2="1059.31" y2="470"/>
+<text class="tick" x="1059.31" y="105" text-anchor="middle">1180</text>
+<line class="grid" x1="1153.67" y1="114" x2="1153.67" y2="470"/>
+<text class="tick" x="1153.67" y="105" text-anchor="middle">1200</text>
+<line class="grid" x1="1248.04" y1="114" x2="1248.04" y2="470"/>
+<text class="tick" x="1248.04" y="105" text-anchor="middle">1220</text>
+<line class="grid" x1="1342.41" y1="114" x2="1342.41" y2="470"/>
+<text class="tick" x="1342.41" y="105" text-anchor="middle">1240</text>
+<text class="tick" x="788.00" y="550" text-anchor="middle">simulation time (ns)</text>
+<text class="label" x="192" y="155" text-anchor="end">LTSM state</text>
+<line class="axis" x1="210" y1="150" x2="1366" y2="150"/>
+<rect x="210.00" y="134" width="117.96" height="32" fill="#64748b" stroke="#ffffff"/>
+<text class="bus" x="268.98" y="154" text-anchor="middle">RESET</text>
+<rect x="327.96" y="134" width="47.18" height="32" fill="#0f766e" stroke="#ffffff"/>
+<text class="bus" x="351.55" y="154" text-anchor="middle">SBINIT</text>
+<rect x="375.14" y="134" width="283.10" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="516.69" y="154" text-anchor="middle">MBINIT</text>
+<rect x="658.24" y="134" width="613.39" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="964.94" y="154" text-anchor="middle">MBTRAIN</text>
+<rect x="1271.63" y="134" width="47.18" height="32" fill="#b45309" stroke="#ffffff"/>
+<text class="bus" x="1295.22" y="154" text-anchor="middle">LINKINIT</text>
+<rect x="1318.82" y="134" width="47.18" height="32" fill="#15803d" stroke="#ffffff"/>
+<text class="bus" x="1342.41" y="154" text-anchor="middle">ACTIVE</text>
+<text class="label" x="192" y="213" text-anchor="end">MBINIT substate</text>
+<line class="axis" x1="210" y1="208" x2="1366" y2="208"/>
+<rect x="210.00" y="192" width="165.14" height="32" fill="#eef2f6" stroke="#ffffff"/>
+<text class="bus-dark" x="292.57" y="212" text-anchor="middle">—</text>
+<rect x="375.14" y="192" width="47.18" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="398.73" y="212" text-anchor="middle">PARAM</text>
+<rect x="422.33" y="192" width="47.18" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="445.92" y="212" text-anchor="middle">CAL</text>
+<rect x="469.51" y="192" width="47.18" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="493.10" y="212" text-anchor="middle">RCLK</text>
+<rect x="516.69" y="192" width="47.18" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="540.29" y="212" text-anchor="middle">RVAL</text>
+<rect x="563.88" y="192" width="47.18" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="587.47" y="212" text-anchor="middle">REVMB</text>
+<rect x="611.06" y="192" width="47.18" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="634.65" y="212" text-anchor="middle">RMB</text>
+<rect x="658.24" y="192" width="707.76" height="32" fill="#eef2f6" stroke="#ffffff"/>
+<text class="bus-dark" x="1012.12" y="212" text-anchor="middle">—</text>
+<text class="label" x="192" y="271" text-anchor="end">MBTRAIN substate</text>
+<line class="axis" x1="210" y1="266" x2="1366" y2="266"/>
+<rect x="210.00" y="250" width="448.24" height="32" fill="#eef2f6" stroke="#ffffff"/>
+<text class="bus-dark" x="434.12" y="270" text-anchor="middle">—</text>
+<rect x="658.24" y="250" width="47.18" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="681.84" y="270" text-anchor="middle">VVREF</text>
+<rect x="705.43" y="250" width="47.18" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="729.02" y="270" text-anchor="middle">DVREF</text>
+<rect x="752.61" y="250" width="47.18" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="776.20" y="270" text-anchor="middle">SPDIDL</text>
+<rect x="799.80" y="250" width="47.18" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="823.39" y="270" text-anchor="middle">TXCAL</text>
+<rect x="846.98" y="250" width="47.18" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="870.57" y="270" text-anchor="middle">RXCAL</text>
+<rect x="894.16" y="250" width="47.18" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="917.76" y="270" text-anchor="middle">VTC</text>
+<rect x="941.35" y="250" width="47.18" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="964.94" y="270" text-anchor="middle">VTVREF</text>
+<rect x="988.53" y="250" width="47.18" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="1012.12" y="270" text-anchor="middle">DTC1</text>
+<rect x="1035.71" y="250" width="47.18" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="1059.31" y="270" text-anchor="middle">DTVREF</text>
+<rect x="1082.90" y="250" width="47.18" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="1106.49" y="270" text-anchor="middle">RXDSK</text>
+<rect x="1130.08" y="250" width="47.18" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="1153.67" y="270" text-anchor="middle">DTC2</text>
+<rect x="1177.27" y="250" width="47.18" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="1200.86" y="270" text-anchor="middle">LSPD</text>
+<rect x="1224.45" y="250" width="47.18" height="32" fill="#7c3aed" stroke="#ffffff"/>
+<text class="bus" x="1248.04" y="270" text-anchor="middle">REPAIR</text>
+<rect x="1271.63" y="250" width="94.37" height="32" fill="#eef2f6" stroke="#ffffff"/>
+<text class="bus-dark" x="1318.82" y="270" text-anchor="middle">—</text>
+<text class="label" x="192" y="329" text-anchor="end">phase_done_i</text>
+<line class="axis" x1="210" y1="324" x2="1366" y2="324"/>
+<path class="digital" d="M 210.00 337 H 327.96 V 311 H 379.86 V 311 H 427.04 V 311 H 474.23 V 311 H 521.41 V 311 H 568.60 V 311 H 615.78 V 311 H 662.96 V 311 H 710.15 V 311 H 757.33 V 311 H 804.51 V 311 H 851.70 V 311 H 898.88 V 311 H 946.07 V 311 H 993.25 V 311 H 1040.43 V 311 H 1087.62 V 311 H 1134.80 V 311 H 1181.98 V 311 H 1229.17 V 311 H 1276.35 V 337 H 1366.00"/>
+<text class="tick" x="215" y="307">1</text>
+<text class="tick" x="215" y="333">0</text>
+<text class="label" x="192" y="387" text-anchor="end">rdi_active_i</text>
+<line class="axis" x1="210" y1="382" x2="1366" y2="382"/>
+<path class="digital" d="M 210.00 395 H 1276.35 V 369 H 1323.53 V 395 H 1366.00"/>
+<text class="tick" x="215" y="365">1</text>
+<text class="tick" x="215" y="391">0</text>
+<text class="label" x="192" y="445" text-anchor="end">link_up_o</text>
+<line class="axis" x1="210" y1="440" x2="1366" y2="440"/>
+<path class="digital" d="M 210.00 453 H 1318.82 V 427 H 1366.00"/>
+<text class="tick" x="215" y="423">1</text>
+<text class="tick" x="215" y="449">0</text>
+<rect x="210" y="114" width="1156" height="346" fill="none" stroke="#94a3b8"/>
+</svg>

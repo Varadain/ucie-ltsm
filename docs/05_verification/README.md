@@ -2,6 +2,8 @@
 
 The project uses a self-checking directed test first, followed by a reusable UVM environment. Assertions run alongside both testbench tops.
 
+![v0.1 verification connection diagram](../../assets/diagrams/v0.1-basic-ltssm/verification-connections.svg)
+
 ## Verification flow
 
 ```mermaid

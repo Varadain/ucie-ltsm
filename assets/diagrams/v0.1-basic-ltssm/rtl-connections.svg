@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="920" viewBox="0 0 1600 920" role="img" aria-labelledby="title desc">
+  <title id="title">UCIe LTSM v0.1 RTL connection diagram</title>
+  <desc id="desc">Grouped control inputs connect to the ucie_ltsm controller. The controller contains priority logic, hierarchical next-state logic, a shared timer, and state registers. State and physical-control status leave on the right.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#52657a"/></marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.12"/></filter>
+  </defs>
+  <style>
+    text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}
+    .title{font-size:30px;font-weight:700}.subtitle{font-size:15px;fill:#59697d}
+    .group-title{font-size:17px;font-weight:700}.node-title{font-size:18px;font-weight:700}
+    .body{font-size:14px}.small{font-size:12px;fill:#56667a}.mono{font-family:Consolas,Menlo,monospace;font-size:13px}
+    .group{fill:#f8fafc;stroke:#cbd5e1;stroke-width:1.5}.core{fill:#f3f0ff;stroke:#7c3aed;stroke-width:2.5}
+    .block{fill:#ffffff;stroke:#a8b4c4;stroke-width:1.5}.pkg{fill:#eef6ff;stroke:#3b82f6;stroke-width:1.5}
+    .output{fill:#edf9f0;stroke:#22a05a;stroke-width:1.5}.note{fill:#fff8e8;stroke:#d39b24;stroke-width:1.5}
+    .wire{fill:none;stroke:#52657a;stroke-width:2;marker-end:url(#arrow)}.bus{fill:none;stroke:#52657a;stroke-width:4;marker-end:url(#arrow)}
+    .internal{fill:none;stroke:#7c3aed;stroke-width:2;marker-end:url(#arrow)}
+  </style>
+  <rect width="1600" height="920" fill="#ffffff"/>
+  <text class="title" x="52" y="54">v0.1 RTL connection diagram</text>
+  <text class="subtitle" x="52" y="82">Synthesizable architectural baseline · exact public ports and internal control partitions</text>
+
+  <g filter="url(#shadow)">
+    <rect class="group" x="52" y="130" width="330" height="220" rx="14"/>
+    <text class="group-title" x="76" y="162">Reset, clock, and readiness</text>
+    <text class="mono" x="76" y="196">clk_i, rst_ni</text>
+    <text class="mono" x="76" y="224">supplies_stable_i</text>
+    <text class="mono" x="76" y="252">sideband_clk_ok_i</text>
+    <text class="mono" x="76" y="280">internal_clks_ok_i</text>
+    <text class="mono" x="76" y="308">firmware_reset_i</text>
+    <text class="mono" x="76" y="336">link_train_trigger_i</text>
+
+    <rect class="group" x="52" y="382" width="330" height="258" rx="14"/>
+    <text class="group-title" x="76" y="414">Training, retrain, and power</text>
+    <text class="mono" x="76" y="448">phase_done_i, stall_i</text>
+    <text class="mono" x="76" y="476">rdi_active_i</text>
+    <text class="mono" x="76" y="504">retrain_req_i</text>
+    <text class="mono" x="76" y="532">retrain_target_i[1:0]</text>
+    <text class="mono" x="76" y="560">pm_l1_req_i, pm_l2_req_i</text>
+    <text class="mono" x="76" y="588">pm_exit_i</text>
+    <text class="small" x="76" y="620">phase_done_i abstracts protocol operations</text>
+
+    <rect class="group" x="52" y="672" width="330" height="170" rx="14"/>
+    <text class="group-title" x="76" y="704">Error and recovery</text>
+    <text class="mono" x="76" y="738">fatal_error_i</text>
+    <text class="mono" x="76" y="766">error_handshake_done_i</text>
+    <text class="mono" x="76" y="794">error_escalated_i</text>
+    <text class="mono" x="76" y="822">sideband_tx_idle_i</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect class="core" x="475" y="130" width="650" height="712" rx="18"/>
+    <text class="node-title" x="800" y="168" text-anchor="middle">ucie_ltsm</text>
+    <text class="small" x="800" y="191" text-anchor="middle">rtl/ucie_ltsm.sv</text>
+
+    <rect class="block" x="525" y="230" width="250" height="126" rx="10"/>
+    <text class="group-title" x="650" y="260" text-anchor="middle">Priority and readiness logic</text>
+    <text class="body" x="650" y="290" text-anchor="middle">fatal error → timeout → normal flow</text>
+    <text class="body" x="650" y="316" text-anchor="middle">RESET readiness qualification</text>
+    <text class="body" x="650" y="342" text-anchor="middle">retrain / PM / recovery decisions</text>
+
+    <rect class="block" x="825" y="230" width="250" height="126" rx="10"/>
+    <text class="group-title" x="950" y="260" text-anchor="middle">Shared timer</text>
+    <text class="mono" x="950" y="290" text-anchor="middle">RESET_TICKS</text>
+    <text class="mono" x="950" y="316" text-anchor="middle">TIMEOUT_TICKS</text>
+    <text class="body" x="950" y="342" text-anchor="middle">restart on state/substate/stall</text>
+
+    <rect class="block" x="525" y="408" width="550" height="218" rx="10"/>
+    <text class="group-title" x="800" y="440" text-anchor="middle">Hierarchical next-state logic</text>
+    <rect x="554" y="472" width="154" height="116" rx="8" fill="#eef6ff" stroke="#4f7db8"/>
+    <text class="body" x="631" y="502" text-anchor="middle" font-weight="700">Top-level LTSM</text>
+    <text class="small" x="631" y="530" text-anchor="middle">9 states</text>
+    <text class="small" x="631" y="554" text-anchor="middle">RESET → ACTIVE</text>
+    <text class="small" x="631" y="576" text-anchor="middle">retrain / error / PM</text>
+    <rect x="723" y="472" width="154" height="116" rx="8" fill="#edf9f0" stroke="#46a36b"/>
+    <text class="body" x="800" y="502" text-anchor="middle" font-weight="700">MBINIT</text>
+    <text class="small" x="800" y="530" text-anchor="middle">6 ordered substates</text>
+    <text class="small" x="800" y="554" text-anchor="middle">PARAM → REPAIRMB</text>
+    <text class="small" x="800" y="576" text-anchor="middle">stall-aware advance</text>
+    <rect x="892" y="472" width="154" height="116" rx="8" fill="#fff4e8" stroke="#d08742"/>
+    <text class="body" x="969" y="502" text-anchor="middle" font-weight="700">MBTRAIN</text>
+    <text class="small" x="969" y="530" text-anchor="middle">13 ordered substates</text>
+    <text class="small" x="969" y="554" text-anchor="middle">VREF → REPAIR</text>
+    <text class="small" x="969" y="576" text-anchor="middle">selectable retrain entry</text>
+
+    <rect class="block" x="525" y="680" width="550" height="110" rx="10"/>
+    <text class="group-title" x="800" y="712" text-anchor="middle">Sequential state and timer registers</text>
+    <text class="mono" x="800" y="743" text-anchor="middle">state_q · mbi_q · mbt_q · timer_q</text>
+    <text class="body" x="800" y="772" text-anchor="middle">posedge clk_i · asynchronous active-low reset</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect class="pkg" x="544" y="864" width="512" height="44" rx="10"/>
+    <text class="body" x="800" y="892" text-anchor="middle"><tspan font-weight="700">ucie_ltsm_pkg</tspan> · state and retrain-target enumerations</text>
+
+    <rect class="output" x="1215" y="164" width="330" height="202" rx="14"/>
+    <text class="group-title" x="1239" y="196">State visibility</text>
+    <text class="mono" x="1239" y="232">state_o[3:0]</text>
+    <text class="mono" x="1239" y="264">mbinit_state_o[2:0]</text>
+    <text class="mono" x="1239" y="296">mbtrain_state_o[3:0]</text>
+    <text class="mono" x="1239" y="328">timeout_o, link_up_o</text>
+
+    <rect class="output" x="1215" y="420" width="330" height="148" rx="14"/>
+    <text class="group-title" x="1239" y="452">Physical-control status</text>
+    <text class="mono" x="1239" y="490">mainband_tristate_o</text>
+    <text class="mono" x="1239" y="522">sideband_enable_o</text>
+    <text class="small" x="1239" y="550">state-derived control boundary</text>
+
+    <rect class="note" x="1215" y="622" width="330" height="172" rx="14"/>
+    <text class="group-title" x="1239" y="654">v0.1 scope boundary</text>
+    <text class="body" x="1239" y="688">No packet-level sideband engine</text>
+    <text class="body" x="1239" y="716">No calibration or pattern engine</text>
+    <text class="body" x="1239" y="744">No lane repair implementation</text>
+    <text class="body" x="1239" y="772">No analog PHY or RDI controller</text>
+  </g>
+
+  <path class="bus" d="M382 240 H444 V292 H525"/>
+  <path class="bus" d="M382 510 H442 V316 H525"/>
+  <path class="bus" d="M382 758 H430 V338 H525"/>
+  <path class="internal" d="M775 292 H825"/>
+  <path class="internal" d="M650 356 V408"/>
+  <path class="internal" d="M950 356 V392 H800 V408"/>
+  <path class="internal" d="M800 626 V680"/>
+  <path class="internal" d="M1075 735 H1160 V265 H1215"/>
+  <path class="internal" d="M1075 758 H1182 V494 H1215"/>
+  <path class="wire" d="M800 864 V842"/>
+  <text class="small" x="402" y="225">qualified controls</text>
+  <text class="small" x="1133" y="247">registered state/status</text>
+</svg>

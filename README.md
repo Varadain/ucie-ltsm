@@ -17,6 +17,7 @@ A synthesizable SystemVerilog model of the UCIe 2.0 Link Training State Machine 
 - A self-checking directed testbench and five SystemVerilog properties/coverage properties.
 - A reusable UVM agent, monitor, scoreboard, four scenario tests, and fresh passing regression logs.
 - A Quartus project for Cyclone 10 LP with successful fitting and timing analysis.
+- A versioned v0.1 evidence pack with Questa-derived waveform SVGs, RTL/UVM connection diagrams, and a Quartus functional Verilog netlist.
 
 The model uses `phase_done_i` to represent the completion of work that a complete design would perform using sideband messages, calibration logic, repair algorithms, training-pattern engines, and analog PHY controls. Those components are not yet implemented.
 
@@ -47,19 +48,23 @@ flowchart LR
 
 ## Architecture at this milestone
 
-```mermaid
-flowchart LR
-    CTRL[Reset, clock, trigger,<br/>error, PM and retrain inputs] --> LTSM[ucie_ltsm]
-    DONE[Abstract operation completion<br/>phase_done_i] --> LTSM
-    LTSM --> STATE[Top-level state]
-    LTSM --> SUB[MBINIT / MBTRAIN substate]
-    LTSM --> OUT[Link, sideband and<br/>mainband control outputs]
-    LTSM -. future integration .-> SB[Sideband sequencer]
-    LTSM -. future integration .-> PHY[Training / repair engines]
-    LTSM -. future integration .-> RDI[RDI controller]
-```
+![v0.1 RTL connection diagram](assets/diagrams/v0.1-basic-ltssm/rtl-connections.svg)
 
-The dashed components describe planned integration boundaries. They do not exist in the current RTL.
+The diagram shows only implemented ports and control partitions. The v0.1 scope box explicitly identifies planned blocks that do not yet exist.
+
+## v0.1 evidence pack
+
+| Artifact | Published file | Provenance |
+|---|---|---|
+| Nominal waveform | [SVG](assets/waveforms/v0.1-basic-ltssm/nominal-training.svg) | Questa VCD from the directed self-checking test |
+| Retrain/error waveform | [SVG](assets/waveforms/v0.1-basic-ltssm/retrain-error-recovery.svg) | Same directed Questa run |
+| RTL connections | [SVG](assets/diagrams/v0.1-basic-ltssm/rtl-connections.svg) | `ucie_ltsm.sv` ports and internal partitions |
+| Verification connections | [SVG](assets/diagrams/v0.1-basic-ltssm/verification-connections.svg) | Actual UVM package/top and SVA connections |
+| Quartus netlist | [Verilog](synthesis/quartus/netlists/v0.1-basic-ltssm/ucie_ltsm.vo) | Quartus 23.1 functional EDA netlist for the checked Cyclone 10 LP target |
+
+![v0.1 nominal link-training waveform](assets/waveforms/v0.1-basic-ltssm/nominal-training.svg)
+
+The [v0.1 milestone page](docs/versions/v0.1_basic_ltssm.md) presents both waveforms and both connection diagrams with interpretation and limitations.
 
 ## Versions
 
@@ -80,6 +85,8 @@ rtl/                 Synthesizable package and LTSM controller
 verification/        Directed testbench, SVA, and UVM environment
 scripts/             Questa directed and UVM run scripts
 quartus/             Reproducible Quartus project and selected summaries
+synthesis/           Reviewed generated netlists organized by release
+assets/              Versioned diagrams and rendered waveform figures
 docs/                Learning path, design, verification, and results
 references_private/  Local specification material; ignored by Git
 ```
@@ -98,6 +105,15 @@ From the repository root:
 
 Expected evidence: `PASS: nominal training, retrain, and error recovery`, followed by zero simulator errors.
 
+To regenerate the release waveform figures:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/capture_directed_waveform.do
+python scripts/render_waveforms.py
+```
+
+The intermediate VCD is ignored; the two reviewed SVG figures are versioned.
+
 ### UVM regression
 
 ```powershell
@@ -115,6 +131,12 @@ Pop-Location
 ```
 
 The checked project targets `10CL025YU256C8G` and constrains `clk_i` to 12.5 ns (80 MHz). See the [Quartus results page](docs/06_results/quartus.md) for measured resource and timing data.
+
+To rebuild and export the reviewed functional netlist:
+
+```powershell
+.\scripts\export_quartus_netlist.ps1
+```
 
 ## Current limitations
 

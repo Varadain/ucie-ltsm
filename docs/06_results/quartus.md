@@ -52,3 +52,20 @@ From the latest fitter summary available during the repository audit:
 Positive slack supports the checked 80 MHz internal clock paths. Quartus reports that setup and hold analysis are not fully constrained because interface delays are absent, and the fitter reports no exact pin assignments. This is therefore an RTL implementation check, not board-level timing signoff. The Fmax values are Quartus estimates for this device and build; they are not ASIC results or a UCIe link-rate claim.
 
 Selected source reports are retained as compact `*.summary` files in `quartus/output_files/`. Generated databases, bitstreams, and bulky reports are ignored.
+
+## Functional netlist evidence
+
+The v0.1 evidence pack retains the Quartus functional Verilog simulation netlist:
+
+- [`synthesis/quartus/netlists/v0.1-basic-ltssm/ucie_ltsm.vo`](../../synthesis/quartus/netlists/v0.1-basic-ltssm/ucie_ltsm.vo)
+- [generation metadata and limitations](../../synthesis/quartus/netlists/v0.1-basic-ltssm/README.md)
+
+Regenerate it from the repository root:
+
+```powershell
+.\scripts\export_quartus_netlist.ps1
+```
+
+The exporter runs a full Quartus compile and the 23.1 EDA Netlist Writer in functional Verilog mode. The `.vo` file contains Intel device primitives for the checked Cyclone 10 LP target and is intended for Questa Intel FPGA with matching simulation libraries. It is not editable RTL, an ASIC standard-cell netlist, a programming image, or board-level signoff evidence.
+
+![v0.1 RTL connection diagram](../../assets/diagrams/v0.1-basic-ltssm/rtl-connections.svg)
