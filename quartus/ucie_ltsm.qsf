@@ -2,6 +2,7 @@ set_global_assignment -name FAMILY "Cyclone 10 LP"
 set_global_assignment -name DEVICE 10CL025YU256C8G
 set_global_assignment -name TOP_LEVEL_ENTITY ucie_ltsm
 set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/ucie_ltsm_pkg.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/ucie_sb_sequencer.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../rtl/ucie_ltsm.sv
 set_global_assignment -name SDC_FILE ucie_ltsm.sdc
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files

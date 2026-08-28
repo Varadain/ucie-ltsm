@@ -16,6 +16,7 @@ Source inputs:
 - [`quartus/ucie_ltsm.qsf`](../../quartus/ucie_ltsm.qsf)
 - [`quartus/ucie_ltsm.sdc`](../../quartus/ucie_ltsm.sdc)
 - [`rtl/ucie_ltsm_pkg.sv`](../../rtl/ucie_ltsm_pkg.sv)
+- [`rtl/ucie_sb_sequencer.sv`](../../rtl/ucie_sb_sequencer.sv)
 - [`rtl/ucie_ltsm.sv`](../../rtl/ucie_ltsm.sv)
 
 ## Checked constraint
@@ -24,15 +25,15 @@ Source inputs:
 
 ## Resource utilization
 
-From the latest fitter summary available during the repository audit:
+From the v0.2 sideband-sequencer verification build:
 
 | Resource | Used | Device total |
 |---|---:|---:|
-| Logic elements | 152 | 24,624 |
-| Combinational functions | 152 | 24,624 |
-| Dedicated logic registers | 48 | 24,624 |
-| Total registers | 48 | - |
-| Pins | 35 | 151 |
+| Logic elements | 196 | 24,624 |
+| Combinational functions | 196 | 24,624 |
+| Dedicated logic registers | 66 | 24,624 |
+| Total registers | 66 | - |
+| Pins | 57 | 151 |
 | Memory bits | 0 | 608,256 |
 | 9-bit multipliers | 0 | 132 |
 | PLLs | 0 | 4 |
@@ -41,15 +42,17 @@ From the latest fitter summary available during the repository audit:
 
 | Corner/check | Result |
 |---|---:|
-| Slow 1200 mV, 85 C setup slack | +1.441 ns |
-| Slow 1200 mV, 85 C hold slack | +0.453 ns |
-| Slow 1200 mV, 0 C setup slack | +2.175 ns |
-| Fast 1200 mV, 0 C setup slack | +7.724 ns |
+| Slow 1200 mV, 85 C setup slack | +1.617 ns |
+| Slow 1200 mV, 85 C hold slack | +0.455 ns |
+| Slow 1200 mV, 0 C setup slack | +2.348 ns |
+| Fast 1200 mV, 0 C setup slack | +7.859 ns |
 | Design-wide TNS | 0.000 ns |
-| Slow 1200 mV, 85 C Fmax | 90.42 MHz |
-| Slow 1200 mV, 0 C Fmax | 96.85 MHz |
 
-Positive slack supports the checked 80 MHz internal clock paths. Quartus reports that setup and hold analysis are not fully constrained because interface delays are absent, and the fitter reports no exact pin assignments. This is therefore an RTL implementation check, not board-level timing signoff. The Fmax values are Quartus estimates for this device and build; they are not ASIC results or a UCIe link-rate claim.
+Positive slack supports the checked 80 MHz internal register-to-register paths. Quartus reports that
+setup and hold analysis are not fully constrained because interface delays are absent, and the fitter
+reports no exact pin assignments. Constant upper bits on `sb_tx_message_o` are expected because this
+checkpoint implements only message values `8'h00` through `8'h02`. This is an RTL implementation
+check, not board-level timing signoff, ASIC evidence, or a UCIe link-rate claim.
 
 Selected source reports are retained as compact `*.summary` files in `quartus/output_files/`. Generated databases, bitstreams, and bulky reports are ignored.
 

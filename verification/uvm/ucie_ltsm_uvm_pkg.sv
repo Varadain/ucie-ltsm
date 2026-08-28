@@ -4,7 +4,9 @@ package ucie_ltsm_uvm_pkg;
   `include "uvm_macros.svh"
 
   typedef enum {OP_START, OP_DONE, OP_RDI_ACTIVE, OP_RETRAIN, OP_FATAL,
-                OP_STALL, OP_WAIT_TIMEOUT, OP_L1_EXIT, OP_L2_EXIT} ltsm_op_e;
+                OP_STALL, OP_WAIT_TIMEOUT, OP_L1_EXIT, OP_L2_EXIT,
+                OP_SB_SUCCESS, OP_SB_RETRY_SUCCESS, OP_SB_BAD_RESPONSE,
+                OP_SB_EXHAUST_RETRIES} ltsm_op_e;
 
   class ltsm_item extends uvm_sequence_item;
     rand ltsm_op_e op;
@@ -58,6 +60,32 @@ package ucie_ltsm_uvm_pkg;
           vif.pm_l2_req=1; @(posedge vif.clk); #1; vif.pm_exit=1;
           @(posedge vif.clk); #1; vif.pm_exit=0; vif.pm_l2_req=0;
         end
+        OP_SB_SUCCESS: begin
+          wait(vif.sb_tx_valid); vif.sb_tx_ready=1; @(posedge vif.clk); #1 vif.sb_tx_ready=0;
+          repeat(2) @(posedge vif.clk);
+          vif.sb_rx_message=SB_MSG_SBINIT_DONE_RESP; vif.sb_rx_valid=1;
+          @(posedge vif.clk); #1 vif.sb_rx_valid=0; vif.sb_rx_message=SB_MSG_NOP;
+        end
+        OP_SB_RETRY_SUCCESS: begin
+          wait(vif.sb_tx_valid); vif.sb_tx_ready=1; @(posedge vif.clk); #1 vif.sb_tx_ready=0;
+          wait(vif.sb_retry); wait(vif.sb_tx_valid);
+          vif.sb_tx_ready=1; @(posedge vif.clk); #1 vif.sb_tx_ready=0;
+          @(negedge vif.clk);
+          vif.sb_rx_message=SB_MSG_SBINIT_DONE_RESP; vif.sb_rx_valid=1;
+          @(posedge vif.clk); #1 vif.sb_rx_valid=0; vif.sb_rx_message=SB_MSG_NOP;
+        end
+        OP_SB_BAD_RESPONSE: begin
+          wait(vif.sb_tx_valid); vif.sb_tx_ready=1; @(posedge vif.clk); #1 vif.sb_tx_ready=0;
+          @(negedge vif.clk);
+          vif.sb_rx_message=SB_MSG_NOP; vif.sb_rx_valid=1;
+          @(posedge vif.clk); #1 vif.sb_rx_valid=0;
+        end
+        OP_SB_EXHAUST_RETRIES: begin
+          wait(vif.sb_tx_valid); vif.sb_tx_ready=1; @(posedge vif.clk); #1 vif.sb_tx_ready=0;
+          wait(vif.sb_retry); wait(vif.sb_tx_valid);
+          vif.sb_tx_ready=1; @(posedge vif.clk); #1 vif.sb_tx_ready=0;
+          wait(vif.sb_protocol_error);
+        end
       endcase
     endtask
     task run_phase(uvm_phase phase);
@@ -77,6 +105,7 @@ package ucie_ltsm_uvm_pkg;
     `uvm_component_utils(ltsm_monitor)
     virtual ucie_ltsm_if vif;
     uvm_analysis_port #(state_sample) ap;
+    int sb_requests, sb_responses, sb_retries, sb_errors;
     function new(string name, uvm_component parent); super.new(name,parent); ap=new("ap",this); endfunction
     function void build_phase(uvm_phase phase);
       if(!uvm_config_db#(virtual ucie_ltsm_if)::get(this,"","vif",vif))
@@ -88,13 +117,21 @@ package ucie_ltsm_uvm_pkg;
       last=vif.state;
       forever begin
         @(posedge vif.clk); #1;
+        if(vif.sb_tx_valid && vif.sb_tx_ready) sb_requests++;
+        if(vif.sb_retry) sb_retries++;
+        if(vif.sb_protocol_error) sb_errors++;
         if(vif.state != last) begin
+          if(last==LTSM_SBINIT && vif.state==LTSM_MBINIT && vif.sb_protocol_error==0) sb_responses++;
           s=state_sample::type_id::create("s");
           s.previous=last; s.current=vif.state; s.mbi=vif.mbi; s.mbt=vif.mbt;
           ap.write(s); last=vif.state;
         end
       end
     endtask
+    function void report_phase(uvm_phase phase);
+      `uvm_info("SB_COVERAGE",$sformatf("accepted_requests=%0d expected_responses=%0d retries=%0d protocol_errors=%0d",
+                sb_requests,sb_responses,sb_retries,sb_errors),UVM_LOW)
+    endfunction
   endclass
 
   class ltsm_scoreboard extends uvm_scoreboard;
@@ -190,6 +227,26 @@ package ucie_ltsm_uvm_pkg;
     function new(string name="pm_seq"); super.new(name); endfunction
     task body(); train_to_active(); send(OP_L1_EXIT); endtask
   endclass
+  class sb_success_seq extends ltsm_base_seq;
+    `uvm_object_utils(sb_success_seq)
+    function new(string name="sb_success_seq"); super.new(name); endfunction
+    task body(); send(OP_START); send(OP_SB_SUCCESS); endtask
+  endclass
+  class sb_retry_seq extends ltsm_base_seq;
+    `uvm_object_utils(sb_retry_seq)
+    function new(string name="sb_retry_seq"); super.new(name); endfunction
+    task body(); send(OP_START); send(OP_SB_RETRY_SUCCESS); endtask
+  endclass
+  class sb_error_seq extends ltsm_base_seq;
+    `uvm_object_utils(sb_error_seq)
+    function new(string name="sb_error_seq"); super.new(name); endfunction
+    task body(); send(OP_START); send(OP_SB_BAD_RESPONSE); endtask
+  endclass
+  class sb_exhaust_seq extends ltsm_base_seq;
+    `uvm_object_utils(sb_exhaust_seq)
+    function new(string name="sb_exhaust_seq"); super.new(name); endfunction
+    task body(); send(OP_START); send(OP_SB_EXHAUST_RETRIES); endtask
+  endclass
 
   class ltsm_base_test extends uvm_test;
     `uvm_component_utils(ltsm_base_test)
@@ -220,5 +277,42 @@ package ucie_ltsm_uvm_pkg;
     function new(string name,uvm_component parent); super.new(name,parent); endfunction
     task run_phase(uvm_phase phase); pm_seq s=pm_seq::type_id::create("s"); phase.raise_objection(this); s.start(env.agent.sqr); #50ns; phase.drop_objection(this); endtask
     function void report_phase(uvm_phase phase); if(!env.sb.saw_l1l2) `uvm_error("COVERAGE","L1/L2 not reached") endfunction
+  endclass
+  class sb_success_test extends ltsm_base_test;
+    `uvm_component_utils(sb_success_test)
+    function new(string name,uvm_component parent); super.new(name,parent); endfunction
+    task run_phase(uvm_phase phase); sb_success_seq s=sb_success_seq::type_id::create("s"); phase.raise_objection(this); s.start(env.agent.sqr); #50ns; phase.drop_objection(this); endtask
+    function void report_phase(uvm_phase phase);
+      if(env.agent.mon.sb_requests!=1 || env.agent.mon.sb_responses!=1 || env.sb.transitions<2)
+        `uvm_error("SB_SUCCESS","Expected one accepted request/response and SBINIT exit")
+    endfunction
+  endclass
+  class sb_retry_test extends ltsm_base_test;
+    `uvm_component_utils(sb_retry_test)
+    function new(string name,uvm_component parent); super.new(name,parent); endfunction
+    task run_phase(uvm_phase phase); sb_retry_seq s=sb_retry_seq::type_id::create("s"); phase.raise_objection(this); s.start(env.agent.sqr); #50ns; phase.drop_objection(this); endtask
+    function void report_phase(uvm_phase phase);
+      if(env.agent.mon.sb_requests!=2 || env.agent.mon.sb_retries!=1 || env.agent.mon.sb_responses!=1)
+        `uvm_error("SB_RETRY","Expected exactly one retry followed by success")
+    endfunction
+  endclass
+  class sb_error_test extends ltsm_base_test;
+    `uvm_component_utils(sb_error_test)
+    function new(string name,uvm_component parent); super.new(name,parent); endfunction
+    task run_phase(uvm_phase phase); sb_error_seq s=sb_error_seq::type_id::create("s"); phase.raise_objection(this); s.start(env.agent.sqr); #50ns; phase.drop_objection(this); endtask
+    function void report_phase(uvm_phase phase);
+      if(env.agent.mon.sb_errors!=1 || !env.sb.saw_trainerror)
+        `uvm_error("SB_ERROR","Wrong response did not cause protocol error and TRAINERROR")
+    endfunction
+  endclass
+  class sb_exhaust_test extends ltsm_base_test;
+    `uvm_component_utils(sb_exhaust_test)
+    function new(string name,uvm_component parent); super.new(name,parent); endfunction
+    task run_phase(uvm_phase phase); sb_exhaust_seq s=sb_exhaust_seq::type_id::create("s"); phase.raise_objection(this); s.start(env.agent.sqr); #50ns; phase.drop_objection(this); endtask
+    function void report_phase(uvm_phase phase);
+      if(env.agent.mon.sb_requests!=2 || env.agent.mon.sb_retries!=1 ||
+         env.agent.mon.sb_errors!=1 || !env.sb.saw_trainerror)
+        `uvm_error("SB_EXHAUST","Retry exhaustion did not produce the bounded error path")
+    endfunction
   endclass
 endpackage

@@ -1,7 +1,9 @@
 module ucie_ltsm #(
   parameter int unsigned CLK_HZ       = 80_000_000,
   parameter int unsigned RESET_MIN_US = 4_000,
-  parameter int unsigned TIMEOUT_US   = 8_000
+  parameter int unsigned TIMEOUT_US   = 8_000,
+  parameter int unsigned SB_RESPONSE_TIMEOUT_CYCLES = 256,
+  parameter int unsigned SB_MAX_RETRIES = 1
 ) (
   input  logic clk_i,
   input  logic rst_ni,
@@ -24,6 +26,15 @@ module ucie_ltsm #(
   input  logic pm_l2_req_i,
   input  logic pm_exit_i,
 
+  output logic                   sb_tx_valid_o,
+  output ucie_ltsm_pkg::sb_msg_e sb_tx_message_o,
+  input  logic                   sb_tx_ready_i,
+  input  logic                   sb_rx_valid_i,
+  input  ucie_ltsm_pkg::sb_msg_e sb_rx_message_i,
+  output logic                   sb_busy_o,
+  output logic                   sb_protocol_error_o,
+  output logic                   sb_retry_o,
+
   output ucie_ltsm_pkg::ltsm_state_e state_o,
   output ucie_ltsm_pkg::mbinit_state_e mbinit_state_o,
   output ucie_ltsm_pkg::mbtrain_state_e mbtrain_state_o,
@@ -45,6 +56,30 @@ module ucie_ltsm #(
   mbtrain_state_e mbt_q, mbt_d;
   logic [TIMER_W-1:0] timer_q;
   logic state_changed, substate_changed, timeout_enable, reset_min_met;
+  logic sb_start, sb_done;
+
+  assign sb_start = (state_q == LTSM_SBINIT) && !sb_busy_o && !sb_done;
+
+  ucie_sb_sequencer #(
+    .RESPONSE_TIMEOUT_CYCLES(SB_RESPONSE_TIMEOUT_CYCLES),
+    .MAX_RETRIES(SB_MAX_RETRIES)
+  ) u_sb_sequencer (
+    .clk_i(clk_i),
+    .rst_ni(rst_ni),
+    .start_i(sb_start),
+    .abort_i(state_q != LTSM_SBINIT),
+    .request_i(SB_MSG_SBINIT_DONE_REQ),
+    .expected_response_i(SB_MSG_SBINIT_DONE_RESP),
+    .tx_valid_o(sb_tx_valid_o),
+    .tx_message_o(sb_tx_message_o),
+    .tx_ready_i(sb_tx_ready_i),
+    .rx_valid_i(sb_rx_valid_i),
+    .rx_message_i(sb_rx_message_i),
+    .busy_o(sb_busy_o),
+    .done_o(sb_done),
+    .protocol_error_o(sb_protocol_error_o),
+    .retry_o(sb_retry_o)
+  );
 
   assign state_o = state_q;
   assign mbinit_state_o = mbi_q;
@@ -82,7 +117,7 @@ module ucie_ltsm #(
     mbi_d = mbi_q;
     mbt_d = mbt_q;
 
-    if (fatal_error_i && (state_q != LTSM_RESET)) begin
+    if ((fatal_error_i || sb_protocol_error_o) && (state_q != LTSM_RESET)) begin
       if ((state_q == LTSM_SBINIT) || error_handshake_done_i || timeout_o)
         state_d = LTSM_TRAINERROR;
     end else if (timeout_o) begin
@@ -96,7 +131,7 @@ module ucie_ltsm #(
               internal_clks_ok_i && !firmware_reset_i && link_train_trigger_i)
             state_d = LTSM_SBINIT;
         end
-        LTSM_SBINIT: if (phase_done_i) begin
+        LTSM_SBINIT: if (phase_done_i || sb_done) begin
           state_d = LTSM_MBINIT;
           mbi_d = MBI_PARAM;
         end

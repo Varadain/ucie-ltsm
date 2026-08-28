@@ -9,6 +9,11 @@
 | DIR-03 | Fatal-error recovery | Fatal error + handshake; sideband idle; no escalation | Non-RESET -> TRAINERROR -> RESET | Directed test; `recovery_test` | Pass |
 | UVM-01 | SBINIT timeout | Start training; withhold completion until timeout | SBINIT -> TRAINERROR -> RESET | `timeout_test` | Pass |
 | UVM-02 | L1 exit | Request L1, then PM exit | ACTIVE -> L1L2 -> MBTRAIN/`SPEEDIDLE` | `pm_test` | Pass |
+| SB-DIR-01 | Sequencer protocol controls | Backpressure, response, timeout, mismatch, abort | Request held; success/retry/error/abort resolve as specified | `tb_ucie_sb_sequencer` | Pass |
+| SB-UVM-01 | Integrated SBINIT success | Accept request and return `SBINIT_DONE_RESP` | SBINIT -> MBINIT without `phase_done_i` | `sb_success_test` | Pass |
+| SB-UVM-02 | Integrated bounded retry | Accept request, withhold response for one sequencer timeout, accept retry, return response | Exactly two accepted requests, one retry, then SBINIT -> MBINIT | `sb_retry_test` | Pass |
+| SB-UVM-03 | Integrated wrong response | Accept request and return `SB_MSG_NOP` | Protocol error; SBINIT -> TRAINERROR -> RESET | `sb_error_test` | Pass |
+| SB-UVM-04 | Integrated retry exhaustion | Accept initial request and retry; return no response | One retry, protocol error, SBINIT -> TRAINERROR -> RESET | `sb_exhaust_test` | Pass |
 
 “Pass” reflects the fresh August 28, 2026 Questa runs described in [questa.md](../06_results/questa.md).
 

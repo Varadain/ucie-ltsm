@@ -28,4 +28,13 @@ package ucie_ltsm_pkg;
     RETRAIN_SPEEDIDLE = 2'd1,
     RETRAIN_REPAIR    = 2'd2
   } retrain_target_e;
+
+  // Transaction-level sideband messages implemented by the v0.2 checkpoint.
+  // Additional UCIe training messages can be added without changing the
+  // sequencer handshake.
+  typedef enum logic [7:0] {
+    SB_MSG_NOP              = 8'h00,
+    SB_MSG_SBINIT_DONE_REQ  = 8'h01,
+    SB_MSG_SBINIT_DONE_RESP = 8'h02
+  } sb_msg_e;
 endpackage
