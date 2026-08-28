@@ -19,6 +19,11 @@ module tb_ucie_ltsm_uvm;
     .sb_tx_valid_o(intf.sb_tx_valid),.sb_tx_message_o(intf.sb_tx_message),.sb_tx_ready_i(intf.sb_tx_ready),
     .sb_rx_valid_i(intf.sb_rx_valid),.sb_rx_message_i(intf.sb_rx_message),.sb_busy_o(intf.sb_busy),
     .sb_protocol_error_o(intf.sb_protocol_error),.sb_retry_o(intf.sb_retry),
+    .train_tx_valid_o(intf.train_tx_valid),.train_tx_pattern_o(intf.train_tx_pattern),
+    .train_rx_valid_i(intf.train_rx_valid),.train_rx_pattern_i(intf.train_rx_pattern),
+    .train_error_threshold_i(intf.train_error_threshold),.train_busy_o(intf.train_busy),
+    .train_done_o(intf.train_done),.train_pass_o(intf.train_pass),
+    .train_error_count_o(intf.train_error_count),
     .state_o(intf.state),.mbinit_state_o(intf.mbi),.mbtrain_state_o(intf.mbt),
     .timeout_o(intf.timeout),.link_up_o(intf.link_up),
     .mainband_tristate_o(intf.mainband_tristate),.sideband_enable_o(intf.sideband_enable));
