@@ -13,6 +13,7 @@ All notable project milestones are documented here. Source snapshots are preserv
 - Directed testbench, SystemVerilog assertions, UVM environment, and Quartus project.
 - Beginner-oriented architecture, algorithm, RTL, verification, results, and version documentation.
 - Questa-derived nominal and retrain/error waveform SVGs with reproducible capture/render scripts.
+- Color-distinct waveform traces and substate bands with clickable signal/function documentation.
 - RTL and verification connection diagrams based on the implemented source topology.
 - Quartus functional Verilog simulation netlist with a reproducible export script and scope notes.
 

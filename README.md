@@ -61,6 +61,7 @@ The diagram shows only implemented ports and control partitions. The v0.1 scope 
 | RTL connections | [SVG](assets/diagrams/v0.1-basic-ltssm/rtl-connections.svg) | `ucie_ltsm.sv` ports and internal partitions |
 | Verification connections | [SVG](assets/diagrams/v0.1-basic-ltssm/verification-connections.svg) | Actual UVM package/top and SVA connections |
 | Quartus netlist | [Verilog](synthesis/quartus/netlists/v0.1-basic-ltssm/ucie_ltsm.vo) | Quartus 23.1 functional EDA netlist for the checked Cyclone 10 LP target |
+| Signal/function guide | [Documentation](docs/02_ltssm/signals.md#waveform-signal-guide) | Definitions and functional interpretation for every plotted signal |
 
 ![v0.1 nominal link-training waveform](assets/waveforms/v0.1-basic-ltssm/nominal-training.svg)
 

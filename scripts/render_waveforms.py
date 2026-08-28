@@ -58,6 +58,39 @@ COLORS = {
     "TRAINERROR": "#b91c1c",
     "L1/L2": "#475569",
 }
+MBINIT_COLORS = {
+    "000": "#2563eb",
+    "001": "#0284c7",
+    "010": "#0891b2",
+    "011": "#0f766e",
+    "100": "#a16207",
+    "101": "#c2410c",
+}
+MBTRAIN_COLORS = {
+    "0000": "#7c3aed",
+    "0001": "#9333ea",
+    "0010": "#2563eb",
+    "0011": "#0284c7",
+    "0100": "#0891b2",
+    "0101": "#0f766e",
+    "0110": "#15803d",
+    "0111": "#4d7c0f",
+    "1000": "#a16207",
+    "1001": "#c2410c",
+    "1010": "#be123c",
+    "1011": "#a21caf",
+    "1100": "#475569",
+}
+SCALAR_COLORS = {
+    "phase_done": "#2563eb",
+    "rdi_active": "#0f766e",
+    "link_up": "#15803d",
+    "retrain_req": "#c2410c",
+    "fatal_error": "#b91c1c",
+    "error_handshake_done": "#a21caf",
+}
+
+SIGNAL_GUIDE = "../../../docs/02_ltssm/signals.md"
 
 
 def parse_vcd(path: Path):
@@ -158,14 +191,16 @@ def render_figure(changes, output: Path, title: str, subtitle: str,
         'text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}',
         '.title{font-size:24px;font-weight:700}.subtitle{font-size:14px;fill:#536179}',
         '.label{font-size:14px;font-weight:600}.tick{font-size:12px;fill:#64748b}',
+        '.guide{font-size:13px;font-weight:600;fill:#2563eb;text-decoration:underline}',
         '.bus{font-size:10px;font-weight:600;fill:#fff}.bus-dark{font-size:10px;font-weight:600;fill:#172033}',
         '.grid{stroke:#dbe2ea;stroke-width:1}.axis{stroke:#94a3b8;stroke-width:1}',
-        '.digital{fill:none;stroke:#0f5ea8;stroke-width:2;stroke-linejoin:miter}',
+        '.digital{fill:none;stroke-width:2.5;stroke-linejoin:miter}',
         '</style>',
         '<rect width="100%" height="100%" fill="#ffffff"/>',
         f'<text class="title" x="24" y="34">{html.escape(title)}</text>',
         f'<text class="subtitle" x="24" y="60">{html.escape(subtitle)}</text>',
         '<text class="subtitle" x="24" y="82">Source: Questa 2023.3 · verification/tb_ucie_ltsm.sv · timescale 1 ps</text>',
+        f'<a href="{SIGNAL_GUIDE}#waveform-signal-guide"><text class="guide" x="1376" y="82" text-anchor="end">Signal definitions and functionality ↗</text></a>',
     ]
 
     tick_step = 10 if end_ns - start_ns <= 80 else 20
@@ -178,7 +213,11 @@ def render_figure(changes, output: Path, title: str, subtitle: str,
 
     for index, row in enumerate(rows):
         center = top + index * row_height + 18
-        svg.append(f'<text class="label" x="{left - 18}" y="{center + 5}" text-anchor="end">{html.escape(row["label"])}</text>')
+        row_color = row.get("color", SCALAR_COLORS.get(row["signal"], "#172033"))
+        label_text = f'<text class="label" style="fill:{row_color};text-decoration:underline" x="{left - 18}" y="{center + 5}" text-anchor="end">{html.escape(row["label"])}</text>'
+        if row.get("href"):
+            label_text = f'<a href="{html.escape(row["href"], quote=True)}">{label_text}</a>'
+        svg.append(label_text)
         svg.append(f'<line class="axis" x1="{left}" y1="{center}" x2="{left + plot_width}" y2="{center}"/>')
         if row["kind"] == "scalar":
             high, low = center - 13, center + 13
@@ -191,9 +230,9 @@ def render_figure(changes, output: Path, title: str, subtitle: str,
                 else:
                     path.append(f'V {y}')
                 path.append(f'H {x(seg_end):.2f}')
-            svg.append(f'<path class="digital" d="{" ".join(path)}"/>')
-            svg.append(f'<text class="tick" x="{left + 5}" y="{high - 4}">1</text>')
-            svg.append(f'<text class="tick" x="{left + 5}" y="{low - 4}">0</text>')
+            svg.append(f'<path class="digital" style="stroke:{row_color}" d="{" ".join(path)}"/>')
+            svg.append(f'<text class="tick" style="fill:{row_color}" x="{left + 5}" y="{high - 4}">1</text>')
+            svg.append(f'<text class="tick" style="fill:{row_color}" x="{left + 5}" y="{low - 4}">0</text>')
         else:
             qualifier = row.get("qualifier")
             row_segments = merged_segments(changes, row["signal"], start_ps, end_ps, qualifier)
@@ -204,7 +243,7 @@ def render_figure(changes, output: Path, title: str, subtitle: str,
                     fill, label, text_class = "#eef2f6", "—", "bus-dark"
                 else:
                     label = name_map.get(value, value)
-                    fill = COLORS.get(label, row.get("fill", "#334155"))
+                    fill = row.get("palette", {}).get(value, COLORS.get(label, row.get("fill", "#334155")))
                     text_class = "bus"
                 svg.append(f'<rect x="{seg_x:.2f}" y="{center - 16}" width="{max(seg_w, 0):.2f}" height="32" fill="{fill}" stroke="#ffffff"/>')
                 if seg_w > max(24, len(label) * 5.2):
@@ -231,12 +270,12 @@ def main():
         1000,
         1245,
         [
-            {"kind": "bus", "signal": "state", "label": "LTSM state", "names": STATE_NAMES},
-            {"kind": "bus", "signal": "mbi", "label": "MBINIT substate", "names": MBINIT_NAMES, "fill": "#2563eb", "qualifier": ("state", "0010")},
-            {"kind": "bus", "signal": "mbt", "label": "MBTRAIN substate", "names": MBTRAIN_NAMES, "fill": "#7c3aed", "qualifier": ("state", "0011")},
-            {"kind": "scalar", "signal": "phase_done", "label": "phase_done_i"},
-            {"kind": "scalar", "signal": "rdi_active", "label": "rdi_active_i"},
-            {"kind": "scalar", "signal": "link_up", "label": "link_up_o"},
+            {"kind": "bus", "signal": "state", "label": "LTSM state", "names": STATE_NAMES, "color": "#475569", "href": f"{SIGNAL_GUIDE}#wave-state-output"},
+            {"kind": "bus", "signal": "mbi", "label": "MBINIT substate", "names": MBINIT_NAMES, "palette": MBINIT_COLORS, "qualifier": ("state", "0010"), "color": "#2563eb", "href": f"{SIGNAL_GUIDE}#wave-mbinit-output"},
+            {"kind": "bus", "signal": "mbt", "label": "MBTRAIN substate", "names": MBTRAIN_NAMES, "palette": MBTRAIN_COLORS, "qualifier": ("state", "0011"), "color": "#7c3aed", "href": f"{SIGNAL_GUIDE}#wave-mbtrain-output"},
+            {"kind": "scalar", "signal": "phase_done", "label": "phase_done_i", "href": f"{SIGNAL_GUIDE}#wave-phase-done"},
+            {"kind": "scalar", "signal": "rdi_active", "label": "rdi_active_i", "href": f"{SIGNAL_GUIDE}#wave-rdi-active"},
+            {"kind": "scalar", "signal": "link_up", "label": "link_up_o", "href": f"{SIGNAL_GUIDE}#wave-link-up"},
         ],
     )
     render_figure(
@@ -247,13 +286,13 @@ def main():
         1210,
         1280,
         [
-            {"kind": "bus", "signal": "state", "label": "LTSM state", "names": STATE_NAMES},
-            {"kind": "bus", "signal": "mbt", "label": "MBTRAIN substate", "names": MBTRAIN_NAMES, "fill": "#7c3aed", "qualifier": ("state", "0011")},
-            {"kind": "scalar", "signal": "retrain_req", "label": "retrain_req_i"},
-            {"kind": "scalar", "signal": "phase_done", "label": "phase_done_i"},
-            {"kind": "scalar", "signal": "fatal_error", "label": "fatal_error_i"},
-            {"kind": "scalar", "signal": "error_handshake_done", "label": "error_handshake_done_i"},
-            {"kind": "scalar", "signal": "link_up", "label": "link_up_o"},
+            {"kind": "bus", "signal": "state", "label": "LTSM state", "names": STATE_NAMES, "color": "#475569", "href": f"{SIGNAL_GUIDE}#wave-state-output"},
+            {"kind": "bus", "signal": "mbt", "label": "MBTRAIN substate", "names": MBTRAIN_NAMES, "palette": MBTRAIN_COLORS, "qualifier": ("state", "0011"), "color": "#7c3aed", "href": f"{SIGNAL_GUIDE}#wave-mbtrain-output"},
+            {"kind": "scalar", "signal": "retrain_req", "label": "retrain_req_i", "href": f"{SIGNAL_GUIDE}#wave-retrain-request"},
+            {"kind": "scalar", "signal": "phase_done", "label": "phase_done_i", "href": f"{SIGNAL_GUIDE}#wave-phase-done"},
+            {"kind": "scalar", "signal": "fatal_error", "label": "fatal_error_i", "href": f"{SIGNAL_GUIDE}#wave-fatal-error"},
+            {"kind": "scalar", "signal": "error_handshake_done", "label": "error_handshake_done_i", "href": f"{SIGNAL_GUIDE}#wave-error-handshake"},
+            {"kind": "scalar", "signal": "link_up", "label": "link_up_o", "href": f"{SIGNAL_GUIDE}#wave-link-up"},
         ],
     )
 

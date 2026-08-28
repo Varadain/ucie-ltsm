@@ -13,6 +13,8 @@ python scripts/render_waveforms.py
 
 The renderer itself uses only the Python standard library. Short labels keep all fixed-duration substates legible:
 
+Every signal label in the SVG links to the [waveform signal guide](../docs/02_ltssm/signals.md#waveform-signal-guide), which explains its function and the v0.1 abstraction boundary. The [Questa results page](../docs/06_results/questa.md#signal-and-functionality-pointers) repeats those links in a normal Markdown table for renderers that disable SVG interaction.
+
 | Short label | RTL enum suffix |
 |---|---|
 | `RCLK`, `RVAL`, `REVMB`, `RMB` | `REPAIRCLK`, `REPAIRVAL`, `REVERSALMB`, `REPAIRMB` |

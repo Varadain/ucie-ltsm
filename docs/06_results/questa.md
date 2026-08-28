@@ -34,6 +34,22 @@ The nominal figure shows RESET residency followed by SBINIT, all six MBINIT subs
 
 The second figure retains the final MBTRAIN context, then shows LINKINIT/ACTIVE, an ACTIVE-to-PHYRETRAIN request, `MBTRAIN.SPEEDIDLE` re-entry, fatal-error handshake, TRAINERROR, and RESET. Short substate labels are expanded in the [asset README](../../assets/README.md).
 
+### Signal and functionality pointers
+
+Signal names inside the SVG figures are clickable. This table provides the same links when a Markdown renderer displays SVGs as non-interactive images.
+
+| Waveform label | Function in v0.1 | Detailed explanation |
+|---|---|---|
+| `LTSM state` | Registered top-level controller state | [`state_o`](../02_ltssm/signals.md#wave-state-output) |
+| `MBINIT substate` | Ordered mainband-initialization step, shown only during MBINIT | [`mbinit_state_o`](../02_ltssm/signals.md#wave-mbinit-output) |
+| `MBTRAIN substate` | Ordered mainband-training step, shown only during MBTRAIN | [`mbtrain_state_o`](../02_ltssm/signals.md#wave-mbtrain-output) |
+| `phase_done_i` | Abstract completion of the active modeled operation | [Completion behavior](../02_ltssm/signals.md#wave-phase-done) |
+| `rdi_active_i` | LINKINIT-to-ACTIVE confirmation | [RDI active confirmation](../02_ltssm/signals.md#wave-rdi-active) |
+| `link_up_o` | High only while the controller is ACTIVE | [Link-up status](../02_ltssm/signals.md#wave-link-up) |
+| `retrain_req_i` | Requests ACTIVE-to-PHYRETRAIN entry | [Retrain request](../02_ltssm/signals.md#wave-retrain-request) |
+| `fatal_error_i` | Requests the global fatal-error path | [Fatal error](../02_ltssm/signals.md#wave-fatal-error) |
+| `error_handshake_done_i` | Qualifies entry into TRAINERROR outside SBINIT | [Error handshake](../02_ltssm/signals.md#wave-error-handshake) |
+
 The intermediate VCD under `build/waves/` is ignored. The capture script, standard-library renderer, and reviewed SVG outputs are versioned so the figures remain reproducible without committing a bulky waveform database.
 
 ## UVM regression
