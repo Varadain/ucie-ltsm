@@ -16,7 +16,7 @@
 | SB-UVM-04 | Integrated retry exhaustion | Accept initial request and retry; return no response | One retry, protocol error, SBINIT -> TRAINERROR -> RESET | `sb_exhaust_test` | Pass |
 | SB-RAND-01 | Seeded randomized sideband campaign | Random outcome plus 1-3 cycle transmit/response delays; 40 trials per seed | Predictor counters match monitor; every outcome hit; no illegal transition | `sb_random_test`, seeds 101/202/303/404/505 | Pass |
 
-“Pass” reflects the fresh August 28, 2026 Questa runs described in [questa.md](../06_results/questa.md).
+“Pass” reflects the fresh deterministic runs through August 28 and randomized/regression reruns on August 30, 2026, described in [questa.md](../06_results/questa.md).
 
 ## Planned scenarios required for stronger confidence
 

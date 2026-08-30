@@ -2,7 +2,7 @@
 
 A synthesizable SystemVerilog model of the UCIe 2.0 Link Training State Machine (LTSM), developed as a progressive design-and-verification project.
 
-> **Current stable milestone:** `v0.2-sideband`
+> **Current stable milestone:** `v0.2-random-uvm`
 >
 > **Reference:** UCIe Specification Revision 2.0, Version 1.0 (August 6, 2024)
 >
@@ -17,7 +17,7 @@ A synthesizable SystemVerilog model of the UCIe 2.0 Link Training State Machine 
 - A synthesizable ready/valid sequencer for `SBINIT_DONE_REQ`/`SBINIT_DONE_RESP`, with backpressure, response matching, bounded retry, timeout, abort, and protocol-error reporting.
 - A self-checking directed testbench and five SystemVerilog properties/coverage properties.
 - A standalone sideband directed test with three protocol assertions.
-- A reusable UVM agent, monitor, scoreboard, eight scenario tests, and fresh passing regression logs.
+- A reusable UVM agent, reset-aware driver, passive monitor, scoreboard, eight deterministic tests, and a five-seed constrained-domain randomized campaign.
 - A Quartus project for Cyclone 10 LP with successful fitting and timing analysis.
 - Versioned v0.1 and v0.2 evidence packs with Questa-derived waveform SVGs, RTL/UVM connection diagrams, and Quartus functional Verilog netlists.
 
@@ -67,7 +67,19 @@ The diagram shows the implemented ready/valid channel, bounded sequencer, LTSM f
 
 ![v0.2 sideband success and bounded retry waveform](assets/waveforms/v0.2-sideband/success-bounded-retry.svg)
 
-The [v0.2 milestone page](docs/versions/v0.2_sideband.md) presents both waveforms and both connection diagrams with interpretation and limitations. The [v0.1 page](docs/versions/v0.1_basic_ltssm.md) and tag preserve the earlier baseline.
+The [v0.2 milestone page](docs/versions/v0.2_sideband.md) presents both waveforms and both connection diagrams with interpretation and limitations. The [randomized verification update](docs/versions/v0.2_random_uvm.md) records the later verification-only tag; the [v0.1 page](docs/versions/v0.1_basic_ltssm.md) and tag preserve the earlier baseline.
+
+## v0.2 randomized verification evidence
+
+![v0.2 seeded randomized UVM results](assets/diagrams/v0.2-random-uvm/random-regression-summary.svg)
+
+| Artifact | Published file | What it shows |
+|---|---|---|
+| Seed/outcome summary | [SVG](assets/diagrams/v0.2-random-uvm/random-regression-summary.svg) | Five seeds, 200 trials, scenario distribution, aggregate event totals, and pass verdicts |
+| Random UVM connections | [SVG](assets/diagrams/v0.2-random-uvm/random-verification-flow.svg) | Seed control, legal domains, driver/DUT/monitor path, predictor, assertions, and comparator |
+| Detailed results | [Questa page](docs/06_results/questa.md#seeded-randomized-regression) | Per-outcome counts, commands, tool boundary, and limitations |
+| Existing v0.2 implementation evidence | [v0.2 page](docs/versions/v0.2_sideband.md) | Unchanged RTL waveforms, connection diagrams, Quartus results, and functional netlist |
+| Netlist identity | [Manifest](synthesis/quartus/netlists/v0.2-random-uvm/README.md) | Confirms the new tag reuses the byte-identical v0.2 functional netlist and SHA-256 |
 
 ## Versions
 
@@ -75,11 +87,12 @@ The [v0.2 milestone page](docs/versions/v0.2_sideband.md) presents both waveform
 |---|---|---|---|---|
 | v0.1 | Initial | Basic hierarchical LTSM controller | Directed + four UVM tests + SVA | Stable within stated scope |
 | v0.2 | v0.1 | Bounded SBINIT sideband sequencing | Directed + eight UVM tests + SVA | Stable within stated scope |
+| v0.2-random | v0.2 | Verification-only seeded random campaign | Five seeds / 200 trials + preserved regression | Stable verification update |
 | v0.3 | v0.2 | Concrete training-operation engines | To be defined with implementation | Planned |
 | v0.4 | v0.3 | Expanded recovery and error reporting | To be defined with implementation | Planned |
 | v1.0 | Later milestones | Integrated verified controller | Evidence not yet available | Future |
 
-See the [roadmap](ROADMAP.md), [changelog](CHANGELOG.md), and [v0.2 milestone page](docs/versions/v0.2_sideband.md).
+See the [roadmap](ROADMAP.md), [changelog](CHANGELOG.md), and [v0.2 randomized verification page](docs/versions/v0.2_random_uvm.md).
 
 ## Repository structure
 
@@ -139,6 +152,14 @@ python scripts/render_sideband_waveforms.py
 ```
 
 The script runs the four preserved controller tests plus `sb_success_test`, `sb_retry_test`, `sb_error_test`, and `sb_exhaust_test`. It rejects any log that does not report zero UVM errors and fatals.
+
+Run the repeatable constrained-domain randomized campaign:
+
+```powershell
+.\scripts\run_random_regression.ps1
+```
+
+This runs `sb_random_test` with seeds `101`, `202`, `303`, `404`, and `505`; each seed executes 40 reset-isolated transactions with independently selected 1–3 cycle transmit backpressure and response delay. Questa Starter does not license class `randomize()`, so the explicit domains use seeded `$urandom_range` and an end-of-test predictor/monitor comparison.
 
 ### Quartus
 

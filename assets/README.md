@@ -2,6 +2,15 @@
 
 This directory contains small, reviewed artifacts intended for GitHub display. Raw simulator databases, VCD files, and Quartus build databases remain generated and ignored.
 
+## v0.2 randomized UVM evidence
+
+The SVGs under [`diagrams/v0.2-random-uvm`](diagrams/v0.2-random-uvm/) document the verification-only `v0.2-random-uvm` update:
+
+- [`random-regression-summary.svg`](diagrams/v0.2-random-uvm/random-regression-summary.svg) shows all five seed distributions, aggregate predictor-checked event totals, and zero-error verdicts.
+- [`random-verification-flow.svg`](diagrams/v0.2-random-uvm/random-verification-flow.svg) shows the seed/domain controls, reset-aware UVM drive path, unchanged v0.2 DUT, passive monitor, assertions, predictor, and end-of-test comparator.
+
+Both figures link to the [randomized campaign explanation](../docs/05_verification/sideband_sequencer.md#randomized-campaign) and [measured Questa results](../docs/06_results/questa.md#seeded-randomized-regression). The existing v0.2 waveform, RTL connection, Quartus, and netlist artifacts remain applicable because this update changes verification code only.
+
 ## v0.2 sideband waveforms
 
 The SVGs under [`waveforms/v0.2-sideband`](waveforms/v0.2-sideband/) are rendered from the standalone sequencer test's Questa VCD:

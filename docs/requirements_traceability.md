@@ -32,6 +32,8 @@ The UVM regression currently passes eight tests with zero UVM errors/fatals:
 - Unexpected-response error entry through TRAINERROR.
 - Retry-budget exhaustion through TRAINERROR.
 
+The `v0.2-random-uvm` verification update additionally runs five repeatable seeds and 200 reset-isolated sideband trials. It explicitly samples all four legal outcome categories and independent one-to-three-cycle transmit/response delays, and requires cumulative predicted request/success/retry/error totals to match the passive monitor exactly. This is constrained-domain randomized evidence, not a functional-coverage closure claim.
+
 The existing SVA module runs alongside UVM. Detailed functional covergroups for all MBINIT and
 MBTRAIN substates are a subsequent verification milestone.
 

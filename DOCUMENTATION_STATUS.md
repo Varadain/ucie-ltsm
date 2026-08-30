@@ -1,6 +1,6 @@
 # Documentation Status
 
-Last audited: **August 28, 2026**
+Last audited: **August 30, 2026**
 
 ## Completed
 
@@ -9,10 +9,11 @@ Last audited: **August 28, 2026**
 - Current architecture, state hierarchy, transitions, sideband signals, timers, and pseudocode.
 - RTL module hierarchy and algorithm-to-SystemVerilog mapping.
 - Directed test, UVM topology, assertions, scenario table, and traceability.
-- Fresh legacy/sideband Questa evidence, eight-test UVM evidence, and fresh Quartus resource/timing summaries.
+- Fresh legacy/sideband Questa evidence, eight-test deterministic UVM evidence, five-seed randomized UVM evidence, and retained Quartus resource/timing summaries.
 - Reviewed Questa-derived waveform figures, RTL/UVM connection diagrams, and a Quartus functional netlist for v0.1.
 - Reviewed v0.2 sideband waveform figures, updated RTL/verification connection diagrams, and a Quartus functional netlist.
-- v0.1 and v0.2 milestone pages, roadmap, and changelog.
+- v0.1, v0.2, and v0.2 randomized-verification milestone pages, roadmap, and changelog.
+- Reviewed randomized seed/outcome and verification-flow figures with no text/box overlap or clipping.
 
 ## Incomplete documentation or evidence
 
@@ -23,7 +24,7 @@ Last audited: **August 28, 2026**
 | MBINIT/MBTRAIN substate coverage | Ordered progression exercised indirectly | Functional covergroups and coverage report |
 | Timeout breadth | SBINIT timeout tested | Tests for every eligible state/substate |
 | Stall behavior | RTL implemented | Directed/UVM test proving timeout restart |
-| Sideband breadth | Bounded SBINIT-done transaction verified | Physical framing/CRC/credits, wider message set, partner responder, randomized latency/corruption, and coverage closure |
+| Sideband breadth | Bounded SBINIT-done transaction verified with seeded 1-3 cycle latency and four randomized outcomes | Physical framing/CRC/credits, wider message set, partner responder, bit-level corruption, and coverage closure |
 | Cadence flow | No files or reports found | Scripts, constraints, library/corner identity, and real reports |
 | Power data | No report found | Tool setup, assumptions, activity source, and result |
 | Board-level timing | Internal clock paths are constrained; I/O delays and exact pin assignments are absent | Board interface timing and pin constraints |

@@ -4,6 +4,10 @@ The project uses a self-checking directed test first, followed by a reusable UVM
 
 ![v0.2 verification connection diagram](../../assets/diagrams/v0.2-sideband/verification-connections.svg)
 
+The verification-only `v0.2-random-uvm` update adds the following seeded flow without changing the DUT:
+
+![v0.2 constrained-domain randomized UVM connection flow](../../assets/diagrams/v0.2-random-uvm/random-verification-flow.svg)
+
 ## Verification flow
 
 ```mermaid
@@ -56,6 +60,7 @@ Implemented UVM components:
 - scoreboard that rejects transitions outside the modeled top-level graph;
 - agent and environment;
 - nominal, timeout, recovery, PM, sideband success, sideband retry, malformed-response, and retry-exhaustion sequences/tests.
+- a reset-isolated `sb_random_test` with explicit outcome/timing domains, a cumulative predictor, and end-of-test monitor comparison.
 
 ## Current UVM scenarios
 
@@ -69,6 +74,7 @@ Implemented UVM components:
 | `sb_retry_test` | Withhold the first response and then complete | Two accepted requests, one retry, successful MBINIT entry | Pass |
 | `sb_error_test` | Return an unexpected response | Protocol error and TRAINERROR observed | Pass |
 | `sb_exhaust_test` | Withhold both response opportunities | One retry, protocol error, and TRAINERROR observed | Pass |
+| `sb_random_test` | Randomize four legal outcomes and independent 1-3 cycle delays across five seeds | Every outcome hit; predictor totals match monitor; no illegal transition | Pass (5/5 seeds) |
 
 See [testplan.md](testplan.md) for exact coverage and missing scenarios.
 
@@ -86,4 +92,4 @@ See [testplan.md](testplan.md) for exact coverage and missing scenarios.
 
 ## Coverage boundary
 
-There are no functional covergroups and no checked-in UCDB/coverage report. The monitor records scenario event counters, not coverage percentages. The evidence does not prove every MBINIT/MBTRAIN substate, every timeout location, all retrain targets, or every error combination.
+There are no functional covergroups and no checked-in UCDB/coverage report. The randomized campaign records explicit scenario hits and predictor-checked event counters, not a coverage percentage. The evidence does not prove every MBINIT/MBTRAIN substate, every timeout location, all retrain targets, every sideband message, or every error combination.

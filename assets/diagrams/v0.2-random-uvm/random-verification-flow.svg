@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050" role="img" aria-labelledby="title desc">
+  <title id="title">v0.2 constrained-domain randomized UVM connection flow</title>
+  <desc id="desc">Seeded scenario and latency selection drives the UVM sequence, driver, interface and DUT; a passive monitor and predictor compare event totals.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#334155"/></marker>
+    <filter id="shadow" x="-12%" y="-12%" width="124%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.14"/></filter>
+    <style>
+      .title{font:700 34px Arial,sans-serif;fill:#0f172a}.subtitle{font:20px Arial,sans-serif;fill:#475569}
+      .group{font:700 24px Arial,sans-serif;fill:#172033}.box-title{font:700 21px Arial,sans-serif;fill:#172033}
+      .body{font:18px Arial,sans-serif;fill:#475569}.small{font:16px Arial,sans-serif;fill:#64748b}
+      .badge{font:700 20px Arial,sans-serif;fill:#14532d}.link{font:700 18px Arial,sans-serif;fill:#1d4ed8}
+      .arrow{fill:none;stroke:#334155;stroke-width:3;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1600" height="1050" fill="#f8fafc"/>
+  <rect x="0" y="0" width="1600" height="116" fill="#ede9fe"/>
+  <text class="title" x="50" y="48">v0.2 constrained-domain randomized UVM connection flow</text>
+  <text class="subtitle" x="50" y="82">Reproducible seeds · explicit legal domains · reset isolation · passive observation · end-of-test prediction check</text>
+
+  <text class="group" x="50" y="158">Campaign control</text>
+  <g filter="url(#shadow)">
+    <rect x="50" y="182" width="285" height="138" rx="16" fill="#fff" stroke="#c4b5fd"/>
+    <text class="box-title" x="72" y="220">Seed control</text><text class="body" x="72" y="252">101 · 202 · 303</text><text class="body" x="72" y="280">404 · 505</text>
+    <rect x="365" y="182" width="350" height="138" rx="16" fill="#fff" stroke="#c4b5fd"/>
+    <text class="box-title" x="387" y="220">Outcome domain</text><text class="body" x="387" y="252">success · retry-success</text><text class="body" x="387" y="280">wrong-response · exhaustion</text>
+    <rect x="745" y="182" width="350" height="138" rx="16" fill="#fff" stroke="#c4b5fd"/>
+    <text class="box-title" x="767" y="220">Timing domains</text><text class="body" x="767" y="252">TX backpressure: 1–3 cycles</text><text class="body" x="767" y="280">Response delay: 1–3 cycles</text>
+    <rect x="1125" y="182" width="425" height="138" rx="16" fill="#fff" stroke="#c4b5fd"/>
+    <text class="box-title" x="1147" y="220">Isolation and closure</text><text class="body" x="1147" y="252">40 trials per seed; DUT reset between trials</text><text class="body" x="1147" y="280">First four trials force one hit per outcome</text>
+  </g>
+
+  <text class="group" x="50" y="380">Drive and observe loop</text>
+  <g filter="url(#shadow)">
+    <rect x="50" y="410" width="250" height="150" rx="16" fill="#dbeafe" stroke="#93c5fd"/>
+    <text class="box-title" x="175" y="450" text-anchor="middle">sb_random_test</text><text class="body" x="175" y="486" text-anchor="middle">seeded sequence</text><text class="body" x="175" y="516" text-anchor="middle">expected counters</text>
+    <rect x="355" y="410" width="250" height="150" rx="16" fill="#e0f2fe" stroke="#7dd3fc"/>
+    <text class="box-title" x="480" y="450" text-anchor="middle">UVM driver</text><text class="body" x="480" y="486" text-anchor="middle">reset-aware stimulus</text><text class="body" x="480" y="516" text-anchor="middle">race-free ready/valid</text>
+    <rect x="660" y="410" width="280" height="150" rx="16" fill="#fef3c7" stroke="#fcd34d"/>
+    <text class="box-title" x="800" y="450" text-anchor="middle">ucie_ltsm_if</text><text class="body" x="800" y="486" text-anchor="middle">sideband ready/valid</text><text class="body" x="800" y="516" text-anchor="middle">state/status observation</text>
+    <rect x="995" y="410" width="260" height="150" rx="16" fill="#dcfce7" stroke="#86efac"/>
+    <text class="box-title" x="1125" y="450" text-anchor="middle">v0.2 DUT</text><text class="body" x="1125" y="486" text-anchor="middle">ucie_ltsm +</text><text class="body" x="1125" y="516" text-anchor="middle">ucie_sb_sequencer</text>
+    <rect x="1310" y="410" width="240" height="150" rx="16" fill="#fce7f3" stroke="#f9a8d4"/>
+    <text class="box-title" x="1430" y="450" text-anchor="middle">Passive monitor</text><text class="body" x="1430" y="486" text-anchor="middle">requests · exits</text><text class="body" x="1430" y="516" text-anchor="middle">retries · errors</text>
+  </g>
+  <path class="arrow" d="M300 485 H355"/><path class="arrow" d="M605 485 H660"/><path class="arrow" d="M940 485 H995"/><path class="arrow" d="M1255 485 H1310"/>
+
+  <g filter="url(#shadow)">
+    <rect x="175" y="650" width="360" height="145" rx="16" fill="#fff" stroke="#93c5fd"/>
+    <text class="box-title" x="355" y="692" text-anchor="middle">Reference predictor</text><text class="body" x="355" y="730" text-anchor="middle">Accumulates expected request,</text><text class="body" x="355" y="760" text-anchor="middle">success, retry, and error totals</text>
+    <rect x="620" y="650" width="360" height="145" rx="16" fill="#fff" stroke="#fcd34d"/>
+    <text class="box-title" x="800" y="692" text-anchor="middle">SystemVerilog assertions</text><text class="body" x="800" y="730" text-anchor="middle">Protocol/state safety checks</text><text class="body" x="800" y="760" text-anchor="middle">run beside the UVM environment</text>
+    <rect x="1065" y="650" width="360" height="145" rx="16" fill="#fff" stroke="#f9a8d4"/>
+    <text class="box-title" x="1245" y="692" text-anchor="middle">End-of-test comparator</text><text class="body" x="1245" y="730" text-anchor="middle">Predicted totals = monitor totals</text><text class="body" x="1245" y="760" text-anchor="middle">Every outcome must be observed</text>
+  </g>
+  <path class="arrow" d="M175 560 V615 H355 V650"/>
+  <path class="arrow" d="M1125 560 V615 H800 V650"/>
+  <path class="arrow" d="M1430 560 V615 H1245 V650"/>
+  <path class="arrow" d="M535 722 H575 V820 H1025 V722 H1065"/>
+
+  <g filter="url(#shadow)">
+    <rect x="50" y="855" width="1500" height="105" rx="18" fill="#dcfce7" stroke="#86efac"/>
+    <text class="badge" x="300" y="902" text-anchor="middle">5 / 5 seeds passed</text>
+    <text class="badge" x="800" y="902" text-anchor="middle">200 / 200 transactions checked</text>
+    <text class="badge" x="1300" y="902" text-anchor="middle">0 errors · 0 fatals · 0 illegal</text>
+    <text class="small" x="800" y="934" text-anchor="middle">Questa Starter uses seeded $urandom_range domains; no class-constraint coverage percentage is claimed.</text>
+  </g>
+
+  <a href="../../../docs/05_verification/sideband_sequencer.md#randomized-campaign"><text class="link" x="50" y="1010">Randomized campaign explanation and limitations ↗</text></a>
+  <a href="../../../docs/06_results/questa.md#seeded-randomized-regression"><text class="link" x="1550" y="1010" text-anchor="end">Seed table and measured results ↗</text></a>
+</svg>

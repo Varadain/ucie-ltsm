@@ -1,6 +1,6 @@
 # Questa Results
 
-Freshly rerun on **August 28, 2026** using Questa Intel Starter FPGA Edition 2023.3.
+Deterministic and randomized regressions were freshly rerun through **August 30, 2026** using Questa Intel Starter FPGA Edition 2023.3.
 
 ## Directed test
 
@@ -99,6 +99,10 @@ run ended with zero UVM errors and zero UVM fatals.
 The campaign randomizes within explicit legal domains using seeded `$urandom_range`; Questa Starter
 does not provide the license needed for class `randomize()`. Raw logs remain ignored and are not
 committed.
+
+![Seeded randomized UVM result summary](../../assets/diagrams/v0.2-random-uvm/random-regression-summary.svg)
+
+![Constrained-domain randomized UVM connection flow](../../assets/diagrams/v0.2-random-uvm/random-verification-flow.svg)
 
 ## Sideband sequencer directed test
 

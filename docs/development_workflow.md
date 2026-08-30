@@ -128,6 +128,7 @@ Next task requested:
 |---|---|---|
 | `v0.1-basic-ltssm` | Basic hierarchical LTSM | Stable local tag |
 | `v0.2-sideband` | Bounded SBINIT sideband sequencing/integration | Stable after design, verification, evidence, and publication review |
+| `v0.2-random-uvm` | Seeded constrained-domain verification update | Stable after five-seed and preserved-regression review |
 | `v0.3-advanced-training` | Concrete training operations | Planned |
 | `v0.4-recovery` | Expanded recovery/error behavior | Planned |
 | `v1.0-integrated-ltssm` | Integrated verified controller | Future |

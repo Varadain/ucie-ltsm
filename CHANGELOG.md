@@ -2,6 +2,33 @@
 
 All notable project milestones are documented here. Source snapshots are preserved by Git tags rather than duplicated version folders.
 
+## v0.2-random-uvm - Seeded Randomized Verification
+
+### Added
+
+- `sb_random_test` and `sb_random_seq` for repeatable constrained-domain sideband verification.
+- Five fixed simulator seeds with 40 reset-isolated transactions per seed.
+- Independent one-to-three-cycle transmit-backpressure and response-delay selection.
+- A cumulative reference predictor checked against passive monitor totals for requests, successful exits, retries, and protocol errors.
+- A reproducible PowerShell campaign and two reviewed randomized-verification SVG figures.
+
+### Verification
+
+- Five of five seeds passed; all four legal outcomes were exercised by every seed.
+- 200 randomized transactions produced 290 accepted requests, 93 successful SBINIT exits, 90 retries, and 107 protocol errors, exactly matching the predictor.
+- Zero UVM errors, zero UVM fatals, zero illegal top-level transitions, and zero predictor mismatches.
+- The preserved eight-test deterministic UVM regression and both directed suites passed after the driver/monitor race hardening.
+
+### Preserved
+
+- No synthesizable RTL, interface, state encoding, timing constraint, or netlist content changed.
+- The `v0.2-sideband` waveform, connection, Quartus, and functional-netlist evidence remains the implementation baseline.
+
+### Known limitations
+
+- Questa Starter does not license class `randomize()`; explicit legal domains are sampled with seeded `$urandom_range`.
+- No UCDB, functional covergroup percentage, code/assertion coverage closure, or randomized bit-level corruption campaign is claimed.
+
 ## v0.2 - Sideband Integration
 
 ### Added
