@@ -15,8 +15,11 @@
 | SB-UVM-03 | Integrated wrong response | Accept request and return `SB_MSG_NOP` | Protocol error; SBINIT -> TRAINERROR -> RESET | `sb_error_test` | Pass |
 | SB-UVM-04 | Integrated retry exhaustion | Accept initial request and retry; return no response | One retry, protocol error, SBINIT -> TRAINERROR -> RESET | `sb_exhaust_test` | Pass |
 | SB-RAND-01 | Seeded randomized sideband campaign | Random outcome plus 1-3 cycle transmit/response delays; 40 trials per seed | Predictor counters match monitor; every outcome hit; no illegal transition | `sb_random_test`, seeds 101/202/303/404/505 | Pass |
+| DT-DIR-01 | LFSR engine algorithm and boundaries | Independent lane seed/polynomial model, receive gaps, clean/corrupt samples, threshold equality, abort, 4096 all-error samples | All 16 lane outputs match; strict threshold behavior; abort clears; error counter saturates at 16'hffff on the 4096th sample | `tb_ucie_lfsr_training_engine` | Pass |
+| DT-RAND-01 | Seeded DATATRAINCENTER1 campaign | 32 trials/seed with randomized gaps, corruption count/location, threshold, outcome, abort point, and repeat attempt | Predictor matches patterns/count/result; pass advances; failure retries in place; abort clears; timeout reaches TRAINERROR | `datatrain_random_test`, seeds 701/802/903/1004/1105 | Pass |
+| DT-SVA-01 | Training integration invariants | All v0.3 directed and UVM stimulus | Busy is confined to CENTER1 plus the defined abort cycle; done pulses and is not busy; pass uses strict threshold; counts hold without accepted samples | `ucie_ltsm_sva` | Pass |
 
-“Pass” reflects the fresh deterministic runs through August 28 and randomized/regression reruns on August 30, 2026, described in [questa.md](../06_results/questa.md).
+“Pass” reflects the fresh deterministic runs through August 28 and randomized/regression reruns on August 30, 2026, described in [questa.md](../06_results/questa.md) and [datatrain_lfsr.md](../06_results/datatrain_lfsr.md).
 
 ## Planned scenarios required for stronger confidence
 

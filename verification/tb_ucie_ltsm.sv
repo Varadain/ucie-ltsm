@@ -31,7 +31,11 @@ module tb_ucie_ltsm;
     .rdi_active_i(rdi_active), .retrain_req_i(retrain_req), .retrain_target_i(retrain_target),
     .pm_l1_req_i(pm_l1_req), .pm_l2_req_i(pm_l2_req), .pm_exit_i(pm_exit));
   ucie_ltsm_sva sva(.clk_i(clk), .rst_ni(rst_n), .state_i(state),
-                    .timeout_i(timeout), .link_up_i(link_up), .fatal_error_i(fatal_error));
+                    .timeout_i(timeout), .link_up_i(link_up), .fatal_error_i(fatal_error),
+                    .mbtrain_state_i(mbt), .train_rx_valid_i(train_rx_valid_i),
+                    .train_busy_i(train_busy_o), .train_done_i(train_done_o),
+                    .train_pass_i(train_pass_o), .train_error_count_i(train_error_count_o),
+                    .train_error_threshold_i(train_error_threshold_i));
 
   task automatic pulse_done; begin phase_done=1; @(posedge clk); #1 phase_done=0; end endtask
   task automatic expect_state(input ltsm_state_e exp); begin

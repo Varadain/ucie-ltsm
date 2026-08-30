@@ -7,7 +7,8 @@ module tb_ucie_ltsm_uvm;
   always #5 clk=~clk;
   ucie_ltsm_if intf(clk);
   ucie_ltsm #(.CLK_HZ(100_000_000),.RESET_MIN_US(1),.TIMEOUT_US(2),
-              .SB_RESPONSE_TIMEOUT_CYCLES(8),.SB_MAX_RETRIES(1)) dut(
+              .SB_RESPONSE_TIMEOUT_CYCLES(8),.SB_MAX_RETRIES(1),
+              .DATATRAIN_SAMPLE_COUNT(8)) dut(
     .clk_i(clk),.rst_ni(intf.rst_n),.supplies_stable_i(intf.supplies_stable),
     .sideband_clk_ok_i(intf.sideband_clk_ok),.internal_clks_ok_i(intf.internal_clks_ok),
     .firmware_reset_i(intf.firmware_reset),.link_train_trigger_i(intf.link_train_trigger),
@@ -28,7 +29,11 @@ module tb_ucie_ltsm_uvm;
     .timeout_o(intf.timeout),.link_up_o(intf.link_up),
     .mainband_tristate_o(intf.mainband_tristate),.sideband_enable_o(intf.sideband_enable));
   ucie_ltsm_sva sva(.clk_i(clk),.rst_ni(intf.rst_n),.state_i(intf.state),
-                    .timeout_i(intf.timeout),.link_up_i(intf.link_up),.fatal_error_i(intf.fatal_error));
+                    .timeout_i(intf.timeout),.link_up_i(intf.link_up),.fatal_error_i(intf.fatal_error),
+                    .mbtrain_state_i(intf.mbt),.train_rx_valid_i(intf.train_rx_valid),
+                    .train_busy_i(intf.train_busy),.train_done_i(intf.train_done),
+                    .train_pass_i(intf.train_pass),.train_error_count_i(intf.train_error_count),
+                    .train_error_threshold_i(intf.train_error_threshold));
   initial begin
     intf.rst_n=0; intf.clear_controls(); repeat(3) @(posedge clk); #1 intf.rst_n=1;
   end
