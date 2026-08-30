@@ -52,6 +52,34 @@ Signal names inside the SVG figures are clickable. This table provides the same 
 
 The intermediate VCD under `build/waves/` is ignored. The capture script, standard-library renderer, and reviewed SVG outputs are versioned so the figures remain reproducible without committing a bulky waveform database.
 
+## v0.3 DATATRAINCENTER1 regression
+
+Commands:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/run_lfsr_directed.do
+.\scripts\run_datatrain_random_regression.ps1
+```
+
+The focused directed test passed at 41576 ns and proved lane seeds, all sixteen output bits, every 23-bit polynomial step, receive gaps, strict equality failure, threshold-above-count pass, abort clearing, default 4096-sample completion, and `16'hffff` saturation.
+
+Five reproducible seeds (`701`, `802`, `903`, `1004`, and `1105`) ran 32 reset-isolated training trials each. Aggregate outcomes were 47 direct passes, 32 fail/retry scenarios, 44 aborts, and 37 LTSM timeouts. The independent model checked 368 clean samples, 654 corrupted samples, and 1,768 receive-gap cycles with exact DUT/reference agreement. All required explicit outcome/error/gap/threshold bins and all twelve scenario-by-gap crosses were hit. Every run ended with zero UVM errors/fatals, zero illegal transitions, and zero assertion failures.
+
+The installed Starter license cannot run class `randomize()` or native covergroups. The campaign uses seeded `$urandom_range` over explicit legal domains and explicit sampled coverage reports; no UCDB percentage is claimed. See the [full DATATRAINCENTER1 results](datatrain_lfsr.md).
+
+### v0.3 waveform evidence
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/capture_datatrain_waveform.do
+python scripts/render_datatrain_waveforms.py
+```
+
+![v0.3 LFSR pattern progression](../../assets/waveforms/v0.3-advanced-training/pattern-progression.svg)
+
+![v0.3 strict threshold and abort behavior](../../assets/waveforms/v0.3-advanced-training/threshold-and-abort.svg)
+
+Signal labels inside the SVGs link to the [v0.3 signal/function guide](../02_ltssm/signals.md#v03-training-signal-guide). The first figure isolates a clean eight-sample attempt with receive gaps; the second separates clean pass, equality failure, threshold-above-count pass, and abort clearing.
+
 ## UVM regression
 
 Command:

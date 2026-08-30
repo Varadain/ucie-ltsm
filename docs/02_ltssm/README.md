@@ -46,12 +46,13 @@ VALVREF -> DATAVREF -> SPEEDIDLE -> TXSELFCAL -> RXCLKCAL
 -> LINKSPEED -> REPAIR
 ```
 
-These labels and order exist in the RTL. The project does not yet implement each label's physical operation; `phase_done_i` represents completion for MBINIT and MBTRAIN. Version 0.2 adds only the bounded SBINIT-done exchange.
+These labels and order exist in the RTL. The project does not yet implement each label's physical operation. Version 0.2 adds the bounded SBINIT-done exchange; version 0.3 adds a digital 16-lane LFSR generator/checker control operation for `DATATRAINCENTER1`. `phase_done_i` remains the compatibility/abstract completion path for the other substates and can bypass that one operation.
 
 ## Continue reading
 
 - [States and transitions](states.md)
 - [Signals](signals.md)
 - [Timers and counters](timers_counters.md)
+- [Glossary and abbreviation long forms](../glossary.md)
 - [Behavioral algorithm and pseudocode](../03_algorithm/README.md)
 - [RTL mapping](../04_rtl/README.md)

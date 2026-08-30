@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">v0.3 DATATRAINCENTER1 RTL connections</title>
+  <desc id="desc">Implemented control and data connections between the UCIe LTSM and the 16-lane 23-bit LFSR training engine.</desc>
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/></marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#15803d"/></marker>
+    <style>
+      text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}.title{font-size:28px;font-weight:750}.subtitle{font-size:15px;fill:#536179}.box-title{font-size:18px;font-weight:750}.body{font-size:14px}.small{font-size:13px;fill:#475569}.signal{font-size:13px;font-weight:700}.scope{font-size:13px;font-weight:650;fill:#7c2d12}.link{font-size:13px;font-weight:650;fill:#2563eb;text-decoration:underline}
+    </style>
+  </defs>
+  <rect width="1600" height="1000" fill="#ffffff"/>
+  <text id="title-text" class="title" x="34" y="42">v0.3 DATATRAINCENTER1 RTL connections</text>
+  <text class="subtitle" x="34" y="70">Implemented 16-lane digital LFSR training control · default 4096 accepted samples · strict error threshold</text>
+  <a href="../../../docs/04_rtl/README.md#v03-datatraincenter1-training-engine"><text class="link" x="1560" y="70" text-anchor="end">RTL explanation ↗</text></a>
+
+  <rect x="300" y="118" width="1000" height="725" rx="18" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+  <text class="box-title" x="330" y="154">ucie_ltsm</text>
+  <text class="small" x="330" y="178">Top-level synthesizable controller and its v0.3 internal training engine</text>
+
+  <rect x="365" y="220" width="375" height="515" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+  <text class="box-title" x="552" y="258" text-anchor="middle" fill="#3730a3">Hierarchical LTSM control</text>
+  <rect x="405" y="292" width="295" height="82" rx="9" fill="#ffffff" stroke="#818cf8"/>
+  <text class="body" x="552" y="322" text-anchor="middle">Top-level state + MBTRAIN substate</text>
+  <text class="small" x="552" y="349" text-anchor="middle">engine is active only in MBT_DATATRAINCENTER1</text>
+  <rect x="405" y="408" width="295" height="104" rx="9" fill="#ffffff" stroke="#818cf8"/>
+  <text class="body" x="552" y="438" text-anchor="middle">Start / abort control</text>
+  <text class="small" x="552" y="464" text-anchor="middle">start when in CENTER1 and idle</text>
+  <text class="small" x="552" y="488" text-anchor="middle">abort after any state/substate exit</text>
+  <rect x="405" y="550" width="295" height="132" rx="9" fill="#ffffff" stroke="#818cf8"/>
+  <text class="body" x="552" y="580" text-anchor="middle">Transition decision</text>
+  <text class="small" x="552" y="608" text-anchor="middle">train_done_o &amp;&amp; train_pass_o</text>
+  <text class="small" x="552" y="632" text-anchor="middle">advances to DATATRAINVREF</text>
+  <text class="small" x="552" y="656" text-anchor="middle">failed completion remains in CENTER1</text>
+
+  <rect x="860" y="220" width="375" height="515" rx="14" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+  <text class="box-title" x="1047" y="258" text-anchor="middle" fill="#047857">ucie_lfsr_training_engine</text>
+  <rect x="900" y="292" width="295" height="82" rx="9" fill="#ffffff" stroke="#34d399"/>
+  <text class="body" x="1047" y="322" text-anchor="middle">16 × 23-bit lane LFSRs</text>
+  <text class="small" x="1047" y="349" text-anchor="middle">eight defined seeds repeat modulo eight</text>
+  <rect x="900" y="408" width="295" height="104" rx="9" fill="#ffffff" stroke="#34d399"/>
+  <text class="body" x="1047" y="438" text-anchor="middle">Accepted-sample update</text>
+  <text class="small" x="1047" y="464" text-anchor="middle">advance only when rx_valid_i = 1</text>
+  <text class="small" x="1047" y="488" text-anchor="middle">TX MSBs form the 16-bit pattern</text>
+  <rect x="900" y="550" width="295" height="132" rx="9" fill="#ffffff" stroke="#34d399"/>
+  <text class="body" x="1047" y="580" text-anchor="middle">Error result</text>
+  <text class="small" x="1047" y="608" text-anchor="middle">popcount(RX XOR expected)</text>
+  <text class="small" x="1047" y="632" text-anchor="middle">16-bit saturating accumulation</text>
+  <text class="small" x="1047" y="656" text-anchor="middle">pass iff count &lt; threshold</text>
+
+  <rect x="28" y="270" width="235" height="286" rx="12" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <text class="box-title" x="145" y="308" text-anchor="middle" fill="#9a3412">Existing LTSM controls</text>
+  <text class="body" x="54" y="349">• reset and readiness</text>
+  <text class="body" x="54" y="382">• phase_done_i bypass</text>
+  <text class="body" x="54" y="415">• timeout and errors</text>
+  <text class="body" x="54" y="448">• RDI / PM / retrain</text>
+  <text class="body" x="54" y="481">• sideband sequencer</text>
+  <text class="small" x="54" y="525">Preserved from v0.2</text>
+  <path d="M263 413 H365" fill="none" stroke="#ea580c" stroke-width="3" marker-end="url(#arrow-blue)"/>
+
+  <path d="M740 350 H860" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <text class="signal" x="800" y="332" text-anchor="middle" fill="#2563eb">start_i · abort_i</text>
+  <path d="M860 475 H740" fill="none" stroke="#15803d" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <text class="signal" x="800" y="503" text-anchor="middle" fill="#15803d">done_o · pass_o</text>
+
+  <rect x="860" y="874" width="375" height="92" rx="12" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+  <text class="box-title" x="1047" y="907" text-anchor="middle" fill="#0369a1">Behavioral receive channel / testbench</text>
+  <text class="small" x="1047" y="934" text-anchor="middle">train_rx_valid_i · train_rx_pattern_i · train_error_threshold_i</text>
+  <path d="M1047 874 V735" fill="none" stroke="#0284c7" stroke-width="3" marker-end="url(#arrow-blue)"/>
+
+  <rect x="1340" y="270" width="230" height="286" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text class="box-title" x="1455" y="308" text-anchor="middle" fill="#166534">Training outputs</text>
+  <text class="body" x="1368" y="350">train_tx_valid_o</text>
+  <text class="body" x="1368" y="383">train_tx_pattern_o[15:0]</text>
+  <text class="body" x="1368" y="416">train_busy_o</text>
+  <text class="body" x="1368" y="449">train_done_o / pass_o</text>
+  <text class="body" x="1368" y="482">train_error_count_o</text>
+  <path d="M1235 413 H1340" fill="none" stroke="#15803d" stroke-width="3" marker-end="url(#arrow-green)"/>
+
+  <rect x="28" y="874" width="680" height="92" rx="12" fill="#fff7ed" stroke="#c2410c" stroke-width="2" stroke-dasharray="8 6"/>
+  <text class="scope" x="52" y="908">Scope boundary</text>
+  <text class="small" x="52" y="936">Digital training control only. No analog channel, equalization, jitter, BER qualification, lane repair, or full UCIe PHY compliance.</text>
+</svg>

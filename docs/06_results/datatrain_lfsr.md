@@ -56,4 +56,36 @@ Quartus Prime Lite 23.1std.1 full compilation also passed for Cyclone 10 LP `10C
 - The randomized integration campaign uses eight samples for throughput; the 4096 default is proven in a focused directed run rather than across all randomized scenarios.
 - `phase_done_i` remains an architectural bypass for all MBTRAIN substates, including DATATRAINCENTER1; the abort scenario verifies that the engine clears after this externally forced exit.
 - This is transaction-level digital training. Analog channel behavior, jitter, equalization, physical lane repair, and BER confidence intervals are outside the current RTL model.
-- No reviewed/versioned netlist or waveform figure was requested or produced; raw Quartus and simulator databases remain ignored.
+
+## Reviewed release evidence
+
+### Colorful waveforms
+
+![v0.3 LFSR pattern progression](../../assets/waveforms/v0.3-advanced-training/pattern-progression.svg)
+
+The clean waveform shows eight accepted samples with two receive-gap cycles between samples. `train_tx_pattern_o` and `train_rx_pattern_i` match, the error count remains zero, and the final accepted sample produces `done` and `pass`.
+
+![v0.3 strict threshold and abort behavior](../../assets/waveforms/v0.3-advanced-training/threshold-and-abort.svg)
+
+The summary waveform shows four distinct checked intervals: clean pass, `errors == threshold` failure, `threshold > errors` pass, and abort clearing. Every signal label links to the [canonical v0.3 signal/function guide](../02_ltssm/signals.md#v03-training-signal-guide).
+
+Regenerate the waveform evidence from the repository root:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/capture_datatrain_waveform.do
+python scripts/render_datatrain_waveforms.py
+```
+
+### Connection diagrams
+
+![v0.3 RTL connections](../../assets/diagrams/v0.3-advanced-training/rtl-connections.svg)
+
+![v0.3 verification connections](../../assets/diagrams/v0.3-advanced-training/verification-connections.svg)
+
+The first diagram shows the implemented LTSM-to-engine start/abort and done/pass paths. The second shows seeded stimulus, independent reference calculation, DUT, scoreboard, SVA, explicit coverage, directed boundary proof, preserved regressions, and the release evidence path.
+
+### Functional netlist
+
+The reviewed Quartus functional Verilog netlist is [`ucie_ltsm.vo`](../../synthesis/quartus/netlists/v0.3-advanced-training/ucie_ltsm.vo), with provenance and limitations in its [manifest](../../synthesis/quartus/netlists/v0.3-advanced-training/README.md). Its SHA-256 is `09D414CA3B4CF192F8D83119F18AC6994FB0C4A6F707C0021E405D1B7AFEC04C`.
+
+Raw VCD/WLF/UCDB files, simulator libraries, Quartus databases, and programming images remain ignored.

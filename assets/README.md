@@ -2,6 +2,22 @@
 
 This directory contains small, reviewed artifacts intended for GitHub display. Raw simulator databases, VCD files, and Quartus build databases remain generated and ignored.
 
+## v0.3 DATATRAINCENTER1 evidence
+
+The two SVGs under [`waveforms/v0.3-advanced-training`](waveforms/v0.3-advanced-training/) are rendered from the self-checking LFSR engine test's Questa VCD:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/capture_datatrain_waveform.do
+python scripts/render_datatrain_waveforms.py
+```
+
+- [`pattern-progression.svg`](waveforms/v0.3-advanced-training/pattern-progression.svg) shows the generated/received 16-bit patterns, two-cycle receive gaps, eight accepted samples, zero accumulated errors, and the done/pass result.
+- [`threshold-and-abort.svg`](waveforms/v0.3-advanced-training/threshold-and-abort.svg) shows a clean pass, strict equality failure, threshold-above-count pass, and abort clearing.
+
+Every colored waveform signal label links to the [v0.3 signal/function guide](../docs/02_ltssm/signals.md#v03-training-signal-guide). The diagrams under [`diagrams/v0.3-advanced-training`](diagrams/v0.3-advanced-training/) show the implemented LTSM/LFSR integration and the verification/reference/SVA/coverage connections. Their scope notes explicitly exclude analog PHY behavior, BER signoff, and a full UCIe compliance claim.
+
+All four figures were rendered and checked at full size, reduced GitHub display size, and enlarged detail views. A structural pass also checked the SVG bounds, links, labels, and absence of embedded raster/private content.
+
 ## v0.2 randomized UVM evidence
 
 The SVGs under [`diagrams/v0.2-random-uvm`](diagrams/v0.2-random-uvm/) document the verification-only `v0.2-random-uvm` update:

@@ -12,7 +12,7 @@ The design stores three pieces of progress:
 - an MBINIT substate; and
 - an MBTRAIN substate.
 
-One saturating counter measures RESET residence or the time spent in an eligible state/substate. A separate bounded sequencer performs the v0.2 SBINIT-done transaction. External handshakes still abstract the remaining physical and training work.
+One saturating counter measures RESET residence or the time spent in an eligible state/substate. A separate bounded sequencer performs the v0.2 SBINIT-done transaction. Version 0.3 adds a 16-lane, 23-bit LFSR training engine for `DATATRAINCENTER1`; external handshakes still abstract the remaining physical and training work.
 
 ## Behavioral flow
 
@@ -79,7 +79,8 @@ to choose the next state:
                     after REPAIRMB, go to MBTRAIN at VALVREF
 
             MBTRAIN:
-                if phase is done:
+                if phase is done,
+                   or DATATRAINCENTER1 reports done and pass:
                     advance to the next MBTRAIN substate
                     after REPAIR, go to LINKINIT
 
@@ -117,6 +118,26 @@ sideband sequencer:
     if response timeout expires and retries remain, pulse retry and resend
     if the retry budget is exhausted, pulse protocol_error
     if abort is asserted, clear the outstanding transaction
+
+DATATRAINCENTER1 LFSR engine:
+    on start:
+        load 16 lane LFSRs from eight seeds repeated modulo eight
+        clear sample count and saturated error count
+
+    while busy:
+        drive each transmit-pattern bit from its lane LFSR
+        only when receive-valid is asserted:
+            compare the received pattern with the expected pattern
+            add the mismatch popcount with 16-bit saturation
+            advance every 23-bit LFSR once
+            count one accepted sample
+
+    on the configured final accepted sample:
+        pulse done
+        pass only when accumulated error count is strictly below threshold
+
+    on abort or reset:
+        clear busy, result, count, and lane state
 ```
 
 ## Mapping to RTL concepts
@@ -131,5 +152,8 @@ sideband sequencer:
 | Encode legal labels | Enumerated types in `ucie_ltsm_pkg` |
 | Sequence SBINIT exchange | `ucie_sb_sequencer` registered SEND/WAIT/error control |
 | Bound response waiting | Sequencer timer and retry-count registers |
+| Generate per-lane training pattern | Sixteen `lane_lfsr_q` registers and the `lfsr_next` function |
+| Count received mismatches | `bit_errors` popcount plus a saturating 16-bit accumulator |
+| Decide training result | Strict `accumulated_errors < error_threshold_i` comparison |
 
 The next page explains the source organization: [RTL guide](../04_rtl/README.md).

@@ -8,6 +8,10 @@ The verification-only `v0.2-random-uvm` update adds the following seeded flow wi
 
 ![v0.2 constrained-domain randomized UVM connection flow](../../assets/diagrams/v0.2-random-uvm/random-verification-flow.svg)
 
+Version 0.3 extends the same environment with an independent LFSR reference model, training-specific SVA, explicit sampled functional-coverage bins/crosses, a focused 4096-sample boundary test, and five reproducible seeds:
+
+![v0.3 DATATRAINCENTER1 verification connections](../../assets/diagrams/v0.3-advanced-training/verification-connections.svg)
+
 ## Verification flow
 
 ```mermaid
@@ -61,6 +65,7 @@ Implemented UVM components:
 - agent and environment;
 - nominal, timeout, recovery, PM, sideband success, sideband retry, malformed-response, and retry-exhaustion sequences/tests.
 - a reset-isolated `sb_random_test` with explicit outcome/timing domains, a cumulative predictor, and end-of-test monitor comparison.
+- a reset-isolated `datatrain_random_test` with independent lane/polynomial prediction, corruption/gap/threshold domains, retry/abort/timeout scenarios, and explicit sampled coverage bins.
 
 ## Current UVM scenarios
 
@@ -75,6 +80,7 @@ Implemented UVM components:
 | `sb_error_test` | Return an unexpected response | Protocol error and TRAINERROR observed | Pass |
 | `sb_exhaust_test` | Withhold both response opportunities | One retry, protocol error, and TRAINERROR observed | Pass |
 | `sb_random_test` | Randomize four legal outcomes and independent 1-3 cycle delays across five seeds | Every outcome hit; predictor totals match monitor; no illegal transition | Pass (5/5 seeds) |
+| `datatrain_random_test` | Randomize DATATRAINCENTER1 pass, fail/retry, abort, timeout, receive gaps, corrupt lanes/locations, and thresholds | Exact LFSR/count/result matches; all required bins/crosses hit; zero assertion failure | Pass (5/5 seeds) |
 
 See [testplan.md](testplan.md) for exact coverage and missing scenarios.
 
@@ -89,7 +95,14 @@ See [testplan.md](testplan.md) for exact coverage and missing scenarios.
 | `ap_no_reset_direct_active` | RESET cannot transition directly to ACTIVE |
 | `ap_known_state` | The top-level state has no unknown bits |
 | `cp_reaches_active` | Covers eventual RESET-to-ACTIVE reachability in a run |
+| `ap_training_only_center1` | Training busy is confined to DATATRAINCENTER1 plus the defined abort cycle |
+| `ap_done_is_pulse` / `ap_done_not_busy` | Training completion is one cycle and is not busy |
+| `ap_pass_is_strict` / `ap_fail_at_threshold` | Pass/fail obeys the strict threshold relationship |
+| `ap_hold_without_sample` | The error count holds when no receive sample is accepted |
+| `cp_training_pass` / `cp_training_fail` | Both completed result classes occur |
 
 ## Coverage boundary
 
-There are no functional covergroups and no checked-in UCDB/coverage report. The randomized campaign records explicit scenario hits and predictor-checked event counters, not a coverage percentage. The evidence does not prove every MBINIT/MBTRAIN substate, every timeout location, all retrain targets, every sideband message, or every error combination.
+Questa Starter cannot license native covergroups or class `randomize()`. The v0.3 campaign therefore reports explicit sampled bins for all four outcomes, four error ranges, three receive-gap ranges, threshold equality/non-equality, and all twelve scenario-by-gap crosses. No native UCDB percentage is claimed. The evidence still does not prove every MBINIT/MBTRAIN substate, every timeout location, all retrain targets, every sideband message, or every analog/channel condition.
+
+Detailed counts, commands, and limitations are in the [DATATRAINCENTER1 results](../06_results/datatrain_lfsr.md). Terminology is defined in the [project glossary](../glossary.md).

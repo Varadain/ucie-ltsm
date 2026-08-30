@@ -35,19 +35,20 @@ flowchart TD
     LINKINIT --> ACTIVE[Normal link operation]
 ```
 
-The internal physical procedures are represented by completion and error inputs. This is useful for learning and verifying state control, but it does not implement the electrical or packet-level details of a full UCIe link.
+Most internal physical procedures are represented by completion and error inputs. Version 0.3 makes one operation concrete in digital RTL: a 16-lane LFSR generator/checker control in `DATATRAINCENTER1`. This is useful for learning and verifying state control and pattern/error decisions, but it still does not implement the electrical or packet-level details of a full UCIe link.
 
 ## Suggested learning path
 
 | Step | Read | Question answered |
 |---|---|---|
 | 1 | This page | Why does training exist? |
-| 2 | [Architecture](../01_ucie_architecture/README.md) | Where is the boundary of the model? |
-| 3 | [LTSM overview](../02_ltssm/README.md) | Which states and transitions exist? |
-| 4 | [Algorithm](../03_algorithm/README.md) | How does the behavior work without RTL syntax? |
-| 5 | [RTL guide](../04_rtl/README.md) | How is the behavior expressed in SystemVerilog? |
-| 6 | [Verification](../05_verification/README.md) | What has actually been tested? |
-| 7 | [Results](../06_results/README.md) | What evidence is available? |
+| 2 | [Glossary](../glossary.md) | What do the abbreviations and project terms mean? |
+| 3 | [Architecture](../01_ucie_architecture/README.md) | Where is the boundary of the model? |
+| 4 | [LTSM overview](../02_ltssm/README.md) | Which states and transitions exist? |
+| 5 | [Algorithm](../03_algorithm/README.md) | How does the behavior work without RTL syntax? |
+| 6 | [RTL guide](../04_rtl/README.md) | How is the behavior expressed in SystemVerilog? |
+| 7 | [Verification](../05_verification/README.md) | What has actually been tested? |
+| 8 | [Results](../06_results/README.md) | What evidence is available? |
 
 ## Reference boundary
 

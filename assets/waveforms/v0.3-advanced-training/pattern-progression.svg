@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="780" viewBox="0 0 1600 780" role="img" aria-labelledby="title desc">
+<title id="title">v0.3 LFSR pattern progression</title>
+<desc id="desc">Eight accepted samples with two-cycle receive gaps; TX and RX match for a clean attempt Generated from a self-checking Questa VCD.</desc>
+<style>text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}.title{font-size:25px;font-weight:700}.subtitle{font-size:14px;fill:#536179}.label{font-size:14px;font-weight:650}.tick{font-size:12px;fill:#64748b}.band{font-size:12px;font-weight:700}.bus{font-size:11px;font-weight:650;fill:#fff}.guide{font-size:13px;font-weight:650;fill:#2563eb;text-decoration:underline}.digital{fill:none;stroke-width:2.6;stroke-linejoin:miter}.grid{stroke:#dbe2ea;stroke-width:1}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text class="title" x="26" y="36">v0.3 LFSR pattern progression</text>
+<text class="subtitle" x="26" y="62">Eight accepted samples with two-cycle receive gaps; TX and RX match for a clean attempt</text>
+<text class="subtitle" x="26" y="84">Source: Questa 2023.3 · verification/tb_ucie_lfsr_training_engine.sv · timescale 1 ps</text>
+<a href="../../../docs/02_ltssm/signals.md#v03-training-signal-guide"><text class="guide" x="1572" y="84" text-anchor="end">Signal definitions and functionality ↗</text></a>
+<rect x="250.00" y="102" width="1312.00" height="28" rx="5" fill="#dcfce7"/>
+<text class="band" x="906.00" y="121" text-anchor="middle" style="fill:#166534">CLEAN ATTEMPT · 8 SAMPLES · 2-CYCLE GAPS</text>
+<line class="grid" x1="250.00" y1="136" x2="250.00" y2="666"/>
+<text class="tick" x="250.00" y="148" text-anchor="middle">20</text>
+<line class="grid" x1="349.02" y1="136" x2="349.02" y2="666"/>
+<text class="tick" x="349.02" y="148" text-anchor="middle">40</text>
+<line class="grid" x1="448.04" y1="136" x2="448.04" y2="666"/>
+<text class="tick" x="448.04" y="148" text-anchor="middle">60</text>
+<line class="grid" x1="547.06" y1="136" x2="547.06" y2="666"/>
+<text class="tick" x="547.06" y="148" text-anchor="middle">80</text>
+<line class="grid" x1="646.08" y1="136" x2="646.08" y2="666"/>
+<text class="tick" x="646.08" y="148" text-anchor="middle">100</text>
+<line class="grid" x1="745.09" y1="136" x2="745.09" y2="666"/>
+<text class="tick" x="745.09" y="148" text-anchor="middle">120</text>
+<line class="grid" x1="844.11" y1="136" x2="844.11" y2="666"/>
+<text class="tick" x="844.11" y="148" text-anchor="middle">140</text>
+<line class="grid" x1="943.13" y1="136" x2="943.13" y2="666"/>
+<text class="tick" x="943.13" y="148" text-anchor="middle">160</text>
+<line class="grid" x1="1042.15" y1="136" x2="1042.15" y2="666"/>
+<text class="tick" x="1042.15" y="148" text-anchor="middle">180</text>
+<line class="grid" x1="1141.17" y1="136" x2="1141.17" y2="666"/>
+<text class="tick" x="1141.17" y="148" text-anchor="middle">200</text>
+<line class="grid" x1="1240.19" y1="136" x2="1240.19" y2="666"/>
+<text class="tick" x="1240.19" y="148" text-anchor="middle">220</text>
+<line class="grid" x1="1339.21" y1="136" x2="1339.21" y2="666"/>
+<text class="tick" x="1339.21" y="148" text-anchor="middle">240</text>
+<line class="grid" x1="1438.23" y1="136" x2="1438.23" y2="666"/>
+<text class="tick" x="1438.23" y="148" text-anchor="middle">260</text>
+<line class="grid" x1="1537.25" y1="136" x2="1537.25" y2="666"/>
+<text class="tick" x="1537.25" y="148" text-anchor="middle">280</text>
+<rect x="250" y="151" width="1312" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-train-start"><text class="label" x="232" y="181" text-anchor="end" style="fill:#7c3aed">start_i</text></a>
+<line x1="250" y1="176" x2="1562" y2="176" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#7c3aed" d="M 250.00 189 H 274.75 V 163 H 329.22 V 189 H 1562.00"/>
+<rect x="250" y="209" width="1312" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-train-busy"><text class="label" x="232" y="239" text-anchor="end" style="fill:#475569">train_busy_o</text></a>
+<line x1="250" y1="234" x2="1562" y2="234" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#475569" d="M 250.00 247 H 324.26 V 221 H 1512.49 V 247 H 1562.00"/>
+<rect x="250" y="267" width="1312" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-train-tx-valid"><text class="label" x="232" y="297" text-anchor="end" style="fill:#2563eb">train_tx_valid_o</text></a>
+<line x1="250" y1="292" x2="1562" y2="292" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#2563eb" d="M 250.00 305 H 324.26 V 279 H 1512.49 V 305 H 1562.00"/>
+<rect x="250" y="325" width="1312" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-train-tx-pattern"><text class="label" x="232" y="355" text-anchor="end" style="fill:#2563eb">train_tx_pattern_o</text></a>
+<line x1="250" y1="350" x2="1562" y2="350" stroke="#94a3b8"/>
+<rect x="250.00" y="334" width="371.32" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="435.66" y="354" text-anchor="middle">0x0000</text>
+<rect x="621.32" y="334" width="297.06" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="769.85" y="354" text-anchor="middle">0xADAD</text>
+<rect x="918.38" y="334" width="148.53" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="992.64" y="354" text-anchor="middle">0x0707</text>
+<rect x="1066.91" y="334" width="148.53" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="1141.17" y="354" text-anchor="middle">0xC6C6</text>
+<rect x="1215.43" y="334" width="148.53" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="1289.70" y="354" text-anchor="middle">0xB1B1</text>
+<rect x="1363.96" y="334" width="148.53" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="1438.23" y="354" text-anchor="middle">0xADAD</text>
+<rect x="1512.49" y="334" width="49.51" height="32" fill="#2563eb" stroke="#ffffff"/>
+<rect x="250" y="383" width="1312" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-train-rx-valid"><text class="label" x="232" y="413" text-anchor="end" style="fill:#0284c7">train_rx_valid_i</text></a>
+<line x1="250" y1="408" x2="1562" y2="408" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#0284c7" d="M 250.00 421 H 423.28 V 395 H 477.74 V 421 H 571.81 V 395 H 626.27 V 421 H 720.34 V 395 H 774.80 V 421 H 868.87 V 395 H 923.33 V 421 H 1017.40 V 395 H 1071.86 V 421 H 1165.92 V 395 H 1220.38 V 421 H 1314.45 V 395 H 1368.91 V 421 H 1462.98 V 395 H 1517.44 V 421 H 1562.00"/>
+<rect x="250" y="441" width="1312" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-train-rx-pattern"><text class="label" x="232" y="471" text-anchor="end" style="fill:#0f766e">train_rx_pattern_i</text></a>
+<line x1="250" y1="466" x2="1562" y2="466" stroke="#94a3b8"/>
+<rect x="250.00" y="450" width="470.34" height="32" fill="#0f766e" stroke="#ffffff"/>
+<text class="bus" x="485.17" y="470" text-anchor="middle">0x0000</text>
+<rect x="720.34" y="450" width="297.06" height="32" fill="#0f766e" stroke="#ffffff"/>
+<text class="bus" x="868.87" y="470" text-anchor="middle">0xADAD</text>
+<rect x="1017.40" y="450" width="148.53" height="32" fill="#0f766e" stroke="#ffffff"/>
+<text class="bus" x="1091.66" y="470" text-anchor="middle">0x0707</text>
+<rect x="1165.92" y="450" width="148.53" height="32" fill="#0f766e" stroke="#ffffff"/>
+<text class="bus" x="1240.19" y="470" text-anchor="middle">0xC6C6</text>
+<rect x="1314.45" y="450" width="148.53" height="32" fill="#0f766e" stroke="#ffffff"/>
+<text class="bus" x="1388.72" y="470" text-anchor="middle">0xB1B1</text>
+<rect x="1462.98" y="450" width="99.02" height="32" fill="#0f766e" stroke="#ffffff"/>
+<text class="bus" x="1512.49" y="470" text-anchor="middle">0xADAD</text>
+<rect x="250" y="499" width="1312" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-train-error-count"><text class="label" x="232" y="529" text-anchor="end" style="fill:#dc2626">train_error_count_o</text></a>
+<line x1="250" y1="524" x2="1562" y2="524" stroke="#94a3b8"/>
+<rect x="250.00" y="508" width="1312.00" height="32" fill="#dc2626" stroke="#ffffff"/>
+<text class="bus" x="906.00" y="528" text-anchor="middle">0</text>
+<rect x="250" y="557" width="1312" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-train-done"><text class="label" x="232" y="587" text-anchor="end" style="fill:#f59e0b">train_done_o</text></a>
+<line x1="250" y1="582" x2="1562" y2="582" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#f59e0b" d="M 250.00 595 H 1512.49 V 569 H 1562.00"/>
+<rect x="250" y="615" width="1312" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-train-pass"><text class="label" x="232" y="645" text-anchor="end" style="fill:#16a34a">train_pass_o</text></a>
+<line x1="250" y1="640" x2="1562" y2="640" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#16a34a" d="M 250.00 653 H 1512.49 V 627 H 1562.00"/>
+<rect x="250" y="151" width="1312" height="520" fill="none" stroke="#94a3b8"/>
+<text class="tick" x="906.00" y="756" text-anchor="middle">simulation time (ns)</text>
+</svg>

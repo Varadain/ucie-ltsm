@@ -2,11 +2,11 @@
 
 A synthesizable SystemVerilog model of the UCIe 2.0 Link Training State Machine (LTSM), developed as a progressive design-and-verification project.
 
-> **Current stable milestone:** `v0.2-random-uvm`
+> **Current stable milestone:** `v0.3-advanced-training`
 >
 > **Reference:** UCIe Specification Revision 2.0, Version 1.0 (August 6, 2024)
 >
-> **Scope:** LTSM control flow plus one bounded SBINIT sideband request/response sequence - not a complete UCIe PHY and not a claim of UCIe compliance.
+> **Scope:** LTSM control flow, one bounded SBINIT sideband transaction, and one digital DATATRAINCENTER1 LFSR operation - not a complete UCIe PHY and not a claim of UCIe compliance.
 
 ## What is implemented
 
@@ -15,13 +15,14 @@ A synthesizable SystemVerilog model of the UCIe 2.0 Link Training State Machine 
 - Parameterized RESET residence and state/substate timeout counters.
 - Stall-driven timeout restart, ACTIVE retraining, power-management exit paths, and error recovery.
 - A synthesizable ready/valid sequencer for `SBINIT_DONE_REQ`/`SBINIT_DONE_RESP`, with backpressure, response matching, bounded retry, timeout, abort, and protocol-error reporting.
-- A self-checking directed testbench and five SystemVerilog properties/coverage properties.
+- A synthesizable 16-lane, 23-bit LFSR training engine in `MBT_DATATRAINCENTER1`, with accepted-sample progression, a saturating error count, strict threshold result, and automatic successful advance.
+- Self-checking controller, sideband, and LFSR directed testbenches plus training-specific SystemVerilog assertions/coverage properties.
 - A standalone sideband directed test with three protocol assertions.
-- A reusable UVM agent, reset-aware driver, passive monitor, scoreboard, eight deterministic tests, and a five-seed constrained-domain randomized campaign.
+- A reusable UVM agent, reset-aware driver, passive monitor, scoreboard, eight deterministic tests, the preserved five-seed sideband campaign, and a five-seed DATATRAINCENTER1 campaign with an independent reference model and explicit sampled coverage.
 - A Quartus project for Cyclone 10 LP with successful fitting and timing analysis.
-- Versioned v0.1 and v0.2 evidence packs with Questa-derived waveform SVGs, RTL/UVM connection diagrams, and Quartus functional Verilog netlists.
+- Versioned v0.1, v0.2, and v0.3 evidence packs with Questa-derived waveform SVGs, RTL/UVM connection diagrams, and Quartus functional Verilog netlists.
 
-Version 0.2 replaces the normal SBINIT completion abstraction with a real transaction-level request/response path. `phase_done_i` remains as a compatibility bypass in SBINIT and still represents MBINIT, MBTRAIN, and PHYRETRAIN operations whose calibration, repair, pattern, and analog-PHY engines are not implemented.
+Version 0.2 replaces the normal SBINIT completion abstraction with a transaction-level request/response path. Version 0.3 replaces one MBTRAIN abstraction with a concrete digital LFSR operation. `phase_done_i` remains a compatibility bypass and still represents the other calibration, repair, training, and PHYRETRAIN operations that are not implemented.
 
 ## Start here
 
@@ -39,6 +40,7 @@ flowchart LR
 | Topic | Documentation |
 |---|---|
 | First-time overview | [Getting started](docs/00_getting_started/README.md) |
+| Definitions and abbreviation long forms | [Project glossary](docs/glossary.md) |
 | Project boundary and interfaces | [Architecture](docs/01_ucie_architecture/README.md) |
 | States, transitions, signals, and timing | [LTSM](docs/02_ltssm/README.md) |
 | Behavior before RTL syntax | [Algorithm and pseudocode](docs/03_algorithm/README.md) |
@@ -50,9 +52,25 @@ flowchart LR
 
 ## Architecture at this milestone
 
-![v0.2 RTL connection diagram](assets/diagrams/v0.2-sideband/rtl-connections.svg)
+![v0.3 RTL connection diagram](assets/diagrams/v0.3-advanced-training/rtl-connections.svg)
 
-The diagram shows the implemented ready/valid channel, bounded sequencer, LTSM feedback paths, and the remaining v0.2 scope boundary.
+The diagram shows the implemented DATATRAINCENTER1 start/abort and result paths, generated/received training interface, and the remaining digital-only scope boundary.
+
+## v0.3 evidence pack
+
+| Artifact | Published file | Provenance |
+|---|---|---|
+| Pattern progression waveform | [SVG](assets/waveforms/v0.3-advanced-training/pattern-progression.svg) | Questa VCD from the self-checking LFSR engine test |
+| Threshold/abort waveform | [SVG](assets/waveforms/v0.3-advanced-training/threshold-and-abort.svg) | Same directed run: pass, equality fail, pass, abort |
+| RTL connections | [SVG](assets/diagrams/v0.3-advanced-training/rtl-connections.svg) | `ucie_ltsm` and `ucie_lfsr_training_engine` integration |
+| Verification connections | [SVG](assets/diagrams/v0.3-advanced-training/verification-connections.svg) | Seeded UVM, independent model, scoreboard, SVA, explicit coverage, and directed proof |
+| Quartus netlist | [Verilog](synthesis/quartus/netlists/v0.3-advanced-training/ucie_ltsm.vo) | Quartus 23.1 functional netlist for the checked Cyclone 10 LP target |
+| Signal/function guide | [Documentation](docs/02_ltssm/signals.md#v03-training-signal-guide) | Functional interpretation for every plotted v0.3 signal |
+| Definitions and long forms | [Glossary](docs/glossary.md) | Canonical project terminology and abbreviation expansions |
+
+![v0.3 strict threshold and abort waveform](assets/waveforms/v0.3-advanced-training/threshold-and-abort.svg)
+
+The [v0.3 milestone page](docs/versions/v0.3_advanced_training.md) presents both waveforms and both diagrams with the five-seed results, Quartus evidence, netlist identity, reproduction commands, and explicit limitations.
 
 ## v0.2 evidence pack
 
@@ -88,16 +106,16 @@ The [v0.2 milestone page](docs/versions/v0.2_sideband.md) presents both waveform
 | v0.1 | Initial | Basic hierarchical LTSM controller | Directed + four UVM tests + SVA | Stable within stated scope |
 | v0.2 | v0.1 | Bounded SBINIT sideband sequencing | Directed + eight UVM tests + SVA | Stable within stated scope |
 | v0.2-random | v0.2 | Verification-only seeded random campaign | Five seeds / 200 trials + preserved regression | Stable verification update |
-| v0.3 | v0.2 | Concrete training-operation engines | To be defined with implementation | Planned |
+| v0.3 | v0.2-random | DATATRAINCENTER1 digital LFSR training | Five seeds / 160 trials + independent model + SVA + directed 4096 proof | Stable within stated scope |
 | v0.4 | v0.3 | Expanded recovery and error reporting | To be defined with implementation | Planned |
 | v1.0 | Later milestones | Integrated verified controller | Evidence not yet available | Future |
 
-See the [roadmap](ROADMAP.md), [changelog](CHANGELOG.md), and [v0.2 randomized verification page](docs/versions/v0.2_random_uvm.md).
+See the [roadmap](ROADMAP.md), [changelog](CHANGELOG.md), and [v0.3 milestone page](docs/versions/v0.3_advanced_training.md).
 
 ## Repository structure
 
 ```text
-rtl/                 Synthesizable package, LTSM controller, and sideband sequencer
+rtl/                 Synthesizable package, LTSM, sideband sequencer, and LFSR training engine
 verification/        Directed testbench, SVA, and UVM environment
 scripts/             Questa directed and UVM run scripts
 quartus/             Reproducible Quartus project and selected summaries
@@ -145,6 +163,13 @@ Regenerate the v0.2 sideband waveform figures:
 python scripts/render_sideband_waveforms.py
 ```
 
+Regenerate the v0.3 DATATRAINCENTER1 waveform figures:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/capture_datatrain_waveform.do
+python scripts/render_datatrain_waveforms.py
+```
+
 ### UVM regression
 
 ```powershell
@@ -161,6 +186,14 @@ Run the repeatable constrained-domain randomized campaign:
 
 This runs `sb_random_test` with seeds `101`, `202`, `303`, `404`, and `505`; each seed executes 40 reset-isolated transactions with independently selected 1–3 cycle transmit backpressure and response delay. Questa Starter does not license class `randomize()`, so the explicit domains use seeded `$urandom_range` and an end-of-test predictor/monitor comparison.
 
+Run the v0.3 DATATRAINCENTER1 campaign:
+
+```powershell
+.\scripts\run_datatrain_random_regression.ps1
+```
+
+This runs seeds `701`, `802`, `903`, `1004`, and `1105`, each with 32 reset-isolated trials. The independent model checks lane seeds, every 23-bit polynomial step, generated/received patterns, corruption masks, saturated counts, and strict results. Explicit sampled bins/crosses replace native covergroups under the Starter license.
+
 ### Quartus
 
 ```powershell
@@ -174,16 +207,16 @@ The checked project targets `10CL025YU256C8G` and constrains `clk_i` to 12.5 ns 
 To rebuild and export the reviewed functional netlist:
 
 ```powershell
-.\scripts\export_quartus_netlist.ps1 -Version v0.2-sideband
+.\scripts\export_quartus_netlist.ps1 -Version v0.3-advanced-training
 ```
 
 ## Current limitations
 
 - Only the SBINIT-done request/response pair is implemented; physical sideband detection, repair, framing, CRC, credits, and the broader message set are absent.
 - `phase_done_i` can still bypass the SBINIT sideband handshake.
-- Mainband calibration, pattern generation/checking, lane repair/degrade, and analog PHY controls are abstracted.
+- Only one digital DATATRAINCENTER1 pattern/check operation is concrete; analog calibration, physical pattern transport, Vref/phase search, equalization, lane repair/degrade, and analog PHY controls remain abstracted.
 - RDI, DVSEC/CSR, management transport, detailed error logging, and compliance testing are absent.
-- UVM functional covergroups and per-substate coverage closure are absent.
+- Native UVM covergroups/UCDB percentages and full per-substate coverage closure are absent; v0.3 uses explicit sampled bins/crosses.
 - The UVM suite does not yet test the L2 exit or all three retrain targets.
 - No Cadence synthesis, timing, area, or power evidence is present.
 
