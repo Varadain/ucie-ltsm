@@ -3,7 +3,8 @@ module ucie_ltsm #(
   parameter int unsigned RESET_MIN_US = 4_000,
   parameter int unsigned TIMEOUT_US   = 8_000,
   parameter int unsigned SB_RESPONSE_TIMEOUT_CYCLES = 256,
-  parameter int unsigned SB_MAX_RETRIES = 1
+  parameter int unsigned SB_MAX_RETRIES = 1,
+  parameter int unsigned DATATRAIN_SAMPLE_COUNT = 4096
 ) (
   input  logic clk_i,
   input  logic rst_ni,
@@ -35,6 +36,16 @@ module ucie_ltsm #(
   output logic                   sb_protocol_error_o,
   output logic                   sb_retry_o,
 
+  output logic        train_tx_valid_o,
+  output logic [15:0] train_tx_pattern_o,
+  input  logic        train_rx_valid_i,
+  input  logic [15:0] train_rx_pattern_i,
+  input  logic [15:0] train_error_threshold_i,
+  output logic        train_busy_o,
+  output logic        train_done_o,
+  output logic        train_pass_o,
+  output logic [15:0] train_error_count_o,
+
   output ucie_ltsm_pkg::ltsm_state_e state_o,
   output ucie_ltsm_pkg::mbinit_state_e mbinit_state_o,
   output ucie_ltsm_pkg::mbtrain_state_e mbtrain_state_o,
@@ -57,6 +68,7 @@ module ucie_ltsm #(
   logic [TIMER_W-1:0] timer_q;
   logic state_changed, substate_changed, timeout_enable, reset_min_met;
   logic sb_start, sb_done;
+  logic train_start;
 
   assign sb_start = (state_q == LTSM_SBINIT) && !sb_busy_o && !sb_done;
 
@@ -79,6 +91,22 @@ module ucie_ltsm #(
     .done_o(sb_done),
     .protocol_error_o(sb_protocol_error_o),
     .retry_o(sb_retry_o)
+  );
+
+  assign train_start = (state_q == LTSM_MBTRAIN) &&
+                       (mbt_q == MBT_DATATRAINCENTER1) &&
+                       !train_busy_o && !train_done_o;
+
+  ucie_lfsr_training_engine #(
+    .SAMPLE_COUNT(DATATRAIN_SAMPLE_COUNT)
+  ) u_lfsr_training_engine (
+    .clk_i(clk_i), .rst_ni(rst_ni), .start_i(train_start),
+    .abort_i((state_q != LTSM_MBTRAIN) || (mbt_q != MBT_DATATRAINCENTER1)),
+    .error_threshold_i(train_error_threshold_i),
+    .tx_valid_o(train_tx_valid_o), .tx_pattern_o(train_tx_pattern_o),
+    .rx_valid_i(train_rx_valid_i), .rx_pattern_i(train_rx_pattern_i),
+    .busy_o(train_busy_o), .done_o(train_done_o), .pass_o(train_pass_o),
+    .error_count_o(train_error_count_o)
   );
 
   assign state_o = state_q;
@@ -145,7 +173,8 @@ module ucie_ltsm #(
             default: begin state_d = LTSM_MBTRAIN; mbt_d = MBT_VALVREF; end
           endcase
         end
-        LTSM_MBTRAIN: if (phase_done_i) begin
+        LTSM_MBTRAIN: if (phase_done_i ||
+                          ((mbt_q == MBT_DATATRAINCENTER1) && train_done_o && train_pass_o)) begin
           unique case (mbt_q)
             MBT_VALVREF:          mbt_d = MBT_DATAVREF;
             MBT_DATAVREF:         mbt_d = MBT_SPEEDIDLE;

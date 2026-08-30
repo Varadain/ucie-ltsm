@@ -14,6 +14,9 @@ module tb_ucie_ltsm;
   logic sb_tx_valid_o, sb_tx_ready_i, sb_rx_valid_i;
   logic sb_busy_o, sb_protocol_error_o, sb_retry_o;
   sb_msg_e sb_tx_message_o, sb_rx_message_i;
+  logic train_tx_valid_o, train_rx_valid_i, train_busy_o, train_done_o, train_pass_o;
+  logic [15:0] train_tx_pattern_o, train_rx_pattern_i;
+  logic [15:0] train_error_threshold_i, train_error_count_o;
 
   always #5 clk = ~clk;
   ucie_ltsm #(.CLK_HZ(100_000_000), .RESET_MIN_US(1), .TIMEOUT_US(2)) dut (.*,
@@ -28,7 +31,11 @@ module tb_ucie_ltsm;
     .rdi_active_i(rdi_active), .retrain_req_i(retrain_req), .retrain_target_i(retrain_target),
     .pm_l1_req_i(pm_l1_req), .pm_l2_req_i(pm_l2_req), .pm_exit_i(pm_exit));
   ucie_ltsm_sva sva(.clk_i(clk), .rst_ni(rst_n), .state_i(state),
-                    .timeout_i(timeout), .link_up_i(link_up), .fatal_error_i(fatal_error));
+                    .timeout_i(timeout), .link_up_i(link_up), .fatal_error_i(fatal_error),
+                    .mbtrain_state_i(mbt), .train_rx_valid_i(train_rx_valid_i),
+                    .train_busy_i(train_busy_o), .train_done_i(train_done_o),
+                    .train_pass_i(train_pass_o), .train_error_count_i(train_error_count_o),
+                    .train_error_threshold_i(train_error_threshold_i));
 
   task automatic pulse_done; begin phase_done=1; @(posedge clk); #1 phase_done=0; end endtask
   task automatic expect_state(input ltsm_state_e exp); begin
@@ -41,6 +48,7 @@ module tb_ucie_ltsm;
     error_escalated=0; sideband_tx_idle=1; rdi_active=0; retrain_req=0;
     retrain_target=RETRAIN_TXSELFCAL; pm_l1_req=0; pm_l2_req=0; pm_exit=0;
     sb_tx_ready_i=0; sb_rx_valid_i=0; sb_rx_message_i=SB_MSG_NOP;
+    train_rx_valid_i=0; train_rx_pattern_i='0; train_error_threshold_i=16'd1;
     repeat(3) @(posedge clk); rst_n=1;
     supplies_stable=1; sideband_clk_ok=1; internal_clks_ok=1; link_train_trigger=1;
     wait(state==LTSM_SBINIT); pulse_done(); expect_state(LTSM_MBINIT);

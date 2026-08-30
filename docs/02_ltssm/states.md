@@ -9,7 +9,7 @@ This page describes the checked RTL, not every behavior in the UCIe specificatio
 | `LTSM_RESET` | Initializes MBINIT to `PARAM`, MBTRAIN to `VALVREF`; holds mainband tristated. | Asynchronous reset, L2 exit, TRAINERROR recovery, or default recovery | After minimum RESET time, stable supplies, sideband/internal clocks ready, firmware reset clear, and link-training trigger set | No timeout; minimum-residence counter still runs | Directed and `nominal_test`; TRAINERROR return in directed/recovery; L2 entry untested |
 | `LTSM_SBINIT` | Starts and supervises the bounded SBINIT-done request/response; sideband enabled and mainband tristated | RESET readiness condition | Expected response or compatibility `phase_done_i` -> MBINIT/`PARAM` | Eligible for LTSM timeout; wrong response or exhausted sequencer retries enters TRAINERROR | Nominal/timeout tests plus sideband success, retry, malformed-response, and exhaustion tests |
 | `LTSM_MBINIT` | Advances the six ordered mainband-initialization labels | SBINIT completion | A non-stalled `phase_done_i` advances a substate; completion of `REPAIRMB` -> MBTRAIN/`VALVREF` | Timer restarts for every substate and while stalled; eligible for timeout | Ordered path exercised by directed and nominal UVM tests; no per-substate coverage report |
-| `LTSM_MBTRAIN` | Advances the thirteen ordered mainband-training labels | MBINIT completion, retrain completion, or L1 exit | `phase_done_i` advances a substate; completion of `REPAIR` -> LINKINIT | Timer restarts for every substate; eligible for timeout | Full ordered path exercised by nominal tests; SPEEDIDLE re-entry exercised |
+| `LTSM_MBTRAIN` | Advances the thirteen ordered mainband-training labels and runs the v0.3 digital LFSR operation in `DATATRAINCENTER1` | MBINIT completion, retrain completion, or L1 exit | `phase_done_i` advances a substate; `DATATRAINCENTER1` also advances on `train_done_o && train_pass_o`; completion of `REPAIR` -> LINKINIT | Timer restarts for every substate; eligible for timeout | Full ordered path, SPEEDIDLE re-entry, and five-seed DATATRAINCENTER1 pass/fail/retry/abort/timeout campaign |
 | `LTSM_LINKINIT` | Waits for the external RDI/link-initialization result | MBTRAIN completion | `rdi_active_i` -> ACTIVE | Eligible for timeout | Directed and `nominal_test` |
 | `LTSM_ACTIVE` | Declares the modeled link up | LINKINIT completion | Retrain request -> PHYRETRAIN; otherwise PM request -> L1L2 | No timeout; accepted fatal error can enter TRAINERROR | Directed and `nominal_test`; retrain and PM UVM tests |
 | `LTSM_PHYRETRAIN` | Chooses the MBTRAIN restart target | ACTIVE retrain request | `phase_done_i` -> MBTRAIN at `TXSELFCAL`, `SPEEDIDLE`, or `REPAIR` | Eligible for timeout | `SPEEDIDLE` target exercised by directed and `recovery_test`; other targets untested in UVM |
@@ -31,7 +31,7 @@ The table does not claim that parameter exchange, calibration, repair, or revers
 
 ## MBTRAIN substates
 
-Each `phase_done_i` advances one step:
+Each `phase_done_i` advances one step. `MBT_DATATRAINCENTER1` additionally advances automatically when the v0.3 engine reports `done && pass`; failure remains in the same substate and starts another attempt.
 
 | Order | RTL name | Next |
 |---:|---|---|
@@ -42,7 +42,7 @@ Each `phase_done_i` advances one step:
 | 5 | `MBT_RXCLKCAL` | `MBT_VALTRAINCENTER` |
 | 6 | `MBT_VALTRAINCENTER` | `MBT_VALTRAINVREF` |
 | 7 | `MBT_VALTRAINVREF` | `MBT_DATATRAINCENTER1` |
-| 8 | `MBT_DATATRAINCENTER1` | `MBT_DATATRAINVREF` |
+| 8 | `MBT_DATATRAINCENTER1` | `phase_done_i` compatibility bypass or successful LFSR result -> `MBT_DATATRAINVREF`; failed result -> repeat in place |
 | 9 | `MBT_DATATRAINVREF` | `MBT_RXDESKEW` |
 | 10 | `MBT_RXDESKEW` | `MBT_DATATRAINCENTER2` |
 | 11 | `MBT_DATATRAINCENTER2` | `MBT_LINKSPEED` |

@@ -6,13 +6,17 @@ package ucie_ltsm_uvm_pkg;
   typedef enum {OP_RESET, OP_START, OP_DONE, OP_RDI_ACTIVE, OP_RETRAIN, OP_FATAL,
                 OP_STALL, OP_WAIT_TIMEOUT, OP_L1_EXIT, OP_L2_EXIT,
                 OP_SB_SUCCESS, OP_SB_RETRY_SUCCESS, OP_SB_BAD_RESPONSE,
-                OP_SB_EXHAUST_RETRIES} ltsm_op_e;
+                OP_SB_EXHAUST_RETRIES, OP_TRAIN_TRIAL} ltsm_op_e;
 
   class ltsm_item extends uvm_sequence_item;
     rand ltsm_op_e op;
     rand retrain_target_e retrain_target;
     rand int unsigned cycles;
     rand int unsigned response_cycles;
+    int unsigned train_scenario;
+    int unsigned error_bits;
+    int unsigned threshold;
+    int unsigned abort_sample;
     constraint c_cycles { cycles inside {[1:50]}; }
     constraint c_response_cycles { response_cycles inside {[1:50]}; }
     `uvm_object_utils(ltsm_item)
@@ -27,6 +31,9 @@ package ucie_ltsm_uvm_pkg;
   class ltsm_driver extends uvm_driver #(ltsm_item);
     `uvm_component_utils(ltsm_driver)
     virtual ucie_ltsm_if vif;
+    int train_trials, train_passes, train_failures, train_aborts, train_timeouts;
+    int train_retries, clean_samples, corrupt_samples, gap_cycles;
+    int cov_scenario[4], cov_error[4], cov_gap[3], cov_threshold[2], cov_scenario_gap[4][3];
     function new(string name, uvm_component parent); super.new(name,parent); endfunction
     function void build_phase(uvm_phase phase);
       super.build_phase(phase);
@@ -34,11 +41,63 @@ package ucie_ltsm_uvm_pkg;
         `uvm_fatal("NOVIF","LTSM virtual interface not configured")
     endfunction
     task pulse(ref logic sig); sig=1; @(posedge vif.clk); #1 sig=0; endtask
+    function automatic logic [22:0] train_seed(input int lane);
+      case(lane%8)
+        0: return 23'h1dbfbc; 1: return 23'h0607bb; 2: return 23'h1ec760; 3: return 23'h18c0db;
+        4: return 23'h010f12; 5: return 23'h19cfc9; 6: return 23'h0277ce; default: return 23'h1bb807;
+      endcase
+    endfunction
+    function automatic logic [22:0] train_next(input logic [22:0] v);
+      return {v[21:0],v[22]^v[20]^v[15]^v[7]^v[4]^v[1]};
+    endfunction
+    task goto_train_center1();
+      vif.supplies_stable=1; vif.sideband_clk_ok=1; vif.internal_clks_ok=1;
+      vif.link_train_trigger=1; wait(vif.state==LTSM_SBINIT);
+      pulse(vif.phase_done);
+      repeat(6) pulse(vif.phase_done);
+      repeat(7) pulse(vif.phase_done);
+      if(vif.state!=LTSM_MBTRAIN || vif.mbt!=MBT_DATATRAINCENTER1)
+        `uvm_error("TRAIN_NAV","Failed to reach DATATRAINCENTER1")
+      wait(vif.train_busy && vif.state==LTSM_MBTRAIN && vif.mbt==MBT_DATATRAINCENTER1); #1;
+    endtask
+    task drive_train_attempt(input int error_bits, input int threshold, input int gap,
+                             input int abort_sample, input bit expect_pass);
+      logic [22:0] ref_lfsr[16]; logic [15:0] expected, mask;
+      int expected_errors=0;
+      for(int l=0;l<16;l++) ref_lfsr[l]=train_seed(l);
+      vif.train_error_threshold=threshold;
+      for(int n=0;n<8;n++) begin
+        repeat(gap) begin @(posedge vif.clk); gap_cycles++; end
+        if(abort_sample==n) begin
+          pulse(vif.phase_done); train_aborts++;
+          repeat(2) @(posedge vif.clk); #1;
+          if(vif.train_busy || vif.train_done || vif.train_pass || vif.train_error_count)
+            `uvm_error("TRAIN_ABORT","Training engine not cleared after leaving DATATRAINCENTER1")
+          return;
+        end
+        for(int l=0;l<16;l++) expected[l]=ref_lfsr[l][22];
+        if(vif.train_tx_pattern!==expected)
+          `uvm_error("TRAIN_LFSR",$sformatf("sample=%0d expected=%h got=%h",n,expected,vif.train_tx_pattern))
+        mask='0;
+        for(int b=0;b<error_bits;b++) mask[(b+n)%16]=1'b1;
+        expected_errors+=error_bits;
+        if(error_bits==0) clean_samples++; else corrupt_samples++;
+        @(negedge vif.clk); vif.train_rx_pattern=expected^mask; vif.train_rx_valid=1;
+        @(posedge vif.clk); #1; vif.train_rx_valid=0;
+        for(int l=0;l<16;l++) ref_lfsr[l]=train_next(ref_lfsr[l]);
+      end
+      if(!vif.train_done || vif.train_error_count!=expected_errors || vif.train_pass!=expect_pass)
+        `uvm_error("TRAIN_RESULT",$sformatf("expected errors/pass=%0d/%0b observed=%0d/%0b done=%0b",
+          expected_errors,expect_pass,vif.train_error_count,vif.train_pass,vif.train_done))
+      if(expect_pass) train_passes++; else train_failures++;
+      @(posedge vif.clk); #1;
+    endtask
     task drive(ltsm_item tr);
       case(tr.op)
         OP_RESET: begin
           vif.rst_n=0; vif.clear_controls();
           repeat(3) @(posedge vif.clk); #1 vif.rst_n=1;
+          @(posedge vif.clk); #1;
         end
         OP_START: begin
           vif.supplies_stable=1; vif.sideband_clk_ok=1; vif.internal_clks_ok=1;
@@ -109,11 +168,58 @@ package ucie_ltsm_uvm_pkg;
           @(posedge vif.clk); #1 vif.sb_tx_ready=0;
           wait(vif.sb_protocol_error); repeat(2) @(posedge vif.clk);
         end
+        OP_TRAIN_TRIAL: begin
+          train_trials++;
+          cov_scenario[tr.train_scenario]++;
+          if(tr.error_bits==0) cov_error[0]++;
+          else if(tr.error_bits<=4) cov_error[1]++;
+          else if(tr.error_bits<16) cov_error[2]++;
+          else cov_error[3]++;
+          if(tr.cycles==0) begin cov_gap[0]++; cov_scenario_gap[tr.train_scenario][0]++; end
+          else if(tr.cycles<=2) begin cov_gap[1]++; cov_scenario_gap[tr.train_scenario][1]++; end
+          else begin cov_gap[2]++; cov_scenario_gap[tr.train_scenario][2]++; end
+          cov_threshold[tr.threshold==tr.error_bits*8]++;
+          goto_train_center1();
+          case(tr.train_scenario)
+            0: begin
+              drive_train_attempt(tr.error_bits,tr.threshold,tr.cycles,-1,1);
+              if(vif.mbt!=MBT_DATATRAINVREF) `uvm_error("TRAIN_ADVANCE","Passing run did not advance")
+            end
+            1: begin
+              drive_train_attempt(tr.error_bits,tr.threshold,tr.cycles,-1,0);
+              if(vif.mbt!=MBT_DATATRAINCENTER1) `uvm_error("TRAIN_RESIDE","Failed run left center1")
+              train_retries++; wait(vif.train_busy); #1;
+              drive_train_attempt(0,1,tr.response_cycles,-1,1);
+              if(vif.mbt!=MBT_DATATRAINVREF) `uvm_error("TRAIN_RETRY","Retry pass did not advance")
+            end
+            2: drive_train_attempt(tr.error_bits,tr.threshold,tr.cycles,tr.abort_sample,0);
+            default: begin
+              wait(vif.timeout); train_timeouts++;
+              @(posedge vif.clk); #1;
+              if(vif.state!=LTSM_TRAINERROR) `uvm_error("TRAIN_TIMEOUT","LTSM timeout did not enter TRAINERROR")
+              @(posedge vif.clk); #1;
+              if(vif.train_busy) `uvm_error("TRAIN_TIMEOUT","Engine remained busy after timeout abort")
+            end
+          endcase
+        end
       endcase
     endtask
     task run_phase(uvm_phase phase);
       forever begin seq_item_port.get_next_item(req); drive(req); seq_item_port.item_done(); end
     endtask
+    function void report_phase(uvm_phase phase);
+      `uvm_info("TRAIN_COVERAGE",$sformatf("trials=%0d pass=%0d fail=%0d retry=%0d abort=%0d timeout=%0d clean_samples=%0d corrupt_samples=%0d gap_cycles=%0d",
+        train_trials,train_passes,train_failures,train_retries,train_aborts,train_timeouts,
+        clean_samples,corrupt_samples,gap_cycles),UVM_LOW)
+      `uvm_info("TRAIN_FUNC_COVERAGE",$sformatf("scenario=%0d/%0d/%0d/%0d error_bins=%0d/%0d/%0d/%0d gap_bins=%0d/%0d/%0d threshold_away/equal=%0d/%0d scenario_x_gap=%0d,%0d,%0d;%0d,%0d,%0d;%0d,%0d,%0d;%0d,%0d,%0d",
+        cov_scenario[0],cov_scenario[1],cov_scenario[2],cov_scenario[3],
+        cov_error[0],cov_error[1],cov_error[2],cov_error[3],cov_gap[0],cov_gap[1],cov_gap[2],
+        cov_threshold[0],cov_threshold[1],
+        cov_scenario_gap[0][0],cov_scenario_gap[0][1],cov_scenario_gap[0][2],
+        cov_scenario_gap[1][0],cov_scenario_gap[1][1],cov_scenario_gap[1][2],
+        cov_scenario_gap[2][0],cov_scenario_gap[2][1],cov_scenario_gap[2][2],
+        cov_scenario_gap[3][0],cov_scenario_gap[3][1],cov_scenario_gap[3][2]),UVM_LOW)
+    endfunction
   endclass
 
   class state_sample extends uvm_sequence_item;
@@ -312,6 +418,29 @@ package ucie_ltsm_uvm_pkg;
       end
     endtask
   endclass
+  class datatrain_random_seq extends ltsm_base_seq;
+    `uvm_object_utils(datatrain_random_seq)
+    int iterations=32;
+    int scenario_hits[4];
+    function new(string name="datatrain_random_seq"); super.new(name); endfunction
+    task body();
+      ltsm_item t; int scenario, total_errors;
+      for(int i=0;i<iterations;i++) begin
+        send(OP_RESET);
+        scenario=(i<4)?i:$urandom_range(3,0);
+        scenario_hits[scenario]++;
+        t=ltsm_item::type_id::create($sformatf("random_train_%0d",i)); start_item(t);
+        t.op=OP_TRAIN_TRIAL; t.train_scenario=scenario;
+        t.cycles=$urandom_range(3,0); t.response_cycles=$urandom_range(3,0);
+        t.error_bits=(scenario==0)?$urandom_range(3,0):$urandom_range(16,1);
+        total_errors=t.error_bits*8;
+        t.threshold=(scenario==0)?$urandom_range(16'hfffe,total_errors+1):
+                    $urandom_range(total_errors,0);
+        t.abort_sample=$urandom_range(7,0);
+        finish_item(t);
+      end
+    endtask
+  endclass
 
   class ltsm_base_test extends uvm_test;
     `uvm_component_utils(ltsm_base_test)
@@ -400,6 +529,25 @@ package ucie_ltsm_uvm_pkg;
           env.agent.mon.sb_requests,env.agent.mon.sb_responses,
           env.agent.mon.sb_retries,env.agent.mon.sb_errors))
       `uvm_info("RANDSUMMARY",$sformatf("iterations=%0d scenario hits=%0d/%0d/%0d/%0d",
+        s.iterations,s.scenario_hits[0],s.scenario_hits[1],s.scenario_hits[2],s.scenario_hits[3]),UVM_LOW)
+    endfunction
+  endclass
+  class datatrain_random_test extends ltsm_base_test;
+    `uvm_component_utils(datatrain_random_test)
+    datatrain_random_seq s;
+    function new(string name,uvm_component parent); super.new(name,parent); endfunction
+    task run_phase(uvm_phase phase);
+      s=datatrain_random_seq::type_id::create("s");
+      phase.raise_objection(this); s.start(env.agent.sqr); #100ns; phase.drop_objection(this);
+    endtask
+    function void report_phase(uvm_phase phase);
+      foreach(s.scenario_hits[i]) if(s.scenario_hits[i]==0)
+        `uvm_error("TRAIN_RANDCOV",$sformatf("Training scenario %0d was not exercised",i))
+      if(env.agent.drv.train_trials!=s.iterations || env.agent.drv.train_passes==0 ||
+         env.agent.drv.train_failures==0 || env.agent.drv.train_retries==0 ||
+         env.agent.drv.train_aborts==0 || env.agent.drv.train_timeouts==0)
+        `uvm_error("TRAIN_RANDPRED","Required randomized training outcomes were not observed")
+      `uvm_info("TRAIN_RANDSUMMARY",$sformatf("iterations=%0d scenario_hits pass/retry/abort/timeout=%0d/%0d/%0d/%0d",
         s.iterations,s.scenario_hits[0],s.scenario_hits[1],s.scenario_hits[2],s.scenario_hits[3]),UVM_LOW)
     endfunction
   endclass

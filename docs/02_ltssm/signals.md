@@ -28,6 +28,9 @@ All signal names below match [`ucie_ltsm.sv`](../../rtl/ucie_ltsm.sv).
 | `sb_tx_ready_i` | Accepts the sequencer's currently presented request | SBINIT sideband SEND state |
 | `sb_rx_valid_i` | Marks `sb_rx_message_i` as a received response | SBINIT sideband WAIT state |
 | `sb_rx_message_i` | Transaction-level response value checked against `SB_MSG_SBINIT_DONE_RESP` | SBINIT sideband WAIT state |
+| `train_rx_valid_i` | Marks `train_rx_pattern_i` as an accepted training sample while the engine is busy | `MBT_DATATRAINCENTER1` |
+| `train_rx_pattern_i` | Sixteen received lane bits compared against the generated expected pattern | `MBT_DATATRAINCENTER1` |
+| `train_error_threshold_i` | Strict pass threshold; equality fails | End of each training attempt |
 
 ## Outputs
 
@@ -45,6 +48,12 @@ All signal names below match [`ucie_ltsm.sv`](../../rtl/ucie_ltsm.sv).
 | `sb_busy_o` | High while the sequencer is sending a request or waiting for its response |
 | `sb_retry_o` | One-cycle indication that a response timeout caused a bounded retransmission |
 | `sb_protocol_error_o` | One-cycle indication for an unexpected response or exhausted retry budget |
+| `train_tx_valid_o` | High while the training engine is busy and `train_tx_pattern_o` is active |
+| `train_tx_pattern_o` | Sixteen generated lane bits from the current 23-bit LFSR states |
+| `train_busy_o` | High from accepted start through the configured final accepted sample |
+| `train_done_o` | One-cycle pulse after the configured final accepted sample |
+| `train_pass_o` | Result level for the completed attempt; high only when the error count is strictly below threshold |
+| `train_error_count_o` | Saturating 16-bit count of received-versus-expected bit mismatches |
 
 <a id="waveform-signal-guide"></a>
 ## Waveform signal guide
@@ -155,6 +164,68 @@ One-cycle sequencer pulse following an accepted expected response. Inside `ucie_
 
 One-cycle pulse caused by an unexpected valid response or exhausted retry budget. In SBINIT, the LTSM gives this error the same global priority as a fatal error and selects TRAINERROR.
 
+<a id="v03-training-signal-guide"></a>
+### v0.3 DATATRAINCENTER1 waveform signals
+
+The v0.3 release waveforms come from the self-checking LFSR engine test. The integrated public names use the `train_` prefix; `start_i` and `abort_i` are internal engine controls driven by `ucie_ltsm`.
+
+<a id="wave-train-start"></a>
+#### Training start (`start_i`, internal)
+
+Starts a new attempt when the registered LTSM state/substate is `MBTRAIN.DATATRAINCENTER1` and the engine is idle. It reloads all lane seeds and clears the counters/result.
+
+<a id="wave-train-abort"></a>
+#### Training abort (`abort_i`, internal)
+
+Clears busy, done, pass, lane state, sample count, and error count after reset or any exit from `DATATRAINCENTER1`.
+
+<a id="wave-train-busy"></a>
+#### Training busy (`train_busy_o`)
+
+Indicates that an attempt is active. The engine drives a valid expected pattern while busy.
+
+<a id="wave-train-tx-valid"></a>
+#### Training transmit valid (`train_tx_valid_o`)
+
+Equals the engine's busy state and qualifies the generated 16-bit transmit pattern.
+
+<a id="wave-train-tx-pattern"></a>
+#### Training transmit pattern (`train_tx_pattern_o`)
+
+The current most-significant bit from each of sixteen 23-bit lane LFSRs. The eight defined lane seeds repeat modulo eight across the sixteen lanes.
+
+<a id="wave-train-rx-valid"></a>
+#### Training receive valid (`train_rx_valid_i`)
+
+Accepts one received sample. The lane LFSRs, sample count, and error count advance only on a busy cycle with this input asserted; low cycles model legal receive gaps.
+
+<a id="wave-train-rx-pattern"></a>
+#### Training receive pattern (`train_rx_pattern_i`)
+
+The behavioral channel's sixteen received lane bits. Verification uses a clean copy or an independently chosen corruption mask.
+
+<a id="wave-train-threshold"></a>
+#### Training error threshold (`train_error_threshold_i`)
+
+Configures the strict end-of-attempt comparison. A count equal to the threshold fails; only a smaller count passes.
+
+<a id="wave-train-error-count"></a>
+#### Training error count (`train_error_count_o`)
+
+The accumulated popcount of `received XOR expected`, saturated at `16'hffff` instead of wrapping.
+
+<a id="wave-train-done"></a>
+#### Training done (`train_done_o`)
+
+One-cycle pulse after the configured final accepted sample. It is never asserted while busy.
+
+<a id="wave-train-pass"></a>
+#### Training pass (`train_pass_o`)
+
+Completion result for the latest attempt. In the integrated LTSM, `done && pass` advances to `DATATRAINVREF`; failure remains in `DATATRAINCENTER1` for another attempt.
+
 ## Integration warning
 
 Names such as `supplies_stable_i` and `phase_done_i` describe architectural intent, but their producers are not included. A future top-level integration must define synchronization, pulse/level semantics, and clock-domain behavior before connecting external blocks.
+
+See the [project glossary](../glossary.md) for abbreviation long forms and related verification/synthesis terminology.

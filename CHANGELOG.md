@@ -2,6 +2,33 @@
 
 All notable project milestones are documented here. Source snapshots are preserved by Git tags rather than duplicated version folders.
 
+## v0.3-advanced-training - DATATRAINCENTER1 Digital LFSR Training
+
+### Added
+
+- Synthesizable `ucie_lfsr_training_engine` with sixteen 23-bit lane LFSRs, eight seeds repeated modulo eight, accepted-sample progression, and a 16-bit generated pattern.
+- Mismatch popcount, 16-bit saturating error accumulation, configurable accepted-sample count, and strict `error_count < threshold` result.
+- `ucie_ltsm` integration in `MBT_DATATRAINCENTER1`; successful completion advances to `DATATRAINVREF`, failure repeats in place, and reset/substate exit aborts cleanly.
+- Focused directed test for seeds, polynomial, gaps, equality, abort, default 4096 samples, and `16'hffff` saturation.
+- Five-seed randomized UVM campaign with an independent reference model, training SVA, and explicit sampled functional-coverage bins/crosses.
+- Colorful pattern and threshold/abort waveform SVGs, RTL/verification connection diagrams, reviewed Quartus functional netlist, and a project-wide glossary.
+
+### Verification
+
+- Five of five DATATRAINCENTER1 seeds passed: 160 trials covering 47 direct passes, 32 fail/retry cases, 44 aborts, and 37 LTSM timeouts.
+- The independent model checked 368 clean samples, 654 corrupted samples, 1,768 receive-gap cycles, every lane/polynomial step, exact/saturated counts, and strict results.
+- All required outcome, error, gap, threshold, and twelve scenario-by-gap bins/crosses were hit.
+- Zero UVM errors/fatals, zero illegal top-level transitions, zero assertion failures, and zero DUT/reference mismatches.
+- Preserved 8/8 deterministic UVM tests, 5/5 v0.2 sideband seeds, and all three directed suites passed independently.
+- Quartus 23.1 full compilation passed with 698 logic elements, 465 registers, +0.744 ns worst setup slack at 80 MHz, +0.178 ns worst hold slack across corners, and zero setup/hold TNS.
+
+### Known limitations
+
+- This is digital training control, not an analog/electrical PHY, BER qualification, or UCIe compliance result.
+- The randomized campaign uses eight accepted samples per attempt; the default 4096 behavior is proven in a focused directed test.
+- Questa Starter cannot license class `randomize()` or native covergroups; seeded legal domains and explicit sampled coverage are used without a UCDB percentage claim.
+- External FPGA I/O timing/pins remain incomplete, and no ASIC area/power/timing evidence is present.
+
 ## v0.2-random-uvm - Seeded Randomized Verification
 
 ### Added

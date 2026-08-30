@@ -6,7 +6,7 @@ This roadmap separates demonstrated work from intended work. A planned item is n
 flowchart TD
     V01["v0.1 - Basic LTSM<br/>Stable"] --> V02["v0.2 - Sideband sequencing<br/>Stable"]
     V02 --> V02R["v0.2 random UVM<br/>Stable verification update"]
-    V02R --> V03["v0.3 - Training engines<br/>Planned"]
+    V02R --> V03["v0.3 - DATATRAINCENTER1 LFSR<br/>Stable"]
     V03 --> V04["v0.4 - Recovery and error expansion<br/>Planned"]
     V04 --> V10["v1.0 - Integrated verified controller<br/>Future"]
 ```
@@ -41,12 +41,15 @@ Status: **stable verification-only update**
 - Checks cumulative predicted event totals against a passive monitor and retains the complete deterministic regression gate.
 - Publishes reviewed seed/outcome and UVM connection-flow figures with links to detailed results and limitations.
 
-## v0.3 - Training-operation engines
+## v0.3 - DATATRAINCENTER1 LFSR training
 
-Status: **planned**
+Status: **stable within the digital training-control scope**
 
-- Integrate concrete mainband training operations, pattern control, and result handshakes.
-- Add implementation-specific MBINIT/MBTRAIN checks and coverage.
+- Integrates sixteen 23-bit LFSRs and a 16-bit training pattern in `DATATRAINCENTER1`.
+- Advances only on accepted receive samples, accumulates errors with saturation, and applies a strict threshold.
+- Uses a five-seed independent-reference UVM campaign, training SVA, explicit sampled coverage, a focused 4096-sample directed proof, and the preserved v0.2 regressions.
+- Publishes reviewed colorful waveforms, RTL/verification connection diagrams, Quartus implementation summaries, and a versioned functional netlist.
+- Leaves analog calibration, physical channel behavior, BER qualification, lane repair, and remaining training operations for later milestones.
 
 ## v0.4 - Recovery and error expansion
 
