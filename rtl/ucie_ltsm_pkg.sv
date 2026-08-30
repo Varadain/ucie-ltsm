@@ -37,4 +37,11 @@ package ucie_ltsm_pkg;
     SB_MSG_SBINIT_DONE_REQ  = 8'h01,
     SB_MSG_SBINIT_DONE_RESP = 8'h02
   } sb_msg_e;
+
+  typedef enum logic [2:0] {
+    LTSM_ERR_NONE,
+    LTSM_ERR_STATE_TIMEOUT,
+    LTSM_ERR_SIDEBAND_PROTOCOL,
+    LTSM_ERR_LOCAL_FATAL
+  } ltsm_error_cause_e;
 endpackage

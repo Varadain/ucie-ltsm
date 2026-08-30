@@ -15,6 +15,10 @@ interface ucie_ltsm_if(input logic clk);
   logic train_tx_valid, train_rx_valid, train_busy, train_done, train_pass;
   logic [15:0] train_tx_pattern, train_rx_pattern;
   logic [15:0] train_error_threshold, train_error_count;
+  logic clear_error_log, error_pending, trainerror_handshake_request;
+  logic error_handshake_timeout;
+  ltsm_error_cause_e error_cause;
+  logic [15:0] error_event_count;
 
   task automatic clear_controls();
     supplies_stable=0; sideband_clk_ok=0; internal_clks_ok=0; firmware_reset=0;
@@ -24,5 +28,6 @@ interface ucie_ltsm_if(input logic clk);
     pm_l1_req=0; pm_l2_req=0; pm_exit=0;
     sb_tx_ready=0; sb_rx_valid=0; sb_rx_message=SB_MSG_NOP;
     train_rx_valid=0; train_rx_pattern='0; train_error_threshold=16'd1;
+    clear_error_log=0;
   endtask
 endinterface

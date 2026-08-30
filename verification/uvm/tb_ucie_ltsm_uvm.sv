@@ -17,6 +17,7 @@ module tb_ucie_ltsm_uvm;
     .sideband_tx_idle_i(intf.sideband_tx_idle),.rdi_active_i(intf.rdi_active),
     .retrain_req_i(intf.retrain_req),.retrain_target_i(intf.retrain_target),
     .pm_l1_req_i(intf.pm_l1_req),.pm_l2_req_i(intf.pm_l2_req),.pm_exit_i(intf.pm_exit),
+    .clear_error_log_i(intf.clear_error_log),
     .sb_tx_valid_o(intf.sb_tx_valid),.sb_tx_message_o(intf.sb_tx_message),.sb_tx_ready_i(intf.sb_tx_ready),
     .sb_rx_valid_i(intf.sb_rx_valid),.sb_rx_message_i(intf.sb_rx_message),.sb_busy_o(intf.sb_busy),
     .sb_protocol_error_o(intf.sb_protocol_error),.sb_retry_o(intf.sb_retry),
@@ -25,6 +26,10 @@ module tb_ucie_ltsm_uvm;
     .train_error_threshold_i(intf.train_error_threshold),.train_busy_o(intf.train_busy),
     .train_done_o(intf.train_done),.train_pass_o(intf.train_pass),
     .train_error_count_o(intf.train_error_count),
+    .error_pending_o(intf.error_pending),
+    .trainerror_handshake_request_o(intf.trainerror_handshake_request),
+    .error_handshake_timeout_o(intf.error_handshake_timeout),
+    .error_cause_o(intf.error_cause),.error_event_count_o(intf.error_event_count),
     .state_o(intf.state),.mbinit_state_o(intf.mbi),.mbtrain_state_o(intf.mbt),
     .timeout_o(intf.timeout),.link_up_o(intf.link_up),
     .mainband_tristate_o(intf.mainband_tristate),.sideband_enable_o(intf.sideband_enable));
