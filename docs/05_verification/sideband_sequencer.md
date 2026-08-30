@@ -25,6 +25,7 @@ can advance SBINIT even if the sideband transaction is incomplete.
 | Bounded retry | Directed and `sb_retry_test`; exactly two accepted requests and one retry |
 | Wrong response | Directed and `sb_error_test`; protocol error and TRAINERROR observed |
 | Retry exhaustion | Directed and `sb_exhaust_test`; one retry then protocol error/TRAINERROR |
+| Random timing/outcome combinations | Five seeded `sb_random_test` runs, 200 total transactions |
 | Abort | Directed cancellation scenario |
 | Legacy compatibility | Existing directed test plus four pre-feature UVM tests |
 | Synthesizability/timing | Quartus 23.1 full compile at an 80 MHz constraint |
@@ -38,3 +39,15 @@ can advance SBINIT even if the sideband transaction is incomplete.
 - Event counters demonstrate that the intended feature scenarios occurred. A merged UCDB report with
   covergroups and code/assertion coverage is still missing, so no coverage percentage is claimed.
 - Interface timing is unconstrained in Quartus; the positive 80 MHz slack is not board signoff.
+
+## Randomized campaign
+
+`sb_random_test` resets the DUT between transactions and randomly selects success, retry-success,
+wrong-response, or retry-exhaustion. Transmit backpressure and response delay are independently
+selected from the explicit legal domain of one through three cycles. The first four iterations force
+one occurrence of every outcome; the remaining 36 use the seeded simulator PRNG.
+
+Questa Starter does not license SystemVerilog class `randomize()`, so this campaign uses reproducible
+`$urandom_range` selections rather than class constraints. The legal domains are enforced explicitly,
+and the UVM sequence predicts accepted requests, successful exits, retries, and errors. The passive
+monitor must match all four predicted totals.

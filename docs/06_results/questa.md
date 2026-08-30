@@ -73,6 +73,33 @@ Command:
 
 The regression script completed with `PASS: all 8 UVM tests`. Each test ran in a fresh simulator invocation.
 
+## Seeded randomized regression
+
+Command:
+
+```powershell
+.\scripts\run_random_regression.ps1
+```
+
+Five reproducible seeds (`101`, `202`, `303`, `404`, and `505`) ran 40 transactions each.
+Aggregate scenario hits were:
+
+| Outcome | Hits |
+|---|---:|
+| Immediate success | 47 |
+| Retry followed by success | 46 |
+| Wrong response | 63 |
+| Retry exhaustion | 44 |
+
+Across all 200 trials, the passive monitor observed 290 accepted requests, 93 successful SBINIT
+exits, 90 retries, and 107 protocol errors. These totals exactly matched the per-seed UVM predictor.
+Every seed exercised all four outcomes, all scoreboards reported zero illegal transitions, and every
+run ended with zero UVM errors and zero UVM fatals.
+
+The campaign randomizes within explicit legal domains using seeded `$urandom_range`; Questa Starter
+does not provide the license needed for class `randomize()`. Raw logs remain ignored and are not
+committed.
+
 ## Sideband sequencer directed test
 
 Command:

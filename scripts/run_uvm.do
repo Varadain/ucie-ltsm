@@ -7,6 +7,8 @@ vlog -sv +incdir+$env(QUESTA_HOME)/verilog_src/uvm-1.1d/src \
   verification/uvm/tb_ucie_ltsm_uvm.sv
 set test nominal_test
 if {[info exists env(UVM_TESTNAME)]} {set test $env(UVM_TESTNAME)}
+quietly set seed 1
+if {[info exists env(SV_SEED)]} {quietly set seed $env(SV_SEED)}
 echo "=== Running $test ==="
-vsim -c work.tb_ucie_ltsm_uvm +UVM_TESTNAME=$test +UVM_VERBOSITY=UVM_LOW +UVM_NO_RELNOTES
+vsim -c -sv_seed $seed work.tb_ucie_ltsm_uvm +UVM_TESTNAME=$test +UVM_VERBOSITY=UVM_LOW +UVM_NO_RELNOTES
 run -all

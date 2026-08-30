@@ -14,6 +14,7 @@
 | SB-UVM-02 | Integrated bounded retry | Accept request, withhold response for one sequencer timeout, accept retry, return response | Exactly two accepted requests, one retry, then SBINIT -> MBINIT | `sb_retry_test` | Pass |
 | SB-UVM-03 | Integrated wrong response | Accept request and return `SB_MSG_NOP` | Protocol error; SBINIT -> TRAINERROR -> RESET | `sb_error_test` | Pass |
 | SB-UVM-04 | Integrated retry exhaustion | Accept initial request and retry; return no response | One retry, protocol error, SBINIT -> TRAINERROR -> RESET | `sb_exhaust_test` | Pass |
+| SB-RAND-01 | Seeded randomized sideband campaign | Random outcome plus 1-3 cycle transmit/response delays; 40 trials per seed | Predictor counters match monitor; every outcome hit; no illegal transition | `sb_random_test`, seeds 101/202/303/404/505 | Pass |
 
 “Pass” reflects the fresh August 28, 2026 Questa runs described in [questa.md](../06_results/questa.md).
 
