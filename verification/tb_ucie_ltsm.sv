@@ -21,9 +21,11 @@ module tb_ucie_ltsm;
   logic error_handshake_timeout_o;
   ltsm_error_cause_e error_cause_o;
   logic [15:0] error_event_count_o;
+  datatrain_phase_e datatrain_phase_o;
 
   always #5 clk = ~clk;
-  ucie_ltsm #(.CLK_HZ(100_000_000), .RESET_MIN_US(1), .TIMEOUT_US(2)) dut (.*,
+  ucie_ltsm #(.CLK_HZ(100_000_000), .RESET_MIN_US(1), .TIMEOUT_US(2),
+    .ALLOW_ABSTRACT_DATATRAIN_BYPASS(1'b1)) dut (.*,
     .clk_i(clk), .rst_ni(rst_n), .state_o(state), .mbinit_state_o(mbi),
     .mbtrain_state_o(mbt), .timeout_o(timeout), .link_up_o(link_up),
     .mainband_tristate_o(mainband_tristate), .sideband_enable_o(sideband_enable),

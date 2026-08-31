@@ -35,8 +35,18 @@ package ucie_ltsm_pkg;
   typedef enum logic [7:0] {
     SB_MSG_NOP              = 8'h00,
     SB_MSG_SBINIT_DONE_REQ  = 8'h01,
-    SB_MSG_SBINIT_DONE_RESP = 8'h02
+    SB_MSG_SBINIT_DONE_RESP = 8'h02,
+    SB_MSG_DATACENTER1_START_REQ  = 8'h03,
+    SB_MSG_DATACENTER1_START_RESP = 8'h04,
+    SB_MSG_DATACENTER1_END_REQ    = 8'h05,
+    SB_MSG_DATACENTER1_END_RESP   = 8'h06
   } sb_msg_e;
+
+  typedef enum logic [1:0] {
+    DATATRAIN_SB_START,
+    DATATRAIN_PATTERN,
+    DATATRAIN_SB_END
+  } datatrain_phase_e;
 
   typedef enum logic [2:0] {
     LTSM_ERR_NONE,

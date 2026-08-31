@@ -4,7 +4,8 @@ module ucie_ltsm_fpga_wrapper #(
   parameter int unsigned TIMEOUT_US = 8_000,
   parameter int unsigned SB_RESPONSE_TIMEOUT_CYCLES = 256,
   parameter int unsigned SB_MAX_RETRIES = 1,
-  parameter int unsigned DATATRAIN_SAMPLE_COUNT = 4096
+  parameter int unsigned DATATRAIN_SAMPLE_COUNT = 4096,
+  parameter bit ALLOW_ABSTRACT_DATATRAIN_BYPASS = 1'b0
 ) (
   input logic clk_i, rst_ni,
   input logic supplies_stable_i, sideband_clk_ok_i, internal_clks_ok_i,
@@ -44,6 +45,7 @@ module ucie_ltsm_fpga_wrapper #(
   localparam logic [4:0] CSR_TRAIN_LO    = 5'h07;
   localparam logic [4:0] CSR_TRAIN_HI    = 5'h08;
   localparam logic [4:0] CSR_VERSION     = 5'h09;
+  localparam logic [4:0] CSR_DATATRAIN_PHASE = 5'h0a;
   localparam logic [4:0] CSR_CONTROL     = 5'h10;
 
   ltsm_state_e state;
@@ -54,6 +56,7 @@ module ucie_ltsm_fpga_wrapper #(
   logic error_pending, handshake_request, handshake_timeout;
   logic [15:0] error_event_count, train_error_count;
   logic clear_error_log;
+  datatrain_phase_e datatrain_phase;
 
   assign csr_ready_o = csr_valid_i;
   assign clear_error_log = csr_valid_i && csr_write_i &&
@@ -75,6 +78,7 @@ module ucie_ltsm_fpga_wrapper #(
         CSR_TRAIN_LO:    csr_rdata_o = train_error_count[7:0];
         CSR_TRAIN_HI:    csr_rdata_o = train_error_count[15:8];
         CSR_VERSION:     csr_rdata_o = 8'h04;
+        CSR_DATATRAIN_PHASE: csr_rdata_o = {6'h0,datatrain_phase};
         default:         csr_rdata_o = 8'h00;
       endcase
     end
@@ -84,7 +88,8 @@ module ucie_ltsm_fpga_wrapper #(
     .CLK_HZ(CLK_HZ), .RESET_MIN_US(RESET_MIN_US), .TIMEOUT_US(TIMEOUT_US),
     .SB_RESPONSE_TIMEOUT_CYCLES(SB_RESPONSE_TIMEOUT_CYCLES),
     .SB_MAX_RETRIES(SB_MAX_RETRIES),
-    .DATATRAIN_SAMPLE_COUNT(DATATRAIN_SAMPLE_COUNT)
+    .DATATRAIN_SAMPLE_COUNT(DATATRAIN_SAMPLE_COUNT),
+    .ALLOW_ABSTRACT_DATATRAIN_BYPASS(ALLOW_ABSTRACT_DATATRAIN_BYPASS)
   ) u_ltsm (
     .clk_i(clk_i), .rst_ni(rst_ni), .supplies_stable_i(supplies_stable_i),
     .sideband_clk_ok_i(sideband_clk_ok_i), .internal_clks_ok_i(internal_clks_ok_i),
@@ -103,7 +108,8 @@ module ucie_ltsm_fpga_wrapper #(
     .train_rx_valid_i(train_rx_valid_i), .train_rx_pattern_i(train_rx_pattern_i),
     .train_error_threshold_i(train_error_threshold_i), .train_busy_o(train_busy_o),
     .train_done_o(train_done_o), .train_pass_o(train_pass_o),
-    .train_error_count_o(train_error_count), .error_pending_o(error_pending),
+    .train_error_count_o(train_error_count), .datatrain_phase_o(datatrain_phase),
+    .error_pending_o(error_pending),
     .trainerror_handshake_request_o(handshake_request),
     .error_handshake_timeout_o(handshake_timeout), .error_cause_o(error_cause),
     .error_event_count_o(error_event_count), .state_o(state),

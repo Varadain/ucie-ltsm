@@ -8,7 +8,7 @@ module tb_ucie_ltsm_uvm;
   ucie_ltsm_if intf(clk);
   ucie_ltsm #(.CLK_HZ(100_000_000),.RESET_MIN_US(1),.TIMEOUT_US(2),
               .SB_RESPONSE_TIMEOUT_CYCLES(8),.SB_MAX_RETRIES(1),
-              .DATATRAIN_SAMPLE_COUNT(8)) dut(
+              .DATATRAIN_SAMPLE_COUNT(8),.ALLOW_ABSTRACT_DATATRAIN_BYPASS(1'b1)) dut(
     .clk_i(clk),.rst_ni(intf.rst_n),.supplies_stable_i(intf.supplies_stable),
     .sideband_clk_ok_i(intf.sideband_clk_ok),.internal_clks_ok_i(intf.internal_clks_ok),
     .firmware_reset_i(intf.firmware_reset),.link_train_trigger_i(intf.link_train_trigger),
@@ -26,6 +26,7 @@ module tb_ucie_ltsm_uvm;
     .train_error_threshold_i(intf.train_error_threshold),.train_busy_o(intf.train_busy),
     .train_done_o(intf.train_done),.train_pass_o(intf.train_pass),
     .train_error_count_o(intf.train_error_count),
+    .datatrain_phase_o(intf.datatrain_phase),
     .error_pending_o(intf.error_pending),
     .trainerror_handshake_request_o(intf.trainerror_handshake_request),
     .error_handshake_timeout_o(intf.error_handshake_timeout),

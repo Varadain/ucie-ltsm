@@ -16,7 +16,8 @@ module tb_ucie_ltsm_fpga_wrapper;
   always #5 clk_i=~clk_i;
 
   ucie_ltsm_fpga_wrapper #(.CLK_HZ(100_000_000),.RESET_MIN_US(1),.TIMEOUT_US(2),
-    .SB_RESPONSE_TIMEOUT_CYCLES(8),.DATATRAIN_SAMPLE_COUNT(8)) dut(.*);
+    .SB_RESPONSE_TIMEOUT_CYCLES(8),.DATATRAIN_SAMPLE_COUNT(8),
+    .ALLOW_ABSTRACT_DATATRAIN_BYPASS(1'b1)) dut(.*);
 
   task automatic pulse(ref logic signal); signal=1; @(posedge clk_i); #1 signal=0; endtask
   task automatic csr_read(input logic[4:0] addr,input logic[7:0] expected);

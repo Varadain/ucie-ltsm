@@ -19,6 +19,7 @@ interface ucie_ltsm_if(input logic clk);
   logic error_handshake_timeout;
   ltsm_error_cause_e error_cause;
   logic [15:0] error_event_count;
+  datatrain_phase_e datatrain_phase;
 
   task automatic clear_controls();
     supplies_stable=0; sideband_clk_ok=0; internal_clks_ok=0; firmware_reset=0;

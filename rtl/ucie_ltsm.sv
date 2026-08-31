@@ -4,7 +4,8 @@ module ucie_ltsm #(
   parameter int unsigned TIMEOUT_US   = 8_000,
   parameter int unsigned SB_RESPONSE_TIMEOUT_CYCLES = 256,
   parameter int unsigned SB_MAX_RETRIES = 1,
-  parameter int unsigned DATATRAIN_SAMPLE_COUNT = 4096
+  parameter int unsigned DATATRAIN_SAMPLE_COUNT = 4096,
+  parameter bit ALLOW_ABSTRACT_DATATRAIN_BYPASS = 1'b0
 ) (
   input  logic clk_i,
   input  logic rst_ni,
@@ -46,6 +47,7 @@ module ucie_ltsm #(
   output logic        train_done_o,
   output logic        train_pass_o,
   output logic [15:0] train_error_count_o,
+  output ucie_ltsm_pkg::datatrain_phase_e datatrain_phase_o,
 
   output logic error_pending_o,
   output logic trainerror_handshake_request_o,
@@ -77,8 +79,31 @@ module ucie_ltsm #(
   logic sb_start, sb_done;
   logic train_start;
   logic enter_trainerror;
+  logic datatrain_context, sb_context_active, datatrain_complete;
+  sb_msg_e sb_request, sb_expected_response;
+  datatrain_phase_e datatrain_phase_q;
 
-  assign sb_start = (state_q == LTSM_SBINIT) && !sb_busy_o && !sb_done;
+  assign datatrain_context = (state_q == LTSM_MBTRAIN) &&
+                             (mbt_q == MBT_DATATRAINCENTER1);
+  assign sb_context_active = (state_q == LTSM_SBINIT) ||
+                             (datatrain_context &&
+                              (datatrain_phase_q != DATATRAIN_PATTERN));
+  assign sb_start = sb_context_active && !sb_busy_o && !sb_done;
+  assign datatrain_complete = datatrain_context &&
+                              (datatrain_phase_q == DATATRAIN_SB_END) && sb_done;
+  assign datatrain_phase_o = datatrain_phase_q;
+
+  always_comb begin
+    sb_request = SB_MSG_SBINIT_DONE_REQ;
+    sb_expected_response = SB_MSG_SBINIT_DONE_RESP;
+    if (datatrain_context && (datatrain_phase_q == DATATRAIN_SB_START)) begin
+      sb_request = SB_MSG_DATACENTER1_START_REQ;
+      sb_expected_response = SB_MSG_DATACENTER1_START_RESP;
+    end else if (datatrain_context && (datatrain_phase_q == DATATRAIN_SB_END)) begin
+      sb_request = SB_MSG_DATACENTER1_END_REQ;
+      sb_expected_response = SB_MSG_DATACENTER1_END_RESP;
+    end
+  end
 
   ucie_sb_sequencer #(
     .RESPONSE_TIMEOUT_CYCLES(SB_RESPONSE_TIMEOUT_CYCLES),
@@ -87,9 +112,9 @@ module ucie_ltsm #(
     .clk_i(clk_i),
     .rst_ni(rst_ni),
     .start_i(sb_start),
-    .abort_i(state_q != LTSM_SBINIT),
-    .request_i(SB_MSG_SBINIT_DONE_REQ),
-    .expected_response_i(SB_MSG_SBINIT_DONE_RESP),
+    .abort_i(!sb_context_active),
+    .request_i(sb_request),
+    .expected_response_i(sb_expected_response),
     .tx_valid_o(sb_tx_valid_o),
     .tx_message_o(sb_tx_message_o),
     .tx_ready_i(sb_tx_ready_i),
@@ -101,15 +126,15 @@ module ucie_ltsm #(
     .retry_o(sb_retry_o)
   );
 
-  assign train_start = (state_q == LTSM_MBTRAIN) &&
-                       (mbt_q == MBT_DATATRAINCENTER1) &&
+  assign train_start = datatrain_context &&
+                       (datatrain_phase_q == DATATRAIN_PATTERN) &&
                        !train_busy_o && !train_done_o;
 
   ucie_lfsr_training_engine #(
     .SAMPLE_COUNT(DATATRAIN_SAMPLE_COUNT)
   ) u_lfsr_training_engine (
     .clk_i(clk_i), .rst_ni(rst_ni), .start_i(train_start),
-    .abort_i((state_q != LTSM_MBTRAIN) || (mbt_q != MBT_DATATRAINCENTER1)),
+    .abort_i(!datatrain_context || (datatrain_phase_q != DATATRAIN_PATTERN)),
     .error_threshold_i(train_error_threshold_i),
     .tx_valid_o(train_tx_valid_o), .tx_pattern_o(train_tx_pattern_o),
     .rx_valid_i(train_rx_valid_i), .rx_pattern_i(train_rx_pattern_i),
@@ -150,10 +175,21 @@ module ucie_ltsm #(
       mbi_q   <= MBI_PARAM;
       mbt_q   <= MBT_VALVREF;
       timer_q <= '0;
+      datatrain_phase_q <= DATATRAIN_SB_START;
     end else begin
       state_q <= state_d;
       mbi_q   <= mbi_d;
       mbt_q   <= mbt_d;
+      if (!datatrain_context || enter_trainerror)
+        datatrain_phase_q <= DATATRAIN_SB_START;
+      else begin
+        unique case (datatrain_phase_q)
+          DATATRAIN_SB_START: if (sb_done) datatrain_phase_q <= DATATRAIN_PATTERN;
+          DATATRAIN_PATTERN: if (train_done_o && train_pass_o)
+            datatrain_phase_q <= DATATRAIN_SB_END;
+          default: if (sb_done) datatrain_phase_q <= DATATRAIN_SB_START;
+        endcase
+      end
       if (state_changed || substate_changed || stall_i)
         timer_q <= '0;
       else if (timer_q != {TIMER_W{1'b1}})
@@ -191,8 +227,10 @@ module ucie_ltsm #(
             default: begin state_d = LTSM_MBTRAIN; mbt_d = MBT_VALVREF; end
           endcase
         end
-        LTSM_MBTRAIN: if (phase_done_i ||
-                          ((mbt_q == MBT_DATATRAINCENTER1) && train_done_o && train_pass_o)) begin
+        LTSM_MBTRAIN: if ((mbt_q != MBT_DATATRAINCENTER1 && phase_done_i) ||
+                          (mbt_q == MBT_DATATRAINCENTER1 &&
+                           (datatrain_complete ||
+                            (ALLOW_ABSTRACT_DATATRAIN_BYPASS && phase_done_i)))) begin
           unique case (mbt_q)
             MBT_VALVREF:          mbt_d = MBT_DATAVREF;
             MBT_DATAVREF:         mbt_d = MBT_SPEEDIDLE;
