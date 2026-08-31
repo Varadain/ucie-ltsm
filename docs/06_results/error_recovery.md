@@ -2,7 +2,7 @@
 
 ## Scope
 
-This checkpoint verifies design commit `1637c42ab327c14613726907a2ca45aa77b8fc4b` against stable v0.3 commit `62a6cdd45eb95a6ef36a67f07aa4b120b862133b`. The delta adds `ucie_error_manager`, retained error cause/count outputs, a pending handshake, a bounded missing-acknowledgement path, and controlled log clearing.
+This checkpoint verifies design commit `1637c42ab327c14613726907a2ca45aa77b8fc4b` and recovery verification commit `d13ba02fdfcdae2c1bfb388acaeb323108003d2d` against stable v0.3 commit `62a6cdd45eb95a6ef36a67f07aa4b120b862133b`. The delta adds `ucie_error_manager`, retained error cause/count outputs, a pending handshake, a bounded missing-acknowledgement path, and controlled log clearing. The subsequent [FPGA CSR wrapper checkpoint](fpga_csr_wrapper.md) keeps this core unchanged and resolves its selected-package pin-fit problem.
 
 The independent predictor implements the specified priority: state timeout, sideband protocol error, then local fatal error. It checks the expected cause and count after every integrated event. The focused directed test additionally drives 65,536 accepted events to prove one increment per event and saturation at `16'hffff`.
 
@@ -49,17 +49,31 @@ vsim -c -do scripts/run_error_directed.do
 vsim -c -do scripts/run_questa.do
 vsim -c -do scripts/run_sb_directed.do
 vsim -c -do scripts/run_lfsr_directed.do
-quartus_sh --flow compile ucie_ltsm
+vsim -c -do scripts/run_fpga_wrapper_directed.do
+quartus_sh --flow compile ucie_ltsm_fpga
 ```
 
-All four directed suites, all nine deterministic UVM tests, five recovery seeds, five preserved sideband seeds, and five preserved training seeds passed in fresh invocations. Questa repeatedly warned that stale optimized designs were locked and could not be deleted; each requested top was recompiled and the simulations completed successfully. Directed flows also emitted benign `vsim-8492` warnings for `-assertdebug` with no accessible optimized objects.
+All five directed suites (including the FPGA wrapper), all nine deterministic UVM tests, five recovery seeds, five preserved sideband seeds, and five preserved training seeds passed in fresh invocations. Questa repeatedly warned that stale optimized designs were locked and could not be deleted; each requested top was recompiled and the simulations completed successfully. Directed flows also emitted benign `vsim-8492` warnings for `-assertdebug` with no accessible optimized objects.
 
-Quartus Prime Lite 23.1std.1 analysis and synthesis passed, but full compilation did not: the Cyclone 10 LP `10CL025YU256C8G` fitter requires 147 general-purpose 2.5 V I/O pins while only 144 are available. The failure is caused by exposing the growing controller interface as physical FPGA pins, not by a synthesis error. No timing result is claimed for v0.4. A later implementation checkpoint must use a larger package or an FPGA wrapper/virtual-pin strategy before timing evidence is valid.
+The first core-top Quartus attempt passed Analysis & Synthesis but could not fit: the wide diagnostic interface produced 149 total top-level pins, including 147 general-purpose 2.5 V I/O pins, while only 144 of those I/O pins were usable. This remains an accurately documented core-top limitation. The release resolves the implementation boundary with `ucie_ltsm_fpga_wrapper`: the separate wrapper project fits with 119 physical pins and zero virtual pins, then passes analyzed internal 80 MHz timing. See the [qualified wrapper measurements](fpga_csr_wrapper.md#quartus-result); no fit/timing claim is made for the wide-diagnostic core top itself.
+
+## Reviewed release evidence
+
+![Retained fault and bounded TRAINERROR entry](../../assets/waveforms/v0.4-error-recovery/retained-handshake.svg)
+
+![Timeout, immediate entry, and cause priority](../../assets/waveforms/v0.4-error-recovery/timeout-and-priority.svg)
+
+![v0.4 recovery RTL connections](../../assets/diagrams/v0.4-error-recovery/rtl-connections.svg)
+
+![v0.4 recovery verification connections](../../assets/diagrams/v0.4-error-recovery/verification-connections.svg)
+
+The waveform labels link to the [v0.4 signal/function guide](../02_ltssm/signals.md#v04-error-recovery-signal-guide). The figures were regenerated from the self-checking directed VCD and reviewed at full, reduced, and detail scales.
 
 ## Remaining gaps
 
 - Native covergroup/UCDB coverage remains unavailable with the installed Starter license.
-- The digital controller model does not cover analog channel faults, CDC/metastability injection, physical packet corruption, or software log servicing.
+- The digital controller model does not cover analog channel faults, CDC/metastability injection, physical packet corruption, or a standards-defined software management stack.
 - Manager timeout is tied to the LTSM timeout parameter. In timeout-enabled states, a fault arriving after state entry can be preempted by the state timeout; the manager-timeout proof therefore uses ACTIVE plus the focused manager test.
-- Quartus fitting and timing are blocked by top-level package pin capacity.
-- No reviewed waveform figure or versioned netlist was requested or produced; raw simulator and Quartus databases remain ignored.
+- The reusable core top remains too wide for the selected package; the fitted/timed claim applies only to the compact wrapper.
+- Board pin locations and external I/O delays remain absent, so the wrapper result is not board signoff.
+- Reviewed SVGs and versioned functional netlists are published; raw simulator and Quartus databases remain ignored.

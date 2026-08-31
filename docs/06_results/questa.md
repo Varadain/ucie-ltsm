@@ -1,6 +1,6 @@
 # Questa Results
 
-Deterministic and randomized regressions were freshly rerun through **August 30, 2026** using Questa Intel Starter FPGA Edition 2023.3.
+Deterministic and randomized regressions were freshly rerun through **August 31, 2026** using Questa Intel Starter FPGA Edition 2023.3.
 
 ## Directed test
 
@@ -80,6 +80,33 @@ python scripts/render_datatrain_waveforms.py
 
 Signal labels inside the SVGs link to the [v0.3 signal/function guide](../02_ltssm/signals.md#v03-training-signal-guide). The first figure isolates a clean eight-sample attempt with receive gaps; the second separates clean pass, equality failure, threshold-above-count pass, and abort clearing.
 
+## v0.4 retained TRAINERROR regression
+
+Commands:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/run_error_directed.do
+.\scripts\run_recovery_random_regression.ps1
+```
+
+The focused error-manager suite passed retention of one-cycle events, held-level de-duplication, fixed simultaneous-cause priority, immediate and bounded entry, protected/allowed clear, and `16'hffff` event-counter saturation. Five reproducible seeds (`1201`, `1302`, `1403`, `1504`, `1605`) ran 36 integrated trials each. All 180 trials matched the independent cause/count/entry/residency/release predictor with zero UVM errors/fatals, illegal transitions, or assertion failures. All required explicit scenario/origin/pulse/ack bins and legal crosses were hit; no native UCDB percentage is claimed.
+
+![v0.4 retained fault and bounded entry](../../assets/waveforms/v0.4-error-recovery/retained-handshake.svg)
+
+![v0.4 timeout and cause priority](../../assets/waveforms/v0.4-error-recovery/timeout-and-priority.svg)
+
+See the [full recovery result](error_recovery.md).
+
+## v0.4 FPGA CSR wrapper directed test
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/run_fpga_wrapper_directed.do
+```
+
+Observed result: `PASS: FPGA wrapper CSR state, status, retained error, protected clear, and release`. The test checks state/status/version, retained cause/count, same-cycle ready behavior, ignored TRAINERROR clear, accepted post-recovery clear, and an undefined read. It completed with zero compilation or simulation errors.
+
+![v0.4 FPGA CSR read and clear behavior](../../assets/waveforms/v0.4-error-recovery/fpga-csr-read-clear.svg)
+
 ## UVM regression
 
 Command:
@@ -98,8 +125,9 @@ Command:
 | `sb_retry_test` | 2 | 0 | accepted requests=2, retries=1, successful SBINIT exits=1 | 0 / 0 |
 | `sb_error_test` | 3 | 0 | accepted requests=1, protocol errors=1, trainerror=1 | 0 / 0 |
 | `sb_exhaust_test` | 3 | 0 | accepted requests=2, retries=1, protocol errors=1, trainerror=1 | 0 / 0 |
+| `recovery_closure_test` | checked L2 exit + 3 retrain targets | 0 | L2 reset=1, target matches=3 | 0 / 0 |
 
-The regression script completed with `PASS: all 8 UVM tests`. Each test ran in a fresh simulator invocation.
+The regression script completed with `PASS: all 9 UVM tests`. Each test ran in a fresh simulator invocation.
 
 ## Seeded randomized regression
 
@@ -182,6 +210,7 @@ Signal labels inside the SVGs are clickable. These normal Markdown links provide
 
 ## Interpretation
 
-These runs support the named controller scenarios. Feature-event counters provide scenario evidence,
-but are not a merged UCDB functional-coverage closure report. The runs do not provide electrical
-compliance, random-stimulus closure, or proof of all UCIe 2.0 requirements.
+These runs support the named controller, training, recovery, and wrapper scenarios. Feature-event
+counters provide explicit scenario evidence, but are not a merged UCDB functional-coverage closure
+report. The runs do not provide electrical compliance, exhaustive random closure, or proof of all
+UCIe requirements.

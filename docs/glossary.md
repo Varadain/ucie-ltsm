@@ -13,7 +13,7 @@ The definitions explain the implemented model; they are not a substitute for the
 | ASIC | Application-Specific Integrated Circuit | A custom integrated circuit. Future Cadence work may target an ASIC flow, but current implementation evidence is FPGA-only. |
 | BER | Bit Error Rate | The ratio of erroneous bits to transmitted bits. The current finite digital error-count tests are not a statistical BER qualification. |
 | CRC | Cyclic Redundancy Check | An error-detection code. Physical sideband CRC generation/checking is outside the current RTL. |
-| CSR | Control and Status Register | Software-visible configuration or status storage. A CSR block is planned, not implemented. |
+| CSR | Control and Status Register | A small byte-wide CSR decoder is implemented in the optional FPGA wrapper; it is not a complete standards-defined management register block. |
 | D2D | Die-to-Die | Communication between separate semiconductor dies, usually within one package. |
 | DUT | Design Under Test | The RTL instance exercised by a testbench or UVM environment. |
 | DVSEC | Designated Vendor-Specific Extended Capability | A PCI Express capability structure used by UCIe for configuration-related information; no DVSEC block is implemented here. |
@@ -124,6 +124,32 @@ These are explanatory expansions of the RTL enum labels. The current design sequ
 | Seed | Initial LFSR state or simulator PRNG starting value | Lane seeds initialize patterns; regression seeds reproduce randomized scenarios. |
 | Strict threshold | A comparison where equality is a failure | Training passes only when `error_count < error_threshold`. |
 
+<a id="v04-error-recovery-and-fpga-wrapper-terms"></a>
+## v0.4 error-recovery and FPGA-wrapper terms
+
+| Term | Long form / definition | Project usage |
+|---|---|---|
+| Acknowledgment / ACK | Confirmation that a requested operation has been accepted or completed | `error_handshake_done_i` completes a pending non-immediate error handshake; missing acknowledgment uses a bounded timer. |
+| Cause classification | Assigning an accepted error to a defined category | v0.4 records state timeout, sideband protocol, or local fatal. |
+| Cause priority | Deterministic selection when several causes occur together | State timeout has priority over sideband protocol, which has priority over local fatal. |
+| Clear request | Request to erase retained diagnostic history | A direct core input or wrapper write to `0x10[0]`; ignored while pending or in TRAINERROR. |
+| CSR address | Register selector for one CSR transaction | The wrapper uses five address bits; `0x00`-`0x09` are status/version and `0x10` is control. |
+| CSR read data | Byte returned by a CSR read | `csr_rdata_o[7:0]`; undefined addresses return zero. |
+| CSR ready | Same-cycle acknowledgment of a CSR request | `csr_ready_o` equals `csr_valid_i`; the wrapper has no wait-state queue. |
+| CSR valid | Qualifier marking a CSR request | `csr_valid_i` selects one combinational read or write transaction. |
+| CSR write data | Byte accompanying a write | Only bit 0 is used at `0x10`; bits 7:1 are intentionally unused. |
+| De-duplication | Avoiding multiple event records for one held/repeated condition | A held fault increments the event counter once while its event is pending. |
+| Error event count | Saturating count of accepted recovery events | Retained 16-bit counter, readable at wrapper addresses `0x05` and `0x06`. |
+| Error pending | Registered indication that one accepted event awaits TRAINERROR entry | Drives persistent request behavior and blocks a new event/clear until entry or RESET. |
+| FPGA wrapper | A top-level adapter around reusable RTL for a selected FPGA boundary | `ucie_ltsm_fpga_wrapper` internalizes wide diagnostics and exposes a byte CSR without changing `ucie_ltsm`. |
+| Immediate entry | TRAINERROR selection without waiting for an external acknowledgment | Used for state timeout and an SBINIT protocol error. |
+| Internal-clock qualification | Timing evidence limited to constrained clocked paths inside the FPGA | The v0.4 wrapper passes 80 MHz setup/hold analysis, but external I/O timing is not closed. |
+| Local fatal | Digital fatal-event input originating outside the modeled sideband sequencer/timer | Lowest retained-cause priority; normally uses the error handshake. |
+| Protected clear | A clear accepted only in permitted controller conditions | Cause/count cannot be cleared while an event is pending or during TRAINERROR residency. |
+| Retained event | Event history that survives removal of the source pulse and ordinary recovery | v0.4 cause/count survive TRAINERROR-to-RESET until an allowed clear or asynchronous reset. |
+| Saturating event counter | Counter that stops at `16'hffff` instead of wrapping | Incremented once for every accepted error event. |
+| Virtual pin | Quartus mechanism that keeps a top-level signal inside the design rather than assigning a package pin | The release wrapper uses zero virtual pins; its 119 exposed signals are physical pins before board-location assignment. |
+
 ## Signal and code naming conventions
 
 | Form | Meaning | Example |
@@ -156,14 +182,14 @@ These are explanatory expansions of the RTL enum labels. The current design sequ
 | Directed test | A deliberately scripted scenario with known stimulus and outcome | Used for nominal, sideband, LFSR, boundary, and saturation proofs. |
 | Driver | A verification component that converts sequence items into signal activity | The UVM driver controls LTSM and training inputs. |
 | Explicit sampled coverage | User-maintained counters for defined bins and crosses | Used for v0.3 functional coverage because native covergroups are unlicensed. |
-| Functional coverage | Measurement of whether defined behavioral scenarios or value categories occurred | v0.3 reports outcome, error, gap, threshold, and scenario-by-gap bins. |
+| Functional coverage | Measurement of whether defined behavioral scenarios or value categories occurred | v0.3 reports training bins/crosses; v0.4 adds recovery scenario/origin/pulse/ack bins and legal crosses. |
 | Monitor | A passive component that observes DUT activity without driving it | The UVM monitor records state and sideband events. |
 | Objection | UVM mechanism that keeps a simulation phase active while a test is running | Tests raise and drop run-phase objections around their sequences. |
 | Passive | Observing without driving DUT inputs | The monitor and scoreboard path is passive. |
 | Predictor | Logic that calculates the expected outcome independently of the DUT | Sideband totals and v0.3 pattern/error results are predicted. |
 | Race-free | Stimulus and sampling are ordered to avoid simulator scheduling ambiguity | Drivers use defined clock-edge timing and delays for deterministic observation. |
 | Reference model | An independent behavioral calculation used as the expected result | The v0.3 model reproduces seeds, polynomial progression, masks, and counts. |
-| Regression | A set of tests rerun after a change to detect new failures | v0.3 preserves eight deterministic UVM tests, five v0.2 seeds, and directed suites. |
+| Regression | A set of tests rerun after a change to detect new failures | v0.4 preserves nine deterministic UVM tests, five sideband seeds, five training seeds, five recovery seeds, and all directed suites. |
 | Scoreboard | A component comparing observed behavior with legal or predicted behavior | Rejects illegal LTSM transitions and checks expected event totals. |
 | Self-checking testbench | A testbench that automatically reports pass/fail | The directed tests use `$fatal` on mismatches and print a PASS message on success. |
 | Sequence | A UVM object that generates an ordered stream of sequence items | Random and directed UVM scenarios are expressed as sequences. |
@@ -212,7 +238,7 @@ These are explanatory expansions of the RTL enum labels. The current design sequ
 | GitHub Release | A public page associated with a tag and release notes | Used to present milestone scope, evidence, and limitations. |
 | Markdown | Plain-text documentation markup (`.md`) | Most project pages use GitHub-flavored Markdown. |
 | Mermaid | Text-based diagram syntax rendered by supported Markdown viewers | Used for compact documentation flows; release evidence diagrams are standalone SVGs. |
-| Milestone | One bounded, evidence-backed project advancement | v0.3 is the DATATRAINCENTER1 digital LFSR training milestone. |
+| Milestone | One bounded, evidence-backed project advancement | v0.4 is the retained TRAINERROR and compact FPGA/CSR-wrapper milestone. |
 | `main` | The stable repository branch | It should point to the latest released, reproducible milestone. |
 | PDF | Portable Document Format | Private specification PDFs are excluded; no copied specification pages are published. |
 | PNG | Portable Network Graphics | Raster format used for temporary visual QA; reviewed release assets are SVG where practical. |
@@ -245,5 +271,6 @@ These are explanatory expansions of the RTL enum labels. The current design sequ
 - [Timers and counters](02_ltssm/timers_counters.md)
 - [RTL implementation](04_rtl/README.md)
 - [Verification plan](05_verification/testplan.md)
-- [Measured v0.3 results](06_results/datatrain_lfsr.md)
+- [Measured v0.4 recovery results](06_results/error_recovery.md)
+- [FPGA CSR wrapper results](06_results/fpga_csr_wrapper.md)
 - [Version history](versions/README.md)

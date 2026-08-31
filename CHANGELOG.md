@@ -2,6 +2,37 @@
 
 All notable project milestones are documented here. Source snapshots are preserved by Git tags rather than duplicated version folders.
 
+## v0.4-error-recovery - Retained TRAINERROR and FPGA CSR Wrapper
+
+### Added
+
+- Synthesizable `ucie_error_manager` with eligible-event acceptance, one-event retention, persistent/bounded handshake, fixed state-timeout/sideband/local-fatal cause priority, protected clear, and a saturating 16-bit event counter.
+- Integrated error cause/count/pending/handshake diagnostics and immediate versus acknowledged/bounded TRAINERROR entry without removing prior sideband or DATATRAINCENTER1 behavior.
+- Five-seed recovery campaign with 180 trials, independent prediction, recovery SVA, explicit sampled scenario/origin/pulse/ack bins and legal crosses, plus focused boundary/saturation proof.
+- `recovery_closure_test` for the L2 exit and all TXSELFCAL/SPEEDIDLE/REPAIR retrain targets, bringing the deterministic UVM regression to nine tests.
+- Separate `ucie_ltsm_fpga_wrapper` and Quartus project. The wrapper leaves `ucie_ltsm` unchanged, internalizes wide diagnostics, and exposes a byte CSR at `0x00`-`0x10`.
+- Self-checking CSR wrapper test for version/state/status, retained cause/count, protected and allowed clear, same-cycle ready, and invalid reads.
+- Three colorful Questa-derived waveforms, recovery RTL/verification diagrams, a wrapper connection diagram, and hyperlinkable signal/terminology definitions.
+- Versioned fitted-wrapper and core-only functional netlists with SHA-256 provenance and distinct implementation claims.
+
+### Verification and implementation
+
+- Five of five recovery seeds passed: all 180 events entered TRAINERROR with exact predicted cause/count, timing, residency, and release.
+- Aggregate recovery scenarios: 36 delayed acknowledgments, 30 missing acknowledgments, 32 state timeouts, 32 SBINIT protocol errors, 25 residency checks, and 25 simultaneous-cause priority checks.
+- Preserved nine deterministic UVM tests, five sideband seeds / 200 transactions, five training seeds / 160 trials, and all controller/sideband/LFSR/error directed suites passed.
+- Wrapper directed simulation passed with zero compilation/simulation errors.
+- Quartus 23.1 full wrapper compilation passed on Cyclone 10 LP: 804 logic elements, 499 registers, 119 physical pins, zero virtual pins, `+0.624 ns` worst setup slack, `+0.178 ns` worst hold slack, and zero setup/hold TNS at 80 MHz.
+- Zero UVM errors/fatals, illegal transitions, assertion failures, or predictor mismatches were reported by the release gate.
+
+### Known limitations
+
+- This is digital training control, retained error recovery, and a compact FPGA CSR boundary—not a complete analog/electrical PHY or UCIe compliance result.
+- The byte CSR is project-specific and is not a standards-defined DVSEC, management transport, firmware stack, or interrupt architecture.
+- The reusable 149-pin core top does not fit the selected package; fit/timing claims apply to the 119-pin wrapper.
+- Board pin locations and external I/O delays are absent, so positive timing qualifies internal 80 MHz paths only.
+- Native covergroup/UCDB percentages remain unavailable under the Starter license; explicit sampled coverage is reported instead.
+- CDC hardening, analog/channel fault injection, BER/interoperability evidence, ASIC PPA, and power evidence remain absent.
+
 ## v0.3-advanced-training - DATATRAINCENTER1 Digital LFSR Training
 
 ### Added

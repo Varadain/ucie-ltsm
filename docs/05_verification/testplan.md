@@ -24,15 +24,12 @@
 | ER-SVA-01 | Error handshake and retention invariants | Directed, deterministic and randomized recovery regressions | Fatal requests immediately, pending holds request, manager timeout enters TRAINERROR, pending clears and TRAINERROR log is stable | `ucie_ltsm_sva` | Pass |
 | FPGA-CSR-01 | Compact FPGA wrapper and CSR access | State progression, CSR reads, retained fatal event, protected/allowed clear and invalid address | Core status is readable without wide debug pins; clear policy is preserved; wrapper fits selected FPGA | `tb_ucie_ltsm_fpga_wrapper` | Pass |
 
-“Pass” reflects the fresh deterministic and randomized regression reruns through August 31, 2026, described in [questa.md](../06_results/questa.md), [datatrain_lfsr.md](../06_results/datatrain_lfsr.md), and [error_recovery.md](../06_results/error_recovery.md).
+“Pass” reflects the fresh deterministic and randomized regression reruns through August 31, 2026, described in [questa.md](../06_results/questa.md), [datatrain_lfsr.md](../06_results/datatrain_lfsr.md), [error_recovery.md](../06_results/error_recovery.md), and [fpga_csr_wrapper.md](../06_results/fpga_csr_wrapper.md).
 
 ## Planned scenarios required for stronger confidence
 
 | ID | Missing evidence | Expected focus |
 |---|---|---|
-| PLAN-01 | L2 exit | ACTIVE -> L1L2 -> RESET |
-| PLAN-02 | `RETRAIN_TXSELFCAL` | PHYRETRAIN -> MBTRAIN/`TXSELFCAL` |
-| PLAN-03 | `RETRAIN_REPAIR` | PHYRETRAIN -> MBTRAIN/`REPAIR` |
 | PLAN-04 | Stall timing | Stall restarts the counter and blocks MBINIT progress |
 | PLAN-05 | Timeout matrix | Each eligible top-level state and each substate reaches TRAINERROR at the intended boundary |
 | PLAN-06 | Fatal-error matrix | Every non-RESET state with handshake/escalation variations |

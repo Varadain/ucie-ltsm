@@ -12,7 +12,7 @@ The design stores three pieces of progress:
 - an MBINIT substate; and
 - an MBTRAIN substate.
 
-One saturating counter measures RESET residence or the time spent in an eligible state/substate. A separate bounded sequencer performs the v0.2 SBINIT-done transaction. Version 0.3 adds a 16-lane, 23-bit LFSR training engine for `DATATRAINCENTER1`; external handshakes still abstract the remaining physical and training work.
+One saturating counter measures RESET residence or the time spent in an eligible state/substate. A separate bounded sequencer performs the v0.2 SBINIT-done transaction. Version 0.3 adds a 16-lane, 23-bit LFSR training engine for `DATATRAINCENTER1`. Version 0.4 adds an error manager that accepts one event, retains it while a handshake is pending, classifies its cause, counts it once, and requests TRAINERROR at the required immediate/acknowledged/bounded point. A separate FPGA wrapper reads those internal diagnostics through a byte CSR without changing the control algorithm. External handshakes still abstract the remaining physical and training work.
 
 ## Behavioral flow
 
@@ -25,11 +25,15 @@ flowchart TD
     E -- yes --> F[Restart timer]
     E -- no --> G[Increment timer until saturated]
 
-    H[Combinational decision] --> I{Accepted fatal error?}
-    I -- yes --> J[Select TRAINERROR]
-    I -- no --> K{Eligible timeout?}
-    K -- yes --> J
-    K -- no --> L[Apply current-state transition rules]
+    H[Error-manager decision] --> I{Eligible new fault?}
+    I -- yes --> J[Latch cause and increment event count once]
+    J --> K{Immediate cause/state?}
+    K -- yes --> L[Request TRAINERROR]
+    K -- no --> M[Hold pending + handshake request]
+    M --> N{Acknowledged or manager timeout?}
+    N -- yes --> L
+    N -- no --> M
+    I -- no --> O[Apply current-state transition rules]
 ```
 
 ## Beginner-readable pseudocode
@@ -54,12 +58,7 @@ on each clock:
 to choose the next state:
     keep every state unchanged by default
 
-    if fatal_error or sideband_protocol_error is asserted outside RESET:
-        if current state is SBINIT,
-           or the error handshake completed,
-           or timeout is active:
-            go to TRAINERROR
-    else if an eligible timeout is active:
+    if the error manager requests TRAINERROR:
         go to TRAINERROR
     else:
         case current top state:
@@ -109,6 +108,33 @@ to choose the next state:
                     else:
                         go to MBTRAIN at SPEEDIDLE
 
+error manager:
+    eligible = current state is neither RESET nor TRAINERROR
+
+    if eligible and no event is pending and any fault is asserted:
+        accept exactly one event
+        retain cause using priority:
+            state timeout, then sideband protocol, then local fatal
+        increment the 16-bit event count unless it is already 16'hffff
+        set pending
+
+    if an eligible state timeout is asserted:
+        request TRAINERROR immediately
+    else if a sideband protocol error is asserted in SBINIT:
+        request TRAINERROR immediately without a handshake
+    else while an event is pending:
+        keep the handshake request asserted
+        if handshake_done is asserted or the manager timer reaches its bound:
+            request TRAINERROR
+
+    on TRAINERROR entry or RESET:
+        clear pending and the manager timer
+
+    if clear_log is asserted while no event is pending and state is not TRAINERROR:
+        clear retained cause and event count
+    otherwise:
+        retain the cause and count
+
 sideband sequencer:
     on start, latch SBINIT_DONE_REQ and expected SBINIT_DONE_RESP
     hold transmit-valid and the request until transmit-ready
@@ -138,6 +164,20 @@ DATATRAINCENTER1 LFSR engine:
 
     on abort or reset:
         clear busy, result, count, and lane state
+
+FPGA CSR wrapper:
+    pass functional control, sideband, and training ports to the unchanged core
+    keep wide state/error/training diagnostics internal
+
+    when csr_valid and read:
+        decode address 0x00 through 0x09 into one status byte
+        return zero for an undefined address
+
+    when csr_valid and write and address is 0x10 and wdata[0] is one:
+        request error-log clear from the core
+        rely on the error manager to ignore the request while pending or in TRAINERROR
+
+    acknowledge a valid CSR request in the same cycle
 ```
 
 ## Mapping to RTL concepts
@@ -155,5 +195,13 @@ DATATRAINCENTER1 LFSR engine:
 | Generate per-lane training pattern | Sixteen `lane_lfsr_q` registers and the `lfsr_next` function |
 | Count received mismatches | `bit_errors` popcount plus a saturating 16-bit accumulator |
 | Decide training result | Strict `accumulated_errors < error_threshold_i` comparison |
+| Accept and retain one error event | `ucie_error_manager` acceptance gate plus `pending_o` |
+| Classify simultaneous causes | Fixed timeout → sideband → local-fatal priority |
+| Bound a missing acknowledgment | Error-manager handshake timer |
+| Preserve diagnostic history | Registered `cause_o` and saturating `event_count_o` |
+| Protect log clearing | Clear accepted only while not pending and outside TRAINERROR |
+| Reduce the FPGA pin boundary | `ucie_ltsm_fpga_wrapper` keeps wide diagnostic buses internal |
+| Read compact FPGA status | Combinational `0x00`-`0x09` CSR decode |
+| Request protected clear | `0x10[0]` write mapped to `clear_error_log_i` |
 
 The next page explains the source organization: [RTL guide](../04_rtl/README.md).

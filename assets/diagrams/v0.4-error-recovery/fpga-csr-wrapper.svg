@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1760" height="1080" viewBox="0 0 1760 1080" role="img" aria-labelledby="title desc">
+  <title id="title">v0.4 FPGA CSR wrapper connection diagram</title>
+  <desc id="desc">The compact FPGA boundary keeps the verified UCIe LTSM core unchanged, internalizes wide diagnostic buses, and exposes a byte CSR interface that fits the selected Cyclone 10 LP device without virtual pins.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155"/>
+    </marker>
+    <style>
+      text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}
+      .title{font-size:29px;font-weight:700}.subtitle{font-size:15px;fill:#536179}
+      .head{font-size:19px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#475569}
+      .metric{font-size:17px;font-weight:700}.link{font-size:14px;font-weight:650;fill:#2563eb;text-decoration:underline}
+      .wire{fill:none;stroke:#334155;stroke-width:2.5;marker-end:url(#arrow)}
+      .both{fill:none;stroke:#334155;stroke-width:2.5;marker-start:url(#arrow);marker-end:url(#arrow)}
+      .dash{fill:none;stroke:#64748b;stroke-width:2;stroke-dasharray:8 7;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1760" height="1080" fill="#ffffff"/>
+  <text class="title" x="40" y="44">v0.4 compact FPGA/CSR wrapper — implemented connection boundary</text>
+  <text class="subtitle" x="40" y="75">The verified recovery controller is unchanged; wide state, training, and retained-error diagnostics stay inside the wrapper</text>
+  <a href="../../../docs/06_results/fpga_csr_wrapper.md"><text class="link" x="1720" y="75" text-anchor="end">Wrapper evidence and CSR map ↗</text></a>
+
+  <rect x="40" y="145" width="350" height="180" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text class="head" x="65" y="181" fill="#1d4ed8">Control and recovery pins</text>
+  <text class="body" x="65" y="217">clocks · reset · supplies · phase_done</text>
+  <text class="body" x="65" y="250">fatal / escalated / handshake_done</text>
+  <text class="body" x="65" y="283">power requests · retrain target</text>
+  <text class="small" x="65" y="307">Synthesizable digital controls only</text>
+
+  <rect x="40" y="375" width="350" height="180" rx="14" fill="#ecfdf5" stroke="#16a34a" stroke-width="2.5"/>
+  <text class="head" x="65" y="411" fill="#15803d">Sideband and training pins</text>
+  <text class="body" x="65" y="447">message valid / ready / payload</text>
+  <text class="body" x="65" y="480">LFSR pattern valid / data / threshold</text>
+  <text class="body" x="65" y="513">busy · retry · done · pass</text>
+  <text class="small" x="65" y="537">Existing functional interfaces remain external</text>
+
+  <rect x="40" y="605" width="350" height="190" rx="14" fill="#fff7ed" stroke="#ea580c" stroke-width="2.5"/>
+  <text class="head" x="65" y="641" fill="#9a3412">Byte CSR request / response</text>
+  <text class="body" x="65" y="677">valid · write · addr[4:0] · wdata[7:0]</text>
+  <text class="body" x="65" y="710">ready · rdata[7:0]</text>
+  <text class="small" x="65" y="744">Same-cycle ready; undefined reads return 0</text>
+  <text class="small" x="65" y="770">0x10[0] requests protected log clear</text>
+
+  <rect x="500" y="120" width="760" height="705" rx="20" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+  <text class="head" x="880" y="160" text-anchor="middle" fill="#6d28d9">ucie_ltsm_fpga_wrapper</text>
+
+  <rect x="550" y="195" width="660" height="300" rx="15" fill="#ffffff" stroke="#2563eb" stroke-width="2.5"/>
+  <text class="head" x="880" y="232" text-anchor="middle" fill="#1d4ed8">ucie_ltsm — verified core, unchanged</text>
+  <rect x="590" y="265" width="275" height="95" rx="10" fill="#eff6ff" stroke="#60a5fa" stroke-width="2"/>
+  <text class="body" x="727" y="300" text-anchor="middle">LTSM + sideband + LFSR</text>
+  <text class="small" x="727" y="329" text-anchor="middle">normal link-control behavior</text>
+  <rect x="895" y="265" width="275" height="95" rx="10" fill="#fef2f2" stroke="#f87171" stroke-width="2"/>
+  <text class="body" x="1032" y="300" text-anchor="middle">v0.4 error manager</text>
+  <text class="small" x="1032" y="329" text-anchor="middle">retention · priority · handshake</text>
+  <rect x="590" y="390" width="580" height="70" rx="10" fill="#ecfdf5" stroke="#4ade80" stroke-width="2"/>
+  <text class="body" x="880" y="420" text-anchor="middle">External functional outputs pass through</text>
+  <text class="small" x="880" y="446" text-anchor="middle">Sideband and training behavior is not reimplemented in the wrapper</text>
+
+  <rect x="550" y="535" width="660" height="105" rx="13" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2.5"/>
+  <text class="head" x="880" y="571" text-anchor="middle" fill="#6d28d9">Internal diagnostic buses</text>
+  <text class="body" x="880" y="602" text-anchor="middle">state · MBINIT · MBTRAIN · link/status · cause · event count · training error count</text>
+  <text class="small" x="880" y="626" text-anchor="middle">Former wide top-level diagnostics no longer consume individual package pins</text>
+
+  <rect x="550" y="675" width="660" height="105" rx="13" fill="#fff7ed" stroke="#f97316" stroke-width="2.5"/>
+  <text class="head" x="880" y="711" text-anchor="middle" fill="#9a3412">Combinational CSR decoder · addresses 0x00–0x10</text>
+  <text class="body" x="880" y="742" text-anchor="middle">Read state/status/counters/version · write protected clear request</text>
+  <text class="small" x="880" y="766" text-anchor="middle">No firmware protocol, interrupt controller, or UCIe management register claim</text>
+
+  <path class="wire" d="M390 235 H500"/>
+  <path class="both" d="M390 465 H500"/>
+  <path class="both" d="M390 700 H500"/>
+  <path class="wire" d="M880 495 V535"/>
+  <path class="wire" d="M880 640 V675"/>
+
+  <rect x="1370" y="145" width="350" height="300" rx="15" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+  <text class="head" x="1395" y="181" fill="#15803d">CSR visibility</text>
+  <text class="body" x="1395" y="217">0x00 state · 0x01 MBINIT</text>
+  <text class="body" x="1395" y="247">0x02 MBTRAIN · 0x03 status</text>
+  <text class="body" x="1395" y="277">0x04 retained cause</text>
+  <text class="body" x="1395" y="307">0x05–06 event count</text>
+  <text class="body" x="1395" y="337">0x07–08 training error count</text>
+  <text class="body" x="1395" y="367">0x09 version = 0x04</text>
+  <text class="body" x="1395" y="397">0x10[0] clear request</text>
+  <text class="small" x="1395" y="425">Clear remains controlled by core state rules</text>
+
+  <rect x="1370" y="505" width="350" height="290" rx="15" fill="#f8fafc" stroke="#64748b" stroke-width="2.5"/>
+  <text class="head" x="1395" y="541">Implementation boundary</text>
+  <text class="metric" x="1395" y="585" fill="#15803d">119 physical pins · 0 virtual</text>
+  <text class="body" x="1395" y="619">804 logic elements · 499 registers</text>
+  <text class="body" x="1395" y="651">80 MHz internal clock</text>
+  <text class="body" x="1395" y="683">setup +0.624 ns · hold +0.178 ns</text>
+  <text class="small" x="1395" y="722">Cyclone 10 LP 10CL025YU256C8G</text>
+  <text class="small" x="1395" y="749">Board pins and external I/O delays absent</text>
+  <text class="small" x="1395" y="773">Internal-clock qualification only</text>
+
+  <path class="dash" d="M1260 585 H1370"/>
+
+  <rect x="40" y="890" width="1680" height="145" rx="16" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
+  <text class="head" x="70" y="928" fill="#4338ca">Qualified evidence and scope</text>
+  <text class="body" x="70" y="961">Wrapper directed test + preserved deterministic and randomized gates PASS · full Quartus compile PASS · structural netlist exported</text>
+  <text class="body" x="70" y="993">This is a digital training-control/error-recovery FPGA implementation checkpoint, not full UCIe PHY compliance, board timing, BER, or ASIC sign-off.</text>
+  <a href="../../../synthesis/quartus/netlists/v0.4-error-recovery/README.md"><text class="link" x="1685" y="1020" text-anchor="end">Netlist provenance ↗</text></a>
+</svg>
