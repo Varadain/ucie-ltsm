@@ -39,11 +39,12 @@ module tb_ucie_ltsm_fpga_wrapper;
     train_rx_valid_i=0;train_rx_pattern_i=0;train_error_threshold_i=1;
     csr_valid_i=0;csr_write_i=0;csr_addr_i=0;csr_wdata_i=0;
     repeat(3) @(posedge clk_i);#1;rst_ni=1;
-    csr_read(5'h09,8'h04); csr_read(5'h00,8'h00);
+    csr_read(5'h09,8'h04); csr_read(5'h0a,8'h00); csr_read(5'h00,8'h00);
 
     supplies_stable_i=1;sideband_clk_ok_i=1;internal_clks_ok_i=1;link_train_trigger_i=1;
     wait(dut.state==LTSM_SBINIT);pulse(phase_done_i);repeat(6)pulse(phase_done_i);
-    repeat(13)pulse(phase_done_i);pulse(rdi_active_i);
+    repeat(7)pulse(phase_done_i);csr_read(5'h0a,8'h00);
+    repeat(6)pulse(phase_done_i);pulse(rdi_active_i);
     if(dut.state!=LTSM_ACTIVE)$fatal(1,"Wrapper failed to reach ACTIVE");
     csr_read(5'h00,8'h05); csr_read(5'h03,8'h50);
 
@@ -57,7 +58,7 @@ module tb_ucie_ltsm_fpga_wrapper;
     csr_read(5'h04,8'h03);csr_read(5'h05,8'h01);
     sideband_tx_idle_i=1;wait(dut.state==LTSM_RESET);csr_clear;
     csr_read(5'h04,8'h00);csr_read(5'h05,8'h00);csr_read(5'h1f,8'h00);
-    $display("PASS: FPGA wrapper CSR state, status, retained error, protected clear, and release");
+    $display("PASS: FPGA wrapper CSR state, phase, status, retained error, protected clear, and release");
     $finish;
   end
 endmodule

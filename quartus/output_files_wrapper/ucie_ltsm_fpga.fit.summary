@@ -1,14 +1,14 @@
-Fitter Status : Successful - Mon Aug 31 10:02:17 2026
+Fitter Status : Successful - Mon Aug 31 16:07:00 2026
 Quartus Prime Version : 23.1std.1 Build 993 05/14/2024 SC Lite Edition
 Revision Name : ucie_ltsm_fpga
 Top-level Entity Name : ucie_ltsm_fpga_wrapper
 Family : Cyclone 10 LP
 Device : 10CL025YU256C8G
 Timing Models : Final
-Total logic elements : 804 / 24,624 ( 3 % )
-    Total combinational functions : 802 / 24,624 ( 3 % )
-    Dedicated logic registers : 499 / 24,624 ( 2 % )
-Total registers : 499
+Total logic elements : 824 / 24,624 ( 3 % )
+    Total combinational functions : 822 / 24,624 ( 3 % )
+    Dedicated logic registers : 505 / 24,624 ( 2 % )
+Total registers : 505
 Total pins : 119 / 151 ( 79 % )
 Total virtual pins : 0
 Total memory bits : 0 / 608,256 ( 0 % )

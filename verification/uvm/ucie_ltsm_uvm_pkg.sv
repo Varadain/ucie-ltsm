@@ -65,6 +65,13 @@ package ucie_ltsm_uvm_pkg;
       repeat(7) pulse(vif.phase_done);
       if(vif.state!=LTSM_MBTRAIN || vif.mbt!=MBT_DATATRAINCENTER1)
         `uvm_error("TRAIN_NAV","Failed to reach DATATRAINCENTER1")
+      wait(vif.sb_tx_valid);
+      if(vif.sb_tx_message!=SB_MSG_DATACENTER1_START_REQ)
+        `uvm_error("TRAIN_NAV","Missing DATACENTER1 START request")
+      @(negedge vif.clk); vif.sb_tx_ready=1;
+      @(posedge vif.clk); #1 vif.sb_tx_ready=0;
+      @(negedge vif.clk); vif.sb_rx_message=SB_MSG_DATACENTER1_START_RESP; vif.sb_rx_valid=1;
+      @(posedge vif.clk); #1 vif.sb_rx_valid=0; vif.sb_rx_message=SB_MSG_NOP;
       wait(vif.train_busy && vif.state==LTSM_MBTRAIN && vif.mbt==MBT_DATATRAINCENTER1); #1;
     endtask
     task goto_recovery_origin(input int origin);
@@ -170,6 +177,15 @@ package ucie_ltsm_uvm_pkg;
         `uvm_error("TRAIN_RESULT",$sformatf("expected errors/pass=%0d/%0b observed=%0d/%0b done=%0b",
           expected_errors,expect_pass,vif.train_error_count,vif.train_pass,vif.train_done))
       if(expect_pass) train_passes++; else train_failures++;
+      if(expect_pass) begin
+        wait(vif.sb_tx_valid);
+        if(vif.sb_tx_message!=SB_MSG_DATACENTER1_END_REQ)
+          `uvm_error("TRAIN_END","Missing DATACENTER1 END request")
+        @(negedge vif.clk); vif.sb_tx_ready=1;
+        @(posedge vif.clk); #1 vif.sb_tx_ready=0;
+        @(negedge vif.clk); vif.sb_rx_message=SB_MSG_DATACENTER1_END_RESP; vif.sb_rx_valid=1;
+        @(posedge vif.clk); #1 vif.sb_rx_valid=0; vif.sb_rx_message=SB_MSG_NOP;
+      end
       @(posedge vif.clk); #1;
     endtask
     task drive(ltsm_item tr);

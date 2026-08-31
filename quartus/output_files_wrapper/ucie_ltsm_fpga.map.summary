@@ -1,12 +1,12 @@
-Analysis & Synthesis Status : Successful - Mon Aug 31 10:02:01 2026
+Analysis & Synthesis Status : Successful - Mon Aug 31 16:06:43 2026
 Quartus Prime Version : 23.1std.1 Build 993 05/14/2024 SC Lite Edition
 Revision Name : ucie_ltsm_fpga
 Top-level Entity Name : ucie_ltsm_fpga_wrapper
 Family : Cyclone 10 LP
-Total logic elements : 803
-    Total combinational functions : 800
-    Dedicated logic registers : 499
-Total registers : 499
+Total logic elements : 823
+    Total combinational functions : 821
+    Dedicated logic registers : 505
+Total registers : 505
 Total pins : 119
 Total virtual pins : 0
 Total memory bits : 0

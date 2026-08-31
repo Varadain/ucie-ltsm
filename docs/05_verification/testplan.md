@@ -23,6 +23,9 @@
 | ER-CLOSE-01 | Prior recovery gaps | L2 exit and TXSELFCAL/SPEEDIDLE/REPAIR retrain targets | L2 returns RESET; each retrain target selects the required MBTRAIN substate | `recovery_closure_test` | Pass |
 | ER-SVA-01 | Error handshake and retention invariants | Directed, deterministic and randomized recovery regressions | Fatal requests immediately, pending holds request, manager timeout enters TRAINERROR, pending clears and TRAINERROR log is stable | `ucie_ltsm_sva` | Pass |
 | FPGA-CSR-01 | Compact FPGA wrapper and CSR access | State progression, CSR reads, retained fatal event, protected/allowed clear and invalid address | Core status is readable without wide debug pins; clear policy is preserved; wrapper fits selected FPGA | `tb_ucie_ltsm_fpga_wrapper` | Pass |
+| INT-UVM-01 | Production integrated training protocol | 36 trials/seed with bypass disabled; randomized START/END backpressure, response latency/retry/malformed response, receive gaps, corruption/threshold, retry/pass, reset/fatal/timeout phase | Independent predictor proves START -> PATTERN -> END ordering, gating, exact DATATRAINVREF advance, error cause and clean abort | `integrated_test`, seeds 1701/1802/1903/2004/2105 | Pass |
+| INT-SVA-01 | Integrated phase invariants | Production-mode randomized campaign | Training only in PATTERN; requests only in matching phase; CENTER1 advance requires END phase; phase resets outside CENTER1 | `ucie_ltsm_sva` | Pass |
+| FPGA-CSR-02 | DATATRAIN phase CSR | Read CSR 0x0a in RESET and CENTER1 START | CSR mirrors `DATATRAIN_SB_START` and remains accessible through compact wrapper | `tb_ucie_ltsm_fpga_wrapper` | Pass |
 
 “Pass” reflects the fresh deterministic and randomized regression reruns through August 31, 2026, described in [questa.md](../06_results/questa.md), [datatrain_lfsr.md](../06_results/datatrain_lfsr.md), [error_recovery.md](../06_results/error_recovery.md), and [fpga_csr_wrapper.md](../06_results/fpga_csr_wrapper.md).
 
