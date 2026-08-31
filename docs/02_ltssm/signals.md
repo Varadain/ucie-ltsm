@@ -1,6 +1,6 @@
 # Signal Map
 
-All signal names below match [`ucie_ltsm.sv`](../../rtl/ucie_ltsm.sv).
+The core signal names below match [`ucie_ltsm.sv`](../../rtl/ucie_ltsm.sv). The final section documents the additional compact interface in [`ucie_ltsm_fpga_wrapper.sv`](../../rtl/ucie_ltsm_fpga_wrapper.sv).
 
 ## Inputs
 
@@ -15,8 +15,9 @@ All signal names below match [`ucie_ltsm.sv`](../../rtl/ucie_ltsm.sv).
 | `link_train_trigger_i` | Requests training after readiness is met | RESET exit |
 | `phase_done_i` | Compatibility completion path for SBINIT and abstract completion of MBINIT, MBTRAIN, or PHYRETRAIN operations | SBINIT, MBINIT, MBTRAIN, PHYRETRAIN |
 | `stall_i` | Restarts the timer; also blocks MBINIT substate progress while asserted | Timer and MBINIT |
-| `fatal_error_i` | Requests transition toward TRAINERROR outside RESET | Global error priority |
-| `error_handshake_done_i` | Allows a fatal error outside SBINIT to enter TRAINERROR | Global error priority |
+| `fatal_error_i` | Presents a local-fatal event to the v0.4 error manager outside RESET/TRAINERROR | Error acceptance and handshake |
+| `error_handshake_done_i` | Acknowledges a pending non-SBINIT error request | Error handshake |
+| `clear_error_log_i` | Requests clearing retained cause/count; ignored while pending or in TRAINERROR | Error log control |
 | `error_escalated_i` | Holds TRAINERROR while set | TRAINERROR exit |
 | `sideband_tx_idle_i` | Allows TRAINERROR to return to RESET | TRAINERROR exit |
 | `rdi_active_i` | Abstract confirmation that link initialization reached active | LINKINIT exit |
@@ -54,6 +55,11 @@ All signal names below match [`ucie_ltsm.sv`](../../rtl/ucie_ltsm.sv).
 | `train_done_o` | One-cycle pulse after the configured final accepted sample |
 | `train_pass_o` | Result level for the completed attempt; high only when the error count is strictly below threshold |
 | `train_error_count_o` | Saturating 16-bit count of received-versus-expected bit mismatches |
+| `error_pending_o` | High while one accepted recovery event awaits TRAINERROR entry |
+| `trainerror_handshake_request_o` | Immediate and persistent request for a pending non-SBINIT local/sideband fault |
+| `error_handshake_timeout_o` | High when a pending error reaches the configured missing-acknowledgment bound |
+| `error_cause_o` | Retained v0.4 cause: none, state timeout, sideband protocol, or local fatal |
+| `error_event_count_o` | Saturating 16-bit count incremented once per accepted recovery event |
 
 <a id="waveform-signal-guide"></a>
 ## Waveform signal guide
@@ -223,6 +229,141 @@ One-cycle pulse after the configured final accepted sample. It is never asserted
 #### Training pass (`train_pass_o`)
 
 Completion result for the latest attempt. In the integrated LTSM, `done && pass` advances to `DATATRAINVREF`; failure remains in `DATATRAINCENTER1` for another attempt.
+
+<a id="v04-error-recovery-signal-guide"></a>
+### v0.4 error-recovery waveform signals
+
+The v0.4 release waveforms come from the self-checking focused error-manager test. Names ending in `_o` are the manager outputs used or exposed by `ucie_ltsm`; `state_i` in the focused test corresponds to the integrated registered `state_o`.
+
+<a id="wave-error-local-fatal"></a>
+#### Local fatal error (`local_fatal_error_i` / integrated `fatal_error_i`)
+
+An eligible local-fatal level is accepted once while no event is pending. A one-cycle pulse is retained through `pending_o`; a held level is not counted again until the pending event has cleared.
+
+<a id="wave-error-sideband"></a>
+#### Sideband protocol error (`sideband_protocol_error_i`)
+
+The sideband sequencer raises this for an unexpected response or retry exhaustion. In SBINIT it causes immediate TRAINERROR entry without asserting the external error handshake request.
+
+<a id="wave-error-state-timeout"></a>
+#### State timeout (`state_timeout_i`)
+
+The LTSM timer's timeout indication. It has the highest retained-cause priority and requests immediate TRAINERROR entry.
+
+<a id="wave-error-handshake-done"></a>
+#### Error handshake acknowledgment (`handshake_done_i` / integrated `error_handshake_done_i`)
+
+Completes a pending non-SBINIT recovery handshake. If acknowledgment is absent, the manager's bounded timer requests TRAINERROR instead.
+
+<a id="wave-error-clear"></a>
+#### Clear retained log (`clear_log_i` / integrated `clear_error_log_i`)
+
+Clears cause/count only when no event is pending and the current state is not TRAINERROR. Pulses during pending or TRAINERROR residency are intentionally ignored.
+
+<a id="wave-error-pending"></a>
+#### Pending event (`pending_o` / integrated `error_pending_o`)
+
+Registered evidence that one accepted event awaits TRAINERROR entry. It clears on entry or RESET.
+
+<a id="wave-error-handshake-request"></a>
+#### TRAINERROR handshake request (`handshake_request_o` / integrated `trainerror_handshake_request_o`)
+
+Asserts combinationally with an eligible local/sideband fault outside SBINIT and remains asserted while that event is pending.
+
+<a id="wave-error-handshake-timeout"></a>
+#### Error handshake timeout (`handshake_timeout_o`)
+
+Marks the exact configured manager-timer boundary for a missing acknowledgment. It participates directly in the TRAINERROR entry decision.
+
+<a id="wave-error-enter-trainerror"></a>
+#### TRAINERROR entry request (`enter_trainerror_o`, internal)
+
+Global next-state request produced for an immediate cause/state, a completed handshake, or the manager timeout.
+
+<a id="wave-error-state"></a>
+#### Error-manager state context (`state_i`)
+
+The registered LTSM state supplied to the manager. It determines eligibility, SBINIT immediate behavior, TRAINERROR log protection, and RESET pending clear.
+
+<a id="wave-error-cause"></a>
+#### Retained error cause (`cause_o` / integrated `error_cause_o`)
+
+Captures exactly one accepted event using state-timeout over sideband-protocol over local-fatal priority and remains stable during TRAINERROR.
+
+<a id="wave-error-count"></a>
+#### Retained event count (`event_count_o` / integrated `error_event_count_o`)
+
+Increments once per accepted event, ignores a held/repeated level while pending, and saturates at `16'hffff`.
+
+<a id="v04-fpga-csr-signal-guide"></a>
+### v0.4 FPGA CSR waveform signals
+
+The wrapper waveform comes from `tb_ucie_ltsm_fpga_wrapper`. It shows both external CSR transactions and selected internal core state so the protected-clear behavior is directly visible. The wrapper's full [CSR map](../06_results/fpga_csr_wrapper.md#csr-map) is normative for this project.
+
+<a id="wave-csr-fatal"></a>
+#### Wrapper fatal input (`fatal_error_i`)
+
+The one-cycle external event presented to the unchanged core. It becomes an accepted local-fatal event and is retained after the pulse ends.
+
+<a id="wave-csr-request"></a>
+#### Internal handshake request (`handshake_request`)
+
+The wrapper-internal instance connection corresponding to the core's `trainerror_handshake_request_o`. It proves the compact boundary does not change the immediate/persistent request behavior.
+
+<a id="wave-csr-pending"></a>
+#### Internal pending event (`error_pending`)
+
+The core's registered pending status before TRAINERROR entry. It is also readable as CSR status bit 0.
+
+<a id="wave-csr-ack"></a>
+#### Wrapper handshake acknowledgment (`error_handshake_done_i`)
+
+Acknowledges the pending fatal event so the controller enters TRAINERROR. A missing acknowledgment instead uses the error manager's bound.
+
+<a id="wave-csr-state"></a>
+#### Internal LTSM state (`state`)
+
+The wide core diagnostic is kept inside the wrapper and returned in CSR `0x00`. The plotted interval shows ACTIVE, TRAINERROR, and RESET.
+
+<a id="wave-csr-cause"></a>
+#### Internal retained cause (`error_cause`)
+
+The retained three-bit cause exposed at CSR `0x04`; the waveform shows `LOCAL FATAL` surviving TRAINERROR and its attempted clear.
+
+<a id="wave-csr-count"></a>
+#### Internal retained event count (`error_event_count`)
+
+The 16-bit saturating count exposed as low/high bytes at CSR `0x05`/`0x06`.
+
+<a id="wave-csr-valid"></a>
+#### CSR valid (`csr_valid_i`)
+
+Qualifies one read or write request. The wrapper is a single-cycle combinational interface with no queued transactions.
+
+<a id="wave-csr-write"></a>
+#### CSR write (`csr_write_i`)
+
+Low selects a read; high selects a write. Only `0x10` with write data bit 0 set has a side effect.
+
+<a id="wave-csr-address"></a>
+#### CSR address (`csr_addr_i[4:0]`)
+
+Selects the byte register. Defined status addresses are `0x00`-`0x09`, control is `0x10`, and undefined reads such as `0x1f` return zero.
+
+<a id="wave-csr-read-data"></a>
+#### CSR read data (`csr_rdata_o[7:0]`)
+
+Combinational read response while valid and not writing. The waveform includes state/status/cause/count values and zero for an invalid address.
+
+<a id="wave-csr-ready"></a>
+#### CSR ready (`csr_ready_o`)
+
+Equals `csr_valid_i`, acknowledging the request in the same cycle. There is no wait-state or backpressure mechanism in this compact interface.
+
+<a id="wave-csr-clear"></a>
+#### Internal CSR clear request (`clear_error_log`)
+
+High only for a valid write to `0x10` with `csr_wdata_i[0]` set. The core ignores this pulse in TRAINERROR and accepts it after recovery reaches RESET, as shown by the retained cause/count.
 
 ## Integration warning
 

@@ -2,11 +2,11 @@
 
 A synthesizable SystemVerilog model of the UCIe 2.0 Link Training State Machine (LTSM), developed as a progressive design-and-verification project.
 
-> **Current stable milestone:** `v0.3-advanced-training`
+> **Current release:** `v0.4-error-recovery`
 >
 > **Reference:** UCIe Specification Revision 2.0, Version 1.0 (August 6, 2024)
 >
-> **Scope:** LTSM control flow, one bounded SBINIT sideband transaction, and one digital DATATRAINCENTER1 LFSR operation - not a complete UCIe PHY and not a claim of UCIe compliance.
+> **Scope:** LTSM control flow, one bounded SBINIT sideband transaction, one digital DATATRAINCENTER1 LFSR operation, retained/classified digital TRAINERROR events, and a compact FPGA CSR wrapper - not a complete UCIe PHY and not a claim of UCIe compliance.
 
 ## What is implemented
 
@@ -16,13 +16,15 @@ A synthesizable SystemVerilog model of the UCIe 2.0 Link Training State Machine 
 - Stall-driven timeout restart, ACTIVE retraining, power-management exit paths, and error recovery.
 - A synthesizable ready/valid sequencer for `SBINIT_DONE_REQ`/`SBINIT_DONE_RESP`, with backpressure, response matching, bounded retry, timeout, abort, and protocol-error reporting.
 - A synthesizable 16-lane, 23-bit LFSR training engine in `MBT_DATATRAINCENTER1`, with accepted-sample progression, a saturating error count, strict threshold result, and automatic successful advance.
-- Self-checking controller, sideband, and LFSR directed testbenches plus training-specific SystemVerilog assertions/coverage properties.
+- A synthesizable error manager with one-event retention, bounded handshake, fixed timeout/sideband/local-fatal priority, controlled log clearing, and a saturating 16-bit event counter.
+- A separate synthesizable FPGA wrapper that keeps the reusable core unchanged, internalizes wide diagnostics, and exposes state/status/counters through a byte CSR at `0x00`-`0x10`.
+- Self-checking controller, sideband, LFSR, and error-manager directed testbenches plus feature-specific SystemVerilog assertions/coverage properties.
 - A standalone sideband directed test with three protocol assertions.
-- A reusable UVM agent, reset-aware driver, passive monitor, scoreboard, eight deterministic tests, the preserved five-seed sideband campaign, and a five-seed DATATRAINCENTER1 campaign with an independent reference model and explicit sampled coverage.
-- A Quartus project for Cyclone 10 LP with successful fitting and timing analysis.
-- Versioned v0.1, v0.2, and v0.3 evidence packs with Questa-derived waveform SVGs, RTL/UVM connection diagrams, and Quartus functional Verilog netlists.
+- A reusable UVM agent, reset-aware driver, passive monitor, scoreboard, nine deterministic tests, and five-seed sideband, DATATRAINCENTER1, and recovery campaigns with independent prediction and explicit sampled coverage.
+- A separate wrapper Quartus project for Cyclone 10 LP with a successful 119-pin fit, zero virtual pins, and positive internal setup/hold timing at 80 MHz; board pin locations and external I/O timing remain incomplete.
+- Versioned v0.1 through v0.4 evidence packs with Questa-derived waveform SVGs, RTL/UVM connection diagrams, and Quartus functional Verilog netlists.
 
-Version 0.2 replaces the normal SBINIT completion abstraction with a transaction-level request/response path. Version 0.3 replaces one MBTRAIN abstraction with a concrete digital LFSR operation. `phase_done_i` remains a compatibility bypass and still represents the other calibration, repair, training, and PHYRETRAIN operations that are not implemented.
+Version 0.2 replaces the normal SBINIT completion abstraction with a transaction-level request/response path. Version 0.3 replaces one MBTRAIN abstraction with a concrete digital LFSR operation. Version 0.4 retains and classifies accepted TRAINERROR events across short pulses, delayed/missing acknowledgment, residency, and controlled clearing, then provides a fitted compact FPGA/CSR boundary. `phase_done_i` remains a compatibility bypass for operations that are not implemented.
 
 ## Start here
 
@@ -52,9 +54,29 @@ flowchart LR
 
 ## Architecture at this milestone
 
-![v0.3 RTL connection diagram](assets/diagrams/v0.3-advanced-training/rtl-connections.svg)
+![v0.4 FPGA CSR wrapper connection diagram](assets/diagrams/v0.4-error-recovery/fpga-csr-wrapper.svg)
 
-The diagram shows the implemented DATATRAINCENTER1 start/abort and result paths, generated/received training interface, and the remaining digital-only scope boundary.
+The diagram shows the unchanged verified core inside the compact FPGA boundary, the internalized state/training/error diagnostics, the CSR decoder, the 119-pin implementation result, and the remaining digital-only scope boundary.
+
+## v0.4 evidence pack
+
+| Artifact | Published file | Provenance |
+|---|---|---|
+| Retained handshake waveform | [SVG](assets/waveforms/v0.4-error-recovery/retained-handshake.svg) | Questa VCD from the self-checking error-manager test |
+| Timeout/priority waveform | [SVG](assets/waveforms/v0.4-error-recovery/timeout-and-priority.svg) | Same directed run: de-duplication, manager timeout, immediate entry, cause priority |
+| FPGA CSR waveform | [SVG](assets/waveforms/v0.4-error-recovery/fpga-csr-read-clear.svg) | Wrapper test: state/status/cause/count reads, ignored TRAINERROR clear, allowed RESET clear, invalid read |
+| RTL connections | [SVG](assets/diagrams/v0.4-error-recovery/rtl-connections.svg) | `ucie_ltsm` and `ucie_error_manager` integration |
+| Verification connections | [SVG](assets/diagrams/v0.4-error-recovery/verification-connections.svg) | Five-seed UVM, predictor, SVA, explicit coverage, and preserved regressions |
+| FPGA wrapper connections | [SVG](assets/diagrams/v0.4-error-recovery/fpga-csr-wrapper.svg) | Core/wrapper/CSR boundary and qualified implementation result |
+| Fitted wrapper netlist | [Verilog](synthesis/quartus/netlists/v0.4-error-recovery/ucie_ltsm_fpga_wrapper.vo) | Quartus 23.1 functional netlist for the fitted 119-pin wrapper |
+| Core-only netlist | [Verilog](synthesis/quartus/netlists/v0.4-error-recovery/ucie_ltsm.vo) | Synthesis/functional-simulation view; no core-top fit claim |
+| Netlist provenance | [Manifest](synthesis/quartus/netlists/v0.4-error-recovery/README.md) | SHA-256 identities, generation boundary, and limitations |
+| Signal/function guide | [Documentation](docs/02_ltssm/signals.md#v04-error-recovery-signal-guide) | Functional interpretation for every plotted v0.4 signal |
+| Definitions and long forms | [Glossary](docs/glossary.md#v04-error-recovery-and-fpga-wrapper-terms) | Canonical recovery, CSR, and FPGA terminology |
+
+![v0.4 FPGA CSR read and protected-clear waveform](assets/waveforms/v0.4-error-recovery/fpga-csr-read-clear.svg)
+
+The [v0.4 milestone page](docs/versions/v0.4_error_recovery.md) records the 180 randomized recovery trials, full preserved regression, reviewed visuals, qualified Quartus results, versioned netlist, and remaining limitations.
 
 ## v0.3 evidence pack
 
@@ -107,15 +129,15 @@ The [v0.2 milestone page](docs/versions/v0.2_sideband.md) presents both waveform
 | v0.2 | v0.1 | Bounded SBINIT sideband sequencing | Directed + eight UVM tests + SVA | Stable within stated scope |
 | v0.2-random | v0.2 | Verification-only seeded random campaign | Five seeds / 200 trials + preserved regression | Stable verification update |
 | v0.3 | v0.2-random | DATATRAINCENTER1 digital LFSR training | Five seeds / 160 trials + independent model + SVA + directed 4096 proof | Stable within stated scope |
-| v0.4 | v0.3 | Expanded recovery and error reporting | To be defined with implementation | Planned |
+| v0.4 | v0.3 | Retained/classified TRAINERROR events + compact FPGA CSR wrapper | Five recovery seeds / 180 trials + predictor/SVA + directed recovery/CSR proof + qualified Quartus fit | Stable within stated scope |
 | v1.0 | Later milestones | Integrated verified controller | Evidence not yet available | Future |
 
-See the [roadmap](ROADMAP.md), [changelog](CHANGELOG.md), and [v0.3 milestone page](docs/versions/v0.3_advanced_training.md).
+See the [roadmap](ROADMAP.md), [changelog](CHANGELOG.md), and [v0.4 milestone page](docs/versions/v0.4_error_recovery.md).
 
 ## Repository structure
 
 ```text
-rtl/                 Synthesizable package, LTSM, sideband sequencer, and LFSR training engine
+rtl/                 Synthesizable package, LTSM, engines, error manager, and FPGA CSR wrapper
 verification/        Directed testbench, SVA, and UVM environment
 scripts/             Questa directed and UVM run scripts
 quartus/             Reproducible Quartus project and selected summaries
@@ -147,6 +169,22 @@ Run the standalone sideband protocol test:
 
 Expected evidence: `PASS: sideband backpressure, success, retry, exhaustion, mismatch, and abort`.
 
+Run the focused v0.4 error-manager proof:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/run_error_directed.do
+```
+
+Expected evidence: `PASS: error retention, priority, handshake bound, clear rules, and saturation`.
+
+Run the compact FPGA/CSR wrapper proof:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/run_fpga_wrapper_directed.do
+```
+
+Expected evidence: `PASS: FPGA wrapper CSR state, status, retained error, protected clear, and release`.
+
 To regenerate the release waveform figures:
 
 ```powershell
@@ -170,13 +208,21 @@ Regenerate the v0.3 DATATRAINCENTER1 waveform figures:
 python scripts/render_datatrain_waveforms.py
 ```
 
+Regenerate the v0.4 recovery waveform figures:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/capture_error_waveform.do
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/capture_fpga_wrapper_waveform.do
+python scripts/render_error_waveforms.py
+```
+
 ### UVM regression
 
 ```powershell
 .\scripts\run_uvm_regression.ps1
 ```
 
-The script runs the four preserved controller tests plus `sb_success_test`, `sb_retry_test`, `sb_error_test`, and `sb_exhaust_test`. It rejects any log that does not report zero UVM errors and fatals.
+The script runs the preserved controller/sideband tests plus `recovery_closure_test`, for nine deterministic UVM tests total. It rejects any log that does not report zero UVM errors and fatals.
 
 Run the repeatable constrained-domain randomized campaign:
 
@@ -194,11 +240,19 @@ Run the v0.3 DATATRAINCENTER1 campaign:
 
 This runs seeds `701`, `802`, `903`, `1004`, and `1105`, each with 32 reset-isolated trials. The independent model checks lane seeds, every 23-bit polynomial step, generated/received patterns, corruption masks, saturated counts, and strict results. Explicit sampled bins/crosses replace native covergroups under the Starter license.
 
+Run the v0.4 retained/classified recovery campaign:
+
+```powershell
+.\scripts\run_recovery_random_regression.ps1
+```
+
+This runs seeds `1201`, `1302`, `1403`, `1504`, and `1605`, each with 36 trials across seven eligible origins and six recovery scenarios. The predictor checks exact cause/count retention, entry timing, residency, and release; explicit sampled scenario/origin/pulse/ack bins and legal crosses replace native covergroups.
+
 ### Quartus
 
 ```powershell
 Push-Location quartus
-& 'C:\intelFPGA_lite\23.1std\quartus\bin64\quartus_sh.exe' --flow compile ucie_ltsm
+& 'C:\intelFPGA_lite\23.1std\quartus\bin64\quartus_sh.exe' --flow compile ucie_ltsm_fpga
 Pop-Location
 ```
 
@@ -207,7 +261,7 @@ The checked project targets `10CL025YU256C8G` and constrains `clk_i` to 12.5 ns 
 To rebuild and export the reviewed functional netlist:
 
 ```powershell
-.\scripts\export_quartus_netlist.ps1 -Version v0.3-advanced-training
+.\scripts\export_quartus_netlist.ps1 -Version v0.4-error-recovery -Project ucie_ltsm_fpga -OutputName ucie_ltsm_fpga_wrapper.vo
 ```
 
 ## Current limitations
@@ -215,9 +269,9 @@ To rebuild and export the reviewed functional netlist:
 - Only the SBINIT-done request/response pair is implemented; physical sideband detection, repair, framing, CRC, credits, and the broader message set are absent.
 - `phase_done_i` can still bypass the SBINIT sideband handshake.
 - Only one digital DATATRAINCENTER1 pattern/check operation is concrete; analog calibration, physical pattern transport, Vref/phase search, equalization, lane repair/degrade, and analog PHY controls remain abstracted.
-- RDI, DVSEC/CSR, management transport, detailed error logging, and compliance testing are absent.
-- Native UVM covergroups/UCDB percentages and full per-substate coverage closure are absent; v0.3 uses explicit sampled bins/crosses.
-- The UVM suite does not yet test the L2 exit or all three retrain targets.
+- RDI, a standards-defined DVSEC/management transport, firmware interrupts, and compliance testing are absent; the implemented byte CSR is a compact FPGA debug/management boundary only.
+- Native UVM covergroups/UCDB percentages and full per-substate coverage closure are absent; v0.4 uses explicit sampled bins/crosses.
+- External I/O delays and exact package pin locations remain unspecified. The selected wrapper uses 119 physical pins and zero virtual pins, so its positive slack qualifies internal clock paths rather than board timing.
 - No Cadence synthesis, timing, area, or power evidence is present.
 
 ## Reference policy

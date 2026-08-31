@@ -46,7 +46,7 @@ VALVREF -> DATAVREF -> SPEEDIDLE -> TXSELFCAL -> RXCLKCAL
 -> LINKSPEED -> REPAIR
 ```
 
-These labels and order exist in the RTL. The project does not yet implement each label's physical operation. Version 0.2 adds the bounded SBINIT-done exchange; version 0.3 adds a digital 16-lane LFSR generator/checker control operation for `DATATRAINCENTER1`. `phase_done_i` remains the compatibility/abstract completion path for the other substates and can bypass that one operation.
+These labels and order exist in the RTL. The project does not yet implement each label's physical operation. Version 0.2 adds the bounded SBINIT-done exchange; version 0.3 adds a digital 16-lane LFSR generator/checker control operation for `DATATRAINCENTER1`; version 0.4 retains/classifies TRAINERROR events and exposes selected status through an optional FPGA CSR wrapper. `phase_done_i` remains the compatibility/abstract completion path for the other substates and can bypass the concrete operations.
 
 ## Continue reading
 

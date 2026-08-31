@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="960" viewBox="0 0 1700 960" role="img" aria-labelledby="title desc">
+  <title id="title">v0.4 randomized recovery verification connections</title>
+  <desc id="desc">Seeded legal-domain generation drives the integrated LTSM while independent prediction, assertions, sampled coverage, and preserved regressions determine the release verdict.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155"/>
+    </marker>
+    <style>
+      text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}
+      .title{font-size:28px;font-weight:700}.subtitle{font-size:15px;fill:#536179}
+      .head{font-size:19px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#475569}
+      .metric{font-size:14px;font-weight:700}.link{font-size:14px;font-weight:650;fill:#2563eb;text-decoration:underline}
+      .wire{fill:none;stroke:#334155;stroke-width:2.5;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1700" height="960" fill="#ffffff"/>
+  <text class="title" x="40" y="44">v0.4 recovery verification — independent checking and closure</text>
+  <text class="subtitle" x="40" y="74">Five reproducible seeds · 36 trials per seed · predictor + SVA + explicit sampled coverage + preserved regressions</text>
+  <a href="../../../docs/06_results/error_recovery.md"><text class="link" x="1660" y="74" text-anchor="end">Measured results ↗</text></a>
+
+  <rect x="45" y="130" width="365" height="500" rx="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text class="head" x="227" y="169" text-anchor="middle" fill="#1d4ed8">Seeded legal-domain generator</text>
+  <text class="body" x="75" y="210">Seeds: 1201 · 1302 · 1403 · 1504 · 1605</text>
+  <text class="body" x="75" y="250">Originating state</text>
+  <text class="small" x="75" y="275">SBINIT, MBINIT, MBTRAIN, LINKINIT,</text>
+  <text class="small" x="75" y="296">ACTIVE, PHYRETRAIN, L1L2</text>
+  <text class="body" x="75" y="336">Scenario</text>
+  <text class="small" x="75" y="361">Delayed/missing acknowledgment</text>
+  <text class="small" x="75" y="382">State timeout · SBINIT protocol error</text>
+  <text class="small" x="75" y="403">Residency · simultaneous causes</text>
+  <text class="body" x="75" y="443">Controls</text>
+  <text class="small" x="75" y="468">1-cycle / multi-cycle pulses</text>
+  <text class="small" x="75" y="489">Ack latency · escalation · sideband idle</text>
+  <text class="small" x="75" y="510">Reset · clear-error timing</text>
+  <rect x="75" y="548" width="305" height="55" rx="9" fill="#dbeafe"/>
+  <text class="metric" x="227" y="581" text-anchor="middle" fill="#1e40af">180 predictor-checked recovery trials</text>
+
+  <rect x="500" y="180" width="430" height="350" rx="16" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/>
+  <text class="head" x="715" y="220" text-anchor="middle" fill="#6d28d9">UVM drive path + DUT</text>
+  <rect x="540" y="252" width="350" height="72" rx="10" fill="#ffffff" stroke="#a78bfa" stroke-width="2"/>
+  <text class="body" x="715" y="282" text-anchor="middle">recovery_random_test / sequence</text>
+  <text class="small" x="715" y="305" text-anchor="middle">Fresh Questa invocation for every seed</text>
+  <rect x="540" y="350" width="350" height="72" rx="10" fill="#ffffff" stroke="#a78bfa" stroke-width="2"/>
+  <text class="body" x="715" y="380" text-anchor="middle">ucie_ltsm_if + driver</text>
+  <text class="small" x="715" y="403" text-anchor="middle">Cycle-accurate fault/handshake control</text>
+  <rect x="540" y="448" width="350" height="55" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text class="head" x="715" y="483" text-anchor="middle">ucie_ltsm + error manager</text>
+
+  <rect x="1035" y="130" width="620" height="500" rx="16" fill="#ecfdf5" stroke="#16a34a" stroke-width="2.5"/>
+  <text class="head" x="1345" y="169" text-anchor="middle" fill="#15803d">Independent observation and checking</text>
+  <rect x="1075" y="205" width="540" height="105" rx="10" fill="#ffffff" stroke="#4ade80" stroke-width="2"/>
+  <text class="head" x="1100" y="237">Predictor + scoreboard</text>
+  <text class="body" x="1100" y="267">Cause priority, retained count, entry timing, residency, release</text>
+  <text class="small" x="1100" y="291">Exact agreement after every accepted integrated event</text>
+  <rect x="1075" y="335" width="540" height="105" rx="10" fill="#ffffff" stroke="#4ade80" stroke-width="2"/>
+  <text class="head" x="1100" y="367">SVA invariants</text>
+  <text class="body" x="1100" y="397">Immediate/persistent request, timeout entry, pending clear</text>
+  <text class="small" x="1100" y="421">Stable TRAINERROR logs and ignored pending clear</text>
+  <rect x="1075" y="465" width="540" height="125" rx="10" fill="#ffffff" stroke="#4ade80" stroke-width="2"/>
+  <text class="head" x="1100" y="497">Explicit sampled coverage</text>
+  <text class="body" x="1100" y="527">Scenario · origin · pulse width · ack class · legal crosses</text>
+  <text class="small" x="1100" y="551">All required bins/crosses hit across five seeds</text>
+  <text class="small" x="1100" y="574">No UCDB percentage claimed under the Starter license</text>
+
+  <path class="wire" d="M410 380 H500"/>
+  <path class="wire" d="M930 380 H1035"/>
+
+  <rect x="45" y="688" width="365" height="160" rx="14" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <text class="head" x="70" y="723" fill="#9a3412">Preserved closure</text>
+  <text class="body" x="70" y="757">4 directed suites · 9 deterministic UVM tests</text>
+  <text class="body" x="70" y="789">200 sideband transactions · 160 training trials</text>
+  <text class="small" x="70" y="820">L2 exit + all three retrain targets included</text>
+
+  <rect x="500" y="688" width="1155" height="160" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+  <text class="head" x="1077" y="728" text-anchor="middle" fill="#15803d">Release-gate verdict</text>
+  <text class="metric" x="1077" y="767" text-anchor="middle" fill="#166534">0 UVM errors · 0 UVM fatals · 0 assertion failures · 0 illegal transitions · 0 predictor mismatches</text>
+  <text class="body" x="1077" y="802" text-anchor="middle">Focused directed proof also covers one-event de-duplication, exact timeout boundary, clear rules, and 16'hffff saturation</text>
+  <text class="small" x="1077" y="829" text-anchor="middle">Digital verification evidence only; analog PHY, CDC fault injection, software servicing, BER, and UCIe compliance remain outside scope</text>
+  <path class="wire" d="M1345 630 V688"/>
+  <path class="wire" d="M410 768 H500"/>
+
+  <a href="../../../docs/05_verification/testplan.md"><text class="link" x="45" y="910">Test plan and traceability ↗</text></a>
+  <a href="../../../docs/glossary.md"><text class="link" x="1655" y="910" text-anchor="end">Definitions and abbreviations ↗</text></a>
+</svg>

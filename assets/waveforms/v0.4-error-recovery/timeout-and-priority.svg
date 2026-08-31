@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1660" height="850" viewBox="0 0 1660 850" role="img" aria-labelledby="title desc">
+<title id="title">v0.4 timeout, immediate-entry, and cause priority</title>
+<desc id="desc">Held local fault counts once; SBINIT protocol error enters immediately; simultaneous causes retain state-timeout priority Generated from a self-checking Questa VCD.</desc>
+<style>text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}.title{font-size:25px;font-weight:700}.subtitle{font-size:14px;fill:#536179}.label{font-size:14px;font-weight:650}.tick{font-size:12px;fill:#64748b}.band{font-size:12px;font-weight:700}.bus{font-size:11px;font-weight:700;fill:#fff}.guide{font-size:13px;font-weight:650;fill:#2563eb;text-decoration:underline}.digital{fill:none;stroke-width:2.8;stroke-linejoin:miter}.grid{stroke:#dbe2ea;stroke-width:1}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text class="title" x="28" y="38">v0.4 timeout, immediate-entry, and cause priority</text>
+<text class="subtitle" x="28" y="65">Held local fault counts once; SBINIT protocol error enters immediately; simultaneous causes retain state-timeout priority</text>
+<text class="subtitle" x="28" y="90">Source: Questa 2023.3 · verification/tb_ucie_error_manager.sv · timescale 1 ps</text>
+<a href="../../../docs/02_ltssm/signals.md#v04-error-recovery-signal-guide"><text class="guide" x="1630" y="90" text-anchor="end">Signal definitions and functionality ↗</text></a>
+<rect x="262.00" y="112" width="623.03" height="31" rx="5" fill="#fee2e2"/>
+<text class="band" x="573.51" y="133" text-anchor="middle" style="fill:#991b1b">HELD FAULT · ONE EVENT · MANAGER TIMEOUT</text>
+<rect x="885.03" y="112" width="366.49" height="31" rx="5" fill="#ffedd5"/>
+<text class="band" x="1068.27" y="133" text-anchor="middle" style="fill:#9a3412">SBINIT PROTOCOL · IMMEDIATE</text>
+<rect x="1251.51" y="112" width="244.32" height="31" rx="5" fill="#f3e8ff"/>
+<text class="band" x="1373.68" y="133" text-anchor="middle" style="fill:#6b21a8">SIMULTANEOUS · TIMEOUT PRIORITY</text>
+<rect x="1495.84" y="112" width="122.16" height="31" rx="5" fill="#e2e8f0"/>
+<text class="band" x="1556.92" y="133" text-anchor="middle" style="fill:#334155">RESET</text>
+<line class="grid" x1="323.08" y1="151" x2="323.08" y2="738"/>
+<text class="tick" x="323.08" y="162" text-anchor="middle">120</text>
+<line class="grid" x1="445.24" y1="151" x2="445.24" y2="738"/>
+<text class="tick" x="445.24" y="162" text-anchor="middle">130</text>
+<line class="grid" x1="567.41" y1="151" x2="567.41" y2="738"/>
+<text class="tick" x="567.41" y="162" text-anchor="middle">140</text>
+<line class="grid" x1="689.57" y1="151" x2="689.57" y2="738"/>
+<text class="tick" x="689.57" y="162" text-anchor="middle">150</text>
+<line class="grid" x1="811.73" y1="151" x2="811.73" y2="738"/>
+<text class="tick" x="811.73" y="162" text-anchor="middle">160</text>
+<line class="grid" x1="933.89" y1="151" x2="933.89" y2="738"/>
+<text class="tick" x="933.89" y="162" text-anchor="middle">170</text>
+<line class="grid" x1="1056.05" y1="151" x2="1056.05" y2="738"/>
+<text class="tick" x="1056.05" y="162" text-anchor="middle">180</text>
+<line class="grid" x1="1178.22" y1="151" x2="1178.22" y2="738"/>
+<text class="tick" x="1178.22" y="162" text-anchor="middle">190</text>
+<line class="grid" x1="1300.38" y1="151" x2="1300.38" y2="738"/>
+<text class="tick" x="1300.38" y="162" text-anchor="middle">200</text>
+<line class="grid" x1="1422.54" y1="151" x2="1422.54" y2="738"/>
+<text class="tick" x="1422.54" y="162" text-anchor="middle">210</text>
+<line class="grid" x1="1544.70" y1="151" x2="1544.70" y2="738"/>
+<text class="tick" x="1544.70" y="162" text-anchor="middle">220</text>
+<rect x="262" y="165" width="1356" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-local-fatal"><text class="label" x="244" y="195" text-anchor="end" style="fill:#dc2626">local_fatal_error_i</text></a>
+<line x1="262" y1="190" x2="1618" y2="190" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#dc2626" d="M 262.00 203 H 274.22 V 177 H 762.86 V 203 H 1251.51 V 177 H 1373.68 V 203 H 1618.00"/>
+<rect x="262" y="223" width="1356" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-sideband"><text class="label" x="244" y="253" text-anchor="end" style="fill:#ea580c">sideband_protocol_error_i</text></a>
+<line x1="262" y1="248" x2="1618" y2="248" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#ea580c" d="M 262.00 261 H 1007.19 V 235 H 1129.35 V 261 H 1251.51 V 235 H 1373.68 V 261 H 1618.00"/>
+<rect x="262" y="281" width="1356" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-state-timeout"><text class="label" x="244" y="311" text-anchor="end" style="fill:#a21caf">state_timeout_i</text></a>
+<line x1="262" y1="306" x2="1618" y2="306" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#a21caf" d="M 262.00 319 H 1251.51 V 293 H 1373.68 V 319 H 1618.00"/>
+<rect x="262" y="339" width="1356" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-handshake-request"><text class="label" x="244" y="369" text-anchor="end" style="fill:#2563eb">handshake_request_o</text></a>
+<line x1="262" y1="364" x2="1618" y2="364" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#2563eb" d="M 262.00 377 H 274.22 V 351 H 762.86 V 377 H 1251.51 V 351 H 1373.68 V 377 H 1618.00"/>
+<rect x="262" y="397" width="1356" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-pending"><text class="label" x="244" y="427" text-anchor="end" style="fill:#7c3aed">pending_o</text></a>
+<line x1="262" y1="422" x2="1618" y2="422" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#7c3aed" d="M 262.00 435 H 384.16 V 409 H 994.97 V 435 H 1618.00"/>
+<rect x="262" y="455" width="1356" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-handshake-timeout"><text class="label" x="244" y="485" text-anchor="end" style="fill:#b45309">handshake_timeout_o</text></a>
+<line x1="262" y1="480" x2="1618" y2="480" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#b45309" d="M 262.00 493 H 750.65 V 467 H 994.97 V 493 H 1618.00"/>
+<rect x="262" y="513" width="1356" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-enter-trainerror"><text class="label" x="244" y="543" text-anchor="end" style="fill:#be123c">enter_trainerror_o</text></a>
+<line x1="262" y1="538" x2="1618" y2="538" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#be123c" d="M 262.00 551 H 750.65 V 525 H 762.86 V 551 H 1007.19 V 525 H 1129.35 V 551 H 1251.51 V 525 H 1373.68 V 551 H 1618.00"/>
+<rect x="262" y="571" width="1356" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-state"><text class="label" x="244" y="601" text-anchor="end" style="fill:#334155">state_i</text></a>
+<line x1="262" y1="596" x2="1618" y2="596" stroke="#94a3b8"/>
+<rect x="262.00" y="580" width="500.86" height="32" fill="#15803d" stroke="#ffffff"/>
+<text class="bus" x="512.43" y="600" text-anchor="middle">ACTIVE</text>
+<rect x="762.86" y="580" width="122.16" height="32" fill="#b91c1c" stroke="#ffffff"/>
+<text class="bus" x="823.95" y="600" text-anchor="middle">TRAINERROR</text>
+<rect x="885.03" y="580" width="122.16" height="32" fill="#64748b" stroke="#ffffff"/>
+<text class="bus" x="946.11" y="600" text-anchor="middle">RESET</text>
+<rect x="1007.19" y="580" width="122.16" height="32" fill="#0f766e" stroke="#ffffff"/>
+<text class="bus" x="1068.27" y="600" text-anchor="middle">SBINIT</text>
+<rect x="1129.35" y="580" width="122.16" height="32" fill="#64748b" stroke="#ffffff"/>
+<text class="bus" x="1190.43" y="600" text-anchor="middle">RESET</text>
+<rect x="1251.51" y="580" width="122.16" height="32" fill="#2563eb" stroke="#ffffff"/>
+<text class="bus" x="1312.59" y="600" text-anchor="middle">MBINIT</text>
+<rect x="1373.68" y="580" width="122.16" height="32" fill="#b91c1c" stroke="#ffffff"/>
+<text class="bus" x="1434.76" y="600" text-anchor="middle">TRAINERROR</text>
+<rect x="1495.84" y="580" width="122.16" height="32" fill="#64748b" stroke="#ffffff"/>
+<text class="bus" x="1556.92" y="600" text-anchor="middle">RESET</text>
+<rect x="262" y="629" width="1356" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-cause"><text class="label" x="244" y="659" text-anchor="end" style="fill:#9333ea">cause_o</text></a>
+<line x1="262" y1="654" x2="1618" y2="654" stroke="#94a3b8"/>
+<rect x="262.00" y="638" width="122.16" height="32" fill="#64748b" stroke="#ffffff"/>
+<text class="bus" x="323.08" y="658" text-anchor="middle">NONE</text>
+<rect x="384.16" y="638" width="732.97" height="32" fill="#dc2626" stroke="#ffffff"/>
+<text class="bus" x="750.65" y="658" text-anchor="middle">LOCAL FATAL</text>
+<rect x="1117.14" y="638" width="244.32" height="32" fill="#ea580c" stroke="#ffffff"/>
+<text class="bus" x="1239.30" y="658" text-anchor="middle">SIDEBAND</text>
+<rect x="1361.46" y="638" width="256.54" height="32" fill="#a21caf" stroke="#ffffff"/>
+<text class="bus" x="1489.73" y="658" text-anchor="middle">STATE TIMEOUT</text>
+<rect x="262" y="687" width="1356" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-count"><text class="label" x="244" y="717" text-anchor="end" style="fill:#0284c7">event_count_o</text></a>
+<line x1="262" y1="712" x2="1618" y2="712" stroke="#94a3b8"/>
+<rect x="262.00" y="696" width="122.16" height="32" fill="#0284c7" stroke="#ffffff"/>
+<text class="bus" x="323.08" y="716" text-anchor="middle">0</text>
+<rect x="384.16" y="696" width="732.97" height="32" fill="#0284c7" stroke="#ffffff"/>
+<text class="bus" x="750.65" y="716" text-anchor="middle">1</text>
+<rect x="1117.14" y="696" width="244.32" height="32" fill="#0284c7" stroke="#ffffff"/>
+<text class="bus" x="1239.30" y="716" text-anchor="middle">2</text>
+<rect x="1361.46" y="696" width="256.54" height="32" fill="#0284c7" stroke="#ffffff"/>
+<text class="bus" x="1489.73" y="716" text-anchor="middle">3</text>
+<rect x="262" y="165" width="1356" height="578" fill="none" stroke="#94a3b8"/>
+<text class="tick" x="940.00" y="826" text-anchor="middle">simulation time (ns)</text>
+</svg>

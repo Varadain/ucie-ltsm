@@ -6,7 +6,8 @@ package ucie_ltsm_uvm_pkg;
   typedef enum {OP_RESET, OP_START, OP_DONE, OP_RDI_ACTIVE, OP_RETRAIN, OP_FATAL,
                 OP_STALL, OP_WAIT_TIMEOUT, OP_L1_EXIT, OP_L2_EXIT,
                 OP_SB_SUCCESS, OP_SB_RETRY_SUCCESS, OP_SB_BAD_RESPONSE,
-                OP_SB_EXHAUST_RETRIES, OP_TRAIN_TRIAL} ltsm_op_e;
+                OP_SB_EXHAUST_RETRIES, OP_TRAIN_TRIAL, OP_RECOVERY_TRIAL,
+                OP_RECOVERY_CLOSURE} ltsm_op_e;
 
   class ltsm_item extends uvm_sequence_item;
     rand ltsm_op_e op;
@@ -17,6 +18,8 @@ package ucie_ltsm_uvm_pkg;
     int unsigned error_bits;
     int unsigned threshold;
     int unsigned abort_sample;
+    int unsigned recovery_scenario, recovery_origin, pulse_cycles, ack_cycles;
+    bit recovery_escalated, recovery_idle;
     constraint c_cycles { cycles inside {[1:50]}; }
     constraint c_response_cycles { response_cycles inside {[1:50]}; }
     `uvm_object_utils(ltsm_item)
@@ -34,6 +37,10 @@ package ucie_ltsm_uvm_pkg;
     int train_trials, train_passes, train_failures, train_aborts, train_timeouts;
     int train_retries, clean_samples, corrupt_samples, gap_cycles;
     int cov_scenario[4], cov_error[4], cov_gap[3], cov_threshold[2], cov_scenario_gap[4][3];
+    int recovery_trials, recovery_entries, recovery_timeouts, recovery_delayed;
+    int recovery_sb, recovery_residency, recovery_simultaneous;
+    int rec_cov_scenario[6], rec_cov_origin[7], rec_cov_pulse[2], rec_cov_ack[3];
+    int rec_cov_scenario_origin[6][7];
     function new(string name, uvm_component parent); super.new(name,parent); endfunction
     function void build_phase(uvm_phase phase);
       super.build_phase(phase);
@@ -59,6 +66,79 @@ package ucie_ltsm_uvm_pkg;
       if(vif.state!=LTSM_MBTRAIN || vif.mbt!=MBT_DATATRAINCENTER1)
         `uvm_error("TRAIN_NAV","Failed to reach DATATRAINCENTER1")
       wait(vif.train_busy && vif.state==LTSM_MBTRAIN && vif.mbt==MBT_DATATRAINCENTER1); #1;
+    endtask
+    task goto_recovery_origin(input int origin);
+      vif.supplies_stable=1; vif.sideband_clk_ok=1; vif.internal_clks_ok=1;
+      vif.link_train_trigger=1; wait(vif.state==LTSM_SBINIT);
+      if(origin==0) return;
+      pulse(vif.phase_done); if(origin==1) return;
+      repeat(6) pulse(vif.phase_done); if(origin==2) return;
+      repeat(13) pulse(vif.phase_done); if(origin==3) return;
+      pulse(vif.rdi_active); if(origin==4) return;
+      if(origin==5) begin pulse(vif.retrain_req); return; end
+      vif.pm_l1_req=1; @(posedge vif.clk); #1; vif.pm_l1_req=0;
+    endtask
+    task finish_recovery(input ltsm_error_cause_e expected);
+      wait(vif.state==LTSM_TRAINERROR); #1; recovery_entries++;
+      if(vif.error_pending) `uvm_error("REC_PENDING","Pending not cleared on TRAINERROR entry")
+      if(vif.error_cause!=expected || vif.error_event_count!=1)
+        `uvm_error("REC_PRED",$sformatf("expected cause/count=%0d/1 observed=%0d/%0d",
+          expected,vif.error_cause,vif.error_event_count))
+      vif.clear_error_log=1; @(posedge vif.clk); #1; vif.clear_error_log=0;
+      if(vif.error_cause!=expected || vif.error_event_count!=1)
+        `uvm_error("REC_CLEAR","Clear changed log in TRAINERROR")
+      repeat(2) @(posedge vif.clk); #1;
+      vif.error_escalated=0; vif.sideband_tx_idle=1;
+      wait(vif.state==LTSM_RESET); #1;
+      vif.clear_error_log=1; @(posedge vif.clk); #1; vif.clear_error_log=0;
+      if(vif.error_cause!=LTSM_ERR_NONE || vif.error_event_count!=0)
+        `uvm_error("REC_CLEAR","Allowed clear did not clear retained log")
+    endtask
+    task drive_recovery(ltsm_item tr);
+      ltsm_error_cause_e expected=LTSM_ERR_LOCAL_FATAL;
+      `uvm_info("REC_TRIAL",$sformatf("scenario=%0d origin=%0d pulse=%0d ack=%0d",
+        tr.recovery_scenario,tr.recovery_origin,tr.pulse_cycles,tr.ack_cycles),UVM_MEDIUM)
+      recovery_trials++; rec_cov_scenario[tr.recovery_scenario]++;
+      rec_cov_origin[tr.recovery_origin]++; rec_cov_scenario_origin[tr.recovery_scenario][tr.recovery_origin]++;
+      rec_cov_pulse[tr.pulse_cycles>1]++;
+      rec_cov_ack[(tr.recovery_scenario==1)?2:((tr.ack_cycles==0)?0:1)]++;
+      goto_recovery_origin(tr.recovery_origin);
+      vif.sideband_tx_idle=tr.recovery_idle; vif.error_escalated=tr.recovery_escalated;
+      case(tr.recovery_scenario)
+        0,4: begin
+          @(negedge vif.clk); vif.fatal_error=1; #1;
+          if(!vif.trainerror_handshake_request) `uvm_error("REC_REQ","Handshake request not immediate")
+          repeat(tr.pulse_cycles) @(posedge vif.clk); #1; vif.fatal_error=0;
+          if(!vif.error_pending || !vif.trainerror_handshake_request)
+            `uvm_error("REC_SHORT","Short/held fatal was not retained pending")
+          vif.clear_error_log=1; @(posedge vif.clk); #1; vif.clear_error_log=0;
+          repeat(tr.ack_cycles) begin
+            if(!vif.trainerror_handshake_request) `uvm_error("REC_REQ","Request dropped before ack")
+            @(posedge vif.clk);
+          end
+          vif.error_handshake_done=1; @(posedge vif.clk); #1; vif.error_handshake_done=0;
+          recovery_delayed++; if(tr.recovery_scenario==4) recovery_residency++;
+        end
+        1: begin
+          pulse(vif.fatal_error); wait(vif.error_handshake_timeout); recovery_timeouts++;
+        end
+        2: begin wait(vif.timeout); expected=LTSM_ERR_STATE_TIMEOUT; end
+        3: begin
+          if(vif.state!=LTSM_SBINIT) `uvm_error("REC_SB","SB scenario outside SBINIT")
+          wait(vif.sb_tx_valid); @(negedge vif.clk); vif.sb_tx_ready=1;
+          @(posedge vif.clk); #1 vif.sb_tx_ready=0;
+          @(negedge vif.clk); vif.sb_rx_message=SB_MSG_NOP; vif.sb_rx_valid=1;
+          @(posedge vif.clk); #1 vif.sb_rx_valid=0;
+          expected=LTSM_ERR_SIDEBAND_PROTOCOL; recovery_sb++;
+          if(vif.trainerror_handshake_request) `uvm_error("REC_SB","SBINIT incorrectly requested handshake")
+        end
+        default: begin
+          wait(vif.timeout); vif.fatal_error=1; #1;
+          expected=LTSM_ERR_STATE_TIMEOUT; recovery_simultaneous++;
+          @(posedge vif.clk); #1 vif.fatal_error=0;
+        end
+      endcase
+      finish_recovery(expected);
     endtask
     task drive_train_attempt(input int error_bits, input int threshold, input int gap,
                              input int abort_sample, input bit expect_pass);
@@ -202,6 +282,24 @@ package ucie_ltsm_uvm_pkg;
             end
           endcase
         end
+        OP_RECOVERY_TRIAL: drive_recovery(tr);
+        OP_RECOVERY_CLOSURE: begin
+          // L2 exit and all retrain targets close pre-v0.4 planned gaps.
+          goto_recovery_origin(4); vif.pm_l2_req=1; @(posedge vif.clk); #1;
+          vif.pm_exit=1; @(posedge vif.clk); #1; vif.pm_exit=0; vif.pm_l2_req=0;
+          if(vif.state!=LTSM_RESET) `uvm_error("REC_CLOSE","L2 exit did not reset")
+          for(int rt=0;rt<3;rt++) begin
+            vif.rst_n=0; vif.clear_controls(); repeat(3) @(posedge vif.clk); #1 vif.rst_n=1;
+            goto_recovery_origin(4); vif.retrain_target=retrain_target_e'(rt);
+            pulse(vif.retrain_req); pulse(vif.phase_done);
+            if(vif.state!=LTSM_MBTRAIN) `uvm_error("REC_CLOSE","Retrain did not enter MBTRAIN")
+            case(rt)
+              0: if(vif.mbt!=MBT_TXSELFCAL) `uvm_error("REC_CLOSE","TXSELFCAL target mismatch")
+              1: if(vif.mbt!=MBT_SPEEDIDLE) `uvm_error("REC_CLOSE","SPEEDIDLE target mismatch")
+              2: if(vif.mbt!=MBT_REPAIR) `uvm_error("REC_CLOSE","REPAIR target mismatch")
+            endcase
+          end
+        end
       endcase
     endtask
     task run_phase(uvm_phase phase);
@@ -219,6 +317,18 @@ package ucie_ltsm_uvm_pkg;
         cov_scenario_gap[1][0],cov_scenario_gap[1][1],cov_scenario_gap[1][2],
         cov_scenario_gap[2][0],cov_scenario_gap[2][1],cov_scenario_gap[2][2],
         cov_scenario_gap[3][0],cov_scenario_gap[3][1],cov_scenario_gap[3][2]),UVM_LOW)
+      `uvm_info("RECOVERY_COVERAGE",$sformatf("trials=%0d entries=%0d delayed=%0d manager_timeout=%0d sbinit=%0d residency=%0d simultaneous=%0d scenario=%0d/%0d/%0d/%0d/%0d/%0d origin=%0d/%0d/%0d/%0d/%0d/%0d/%0d pulse_short/held=%0d/%0d ack_zero/delayed/missing=%0d/%0d/%0d",
+        recovery_trials,recovery_entries,recovery_delayed,recovery_timeouts,recovery_sb,recovery_residency,recovery_simultaneous,
+        rec_cov_scenario[0],rec_cov_scenario[1],rec_cov_scenario[2],rec_cov_scenario[3],rec_cov_scenario[4],rec_cov_scenario[5],
+        rec_cov_origin[0],rec_cov_origin[1],rec_cov_origin[2],rec_cov_origin[3],rec_cov_origin[4],rec_cov_origin[5],rec_cov_origin[6],
+        rec_cov_pulse[0],rec_cov_pulse[1],rec_cov_ack[0],rec_cov_ack[1],rec_cov_ack[2]),UVM_LOW)
+      `uvm_info("RECOVERY_CROSS",$sformatf("scenario_x_origin=%0d,%0d,%0d,%0d,%0d,%0d,%0d;%0d,%0d,%0d,%0d,%0d,%0d,%0d;%0d,%0d,%0d,%0d,%0d,%0d,%0d;%0d,%0d,%0d,%0d,%0d,%0d,%0d;%0d,%0d,%0d,%0d,%0d,%0d,%0d;%0d,%0d,%0d,%0d,%0d,%0d,%0d",
+        rec_cov_scenario_origin[0][0],rec_cov_scenario_origin[0][1],rec_cov_scenario_origin[0][2],rec_cov_scenario_origin[0][3],rec_cov_scenario_origin[0][4],rec_cov_scenario_origin[0][5],rec_cov_scenario_origin[0][6],
+        rec_cov_scenario_origin[1][0],rec_cov_scenario_origin[1][1],rec_cov_scenario_origin[1][2],rec_cov_scenario_origin[1][3],rec_cov_scenario_origin[1][4],rec_cov_scenario_origin[1][5],rec_cov_scenario_origin[1][6],
+        rec_cov_scenario_origin[2][0],rec_cov_scenario_origin[2][1],rec_cov_scenario_origin[2][2],rec_cov_scenario_origin[2][3],rec_cov_scenario_origin[2][4],rec_cov_scenario_origin[2][5],rec_cov_scenario_origin[2][6],
+        rec_cov_scenario_origin[3][0],rec_cov_scenario_origin[3][1],rec_cov_scenario_origin[3][2],rec_cov_scenario_origin[3][3],rec_cov_scenario_origin[3][4],rec_cov_scenario_origin[3][5],rec_cov_scenario_origin[3][6],
+        rec_cov_scenario_origin[4][0],rec_cov_scenario_origin[4][1],rec_cov_scenario_origin[4][2],rec_cov_scenario_origin[4][3],rec_cov_scenario_origin[4][4],rec_cov_scenario_origin[4][5],rec_cov_scenario_origin[4][6],
+        rec_cov_scenario_origin[5][0],rec_cov_scenario_origin[5][1],rec_cov_scenario_origin[5][2],rec_cov_scenario_origin[5][3],rec_cov_scenario_origin[5][4],rec_cov_scenario_origin[5][5],rec_cov_scenario_origin[5][6]),UVM_LOW)
     endfunction
   endclass
 
@@ -441,6 +551,41 @@ package ucie_ltsm_uvm_pkg;
       end
     endtask
   endclass
+  class recovery_random_seq extends ltsm_base_seq;
+    `uvm_object_utils(recovery_random_seq)
+    int iterations=36; int scenario_hits[6], origin_hits[7];
+    function new(string name="recovery_random_seq"); super.new(name); endfunction
+    task body();
+      ltsm_item t; int scenario,origin;
+      for(int i=0;i<iterations;i++) begin
+        send(OP_RESET);
+        if(i<7) begin
+          origin=i;
+          case(i) 0:scenario=3; 1:scenario=2; 2:scenario=5; 3:scenario=2;
+                  4:scenario=0; 5:scenario=2; default:scenario=4; endcase
+        end else if(i==7) begin scenario=1; origin=4; end
+        else begin
+          scenario=$urandom_range(5,0);
+          if(scenario==3) origin=0;
+          else if(scenario==1) origin=4;
+          else if(scenario inside {2,5}) origin=$urandom_range(3,1);
+          else origin=$urandom_range(6,1);
+        end
+        scenario_hits[scenario]++; origin_hits[origin]++;
+        t=ltsm_item::type_id::create($sformatf("random_recovery_%0d",i)); start_item(t);
+        t.op=OP_RECOVERY_TRIAL; t.recovery_scenario=scenario; t.recovery_origin=origin;
+        t.pulse_cycles=$urandom_range(4,1); t.ack_cycles=$urandom_range(8,0);
+        t.recovery_escalated=(scenario==4)?$urandom_range(1,0):0;
+        t.recovery_idle=(scenario==4)?!t.recovery_escalated:0;
+        finish_item(t);
+      end
+    endtask
+  endclass
+  class recovery_closure_seq extends ltsm_base_seq;
+    `uvm_object_utils(recovery_closure_seq)
+    function new(string name="recovery_closure_seq"); super.new(name); endfunction
+    task body(); send(OP_RESET); send(OP_RECOVERY_CLOSURE); endtask
+  endclass
 
   class ltsm_base_test extends uvm_test;
     `uvm_component_utils(ltsm_base_test)
@@ -550,5 +695,31 @@ package ucie_ltsm_uvm_pkg;
       `uvm_info("TRAIN_RANDSUMMARY",$sformatf("iterations=%0d scenario_hits pass/retry/abort/timeout=%0d/%0d/%0d/%0d",
         s.iterations,s.scenario_hits[0],s.scenario_hits[1],s.scenario_hits[2],s.scenario_hits[3]),UVM_LOW)
     endfunction
+  endclass
+  class recovery_random_test extends ltsm_base_test;
+    `uvm_component_utils(recovery_random_test)
+    recovery_random_seq s;
+    function new(string name,uvm_component parent); super.new(name,parent); endfunction
+    task run_phase(uvm_phase phase);
+      s=recovery_random_seq::type_id::create("s");
+      phase.raise_objection(this); s.start(env.agent.sqr); #100ns; phase.drop_objection(this);
+    endtask
+    function void report_phase(uvm_phase phase);
+      foreach(s.scenario_hits[i]) if(!s.scenario_hits[i]) `uvm_error("REC_COV","Missing recovery scenario")
+      foreach(s.origin_hits[i]) if(!s.origin_hits[i]) `uvm_error("REC_COV","Missing recovery origin")
+      if(env.agent.drv.recovery_trials!=s.iterations || env.agent.drv.recovery_entries!=s.iterations)
+        `uvm_error("REC_PRED","Recovery trial/entry count mismatch")
+      `uvm_info("RECOVERY_SUMMARY",$sformatf("iterations=%0d scenario=%0d/%0d/%0d/%0d/%0d/%0d origin=%0d/%0d/%0d/%0d/%0d/%0d/%0d",
+        s.iterations,s.scenario_hits[0],s.scenario_hits[1],s.scenario_hits[2],s.scenario_hits[3],s.scenario_hits[4],s.scenario_hits[5],
+        s.origin_hits[0],s.origin_hits[1],s.origin_hits[2],s.origin_hits[3],s.origin_hits[4],s.origin_hits[5],s.origin_hits[6]),UVM_LOW)
+    endfunction
+  endclass
+  class recovery_closure_test extends ltsm_base_test;
+    `uvm_component_utils(recovery_closure_test)
+    function new(string name,uvm_component parent); super.new(name,parent); endfunction
+    task run_phase(uvm_phase phase);
+      recovery_closure_seq s=recovery_closure_seq::type_id::create("s");
+      phase.raise_objection(this); s.start(env.agent.sqr); #50ns; phase.drop_objection(this);
+    endtask
   endclass
 endpackage

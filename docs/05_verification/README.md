@@ -12,6 +12,10 @@ Version 0.3 extends the same environment with an independent LFSR reference mode
 
 ![v0.3 DATATRAINCENTER1 verification connections](../../assets/diagrams/v0.3-advanced-training/verification-connections.svg)
 
+Version 0.4 adds an independent recovery predictor, error-retention SVA, explicit scenario/origin/pulse/ack coverage, a focused 65,536-event saturation proof, and a dedicated FPGA CSR wrapper test:
+
+![v0.4 recovery verification connections](../../assets/diagrams/v0.4-error-recovery/verification-connections.svg)
+
 ## Verification flow
 
 ```mermaid
@@ -40,6 +44,8 @@ flowchart LR
 
 Every explicit checkpoint uses `$fatal` on mismatch. The pass condition is the final message `PASS: nominal training, retrain, and error recovery` with no earlier fatal error.
 
+Additional self-checking directed tops isolate the sideband sequencer, LFSR engine, v0.4 error manager, and FPGA CSR wrapper. The wrapper test reads version/state/status, injects a one-cycle fatal event, reads retained cause/count, proves a TRAINERROR clear is ignored, proves a post-recovery clear succeeds, and checks an undefined address returns zero.
+
 ## UVM architecture
 
 ```mermaid
@@ -66,6 +72,8 @@ Implemented UVM components:
 - nominal, timeout, recovery, PM, sideband success, sideband retry, malformed-response, and retry-exhaustion sequences/tests.
 - a reset-isolated `sb_random_test` with explicit outcome/timing domains, a cumulative predictor, and end-of-test monitor comparison.
 - a reset-isolated `datatrain_random_test` with independent lane/polynomial prediction, corruption/gap/threshold domains, retry/abort/timeout scenarios, and explicit sampled coverage bins.
+- a deterministic `recovery_closure_test` for the L2 exit and all three retrain targets.
+- a reset-isolated `recovery_random_test` with an independent cause/count/entry/residency predictor and explicit scenario/origin/pulse/ack coverage.
 
 ## Current UVM scenarios
 
@@ -81,6 +89,8 @@ Implemented UVM components:
 | `sb_exhaust_test` | Withhold both response opportunities | One retry, protocol error, and TRAINERROR observed | Pass |
 | `sb_random_test` | Randomize four legal outcomes and independent 1-3 cycle delays across five seeds | Every outcome hit; predictor totals match monitor; no illegal transition | Pass (5/5 seeds) |
 | `datatrain_random_test` | Randomize DATATRAINCENTER1 pass, fail/retry, abort, timeout, receive gaps, corrupt lanes/locations, and thresholds | Exact LFSR/count/result matches; all required bins/crosses hit; zero assertion failure | Pass (5/5 seeds) |
+| `recovery_closure_test` | Close L2 exit and all three PHYRETRAIN targets | L2 selects RESET; TXSELFCAL/SPEEDIDLE/REPAIR select exact MBTRAIN restart | Pass |
+| `recovery_random_test` | Randomize six recovery scenarios across seven eligible origins with pulse, acknowledgment, residency, and clear controls | Exact cause/count/entry/release predictor agreement; all required bins/crosses hit | Pass (5/5 seeds) |
 
 See [testplan.md](testplan.md) for exact coverage and missing scenarios.
 
@@ -100,9 +110,13 @@ See [testplan.md](testplan.md) for exact coverage and missing scenarios.
 | `ap_pass_is_strict` / `ap_fail_at_threshold` | Pass/fail obeys the strict threshold relationship |
 | `ap_hold_without_sample` | The error count holds when no receive sample is accepted |
 | `cp_training_pass` / `cp_training_fail` | Both completed result classes occur |
+| `ap_error_request_immediate` / `ap_error_request_persistent` | Eligible fatal events request immediately and remain requested while pending |
+| `ap_error_timeout_to_trainerror` | The manager bound causes TRAINERROR when acknowledgment is absent |
+| `ap_error_pending_clears` | Pending state clears on TRAINERROR entry |
+| `ap_trainerror_log_stable` / `ap_pending_clear_ignored` | Retained cause/count remain stable and protected at the required times |
 
 ## Coverage boundary
 
-Questa Starter cannot license native covergroups or class `randomize()`. The v0.3 campaign therefore reports explicit sampled bins for all four outcomes, four error ranges, three receive-gap ranges, threshold equality/non-equality, and all twelve scenario-by-gap crosses. No native UCDB percentage is claimed. The evidence still does not prove every MBINIT/MBTRAIN substate, every timeout location, all retrain targets, every sideband message, or every analog/channel condition.
+Questa Starter cannot license native covergroups or class `randomize()`. The campaigns therefore use seeded legal-domain selection and explicit sampled bins/crosses. v0.3 reports training outcome/error/gap/threshold coverage; v0.4 reports six recovery scenarios, seven origin categories, pulse/ack classes, and legal crosses. No native UCDB percentage is claimed. The evidence still does not prove every MBINIT/MBTRAIN substate timeout, every sideband message, asynchronous CDC behavior, or any analog/channel condition.
 
-Detailed counts, commands, and limitations are in the [DATATRAINCENTER1 results](../06_results/datatrain_lfsr.md). Terminology is defined in the [project glossary](../glossary.md).
+Detailed counts, commands, and limitations are in the [DATATRAINCENTER1 results](../06_results/datatrain_lfsr.md), [recovery results](../06_results/error_recovery.md), and [FPGA wrapper result](../06_results/fpga_csr_wrapper.md). Terminology is defined in the [project glossary](../glossary.md).

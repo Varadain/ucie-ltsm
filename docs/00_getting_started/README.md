@@ -35,7 +35,7 @@ flowchart TD
     LINKINIT --> ACTIVE[Normal link operation]
 ```
 
-Most internal physical procedures are represented by completion and error inputs. Version 0.3 makes one operation concrete in digital RTL: a 16-lane LFSR generator/checker control in `DATATRAINCENTER1`. This is useful for learning and verifying state control and pattern/error decisions, but it still does not implement the electrical or packet-level details of a full UCIe link.
+Most internal physical procedures are represented by completion and error inputs. Version 0.3 makes one operation concrete in digital RTL: a 16-lane LFSR generator/checker control in `DATATRAINCENTER1`. Version 0.4 retains and classifies digital TRAINERROR events and adds a compact FPGA CSR wrapper so state/error/training diagnostics can be observed without an unfittably wide debug-pin boundary. These are useful for learning and verifying control, pattern/error, recovery, and implementation-boundary decisions, but they still do not implement the electrical or packet-level details of a full UCIe link.
 
 ## Suggested learning path
 

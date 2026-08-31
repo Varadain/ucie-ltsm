@@ -26,6 +26,7 @@ module ucie_ltsm #(
   input  logic pm_l1_req_i,
   input  logic pm_l2_req_i,
   input  logic pm_exit_i,
+  input  logic clear_error_log_i,
 
   output logic                   sb_tx_valid_o,
   output ucie_ltsm_pkg::sb_msg_e sb_tx_message_o,
@@ -45,6 +46,12 @@ module ucie_ltsm #(
   output logic        train_done_o,
   output logic        train_pass_o,
   output logic [15:0] train_error_count_o,
+
+  output logic error_pending_o,
+  output logic trainerror_handshake_request_o,
+  output logic error_handshake_timeout_o,
+  output ucie_ltsm_pkg::ltsm_error_cause_e error_cause_o,
+  output logic [15:0] error_event_count_o,
 
   output ucie_ltsm_pkg::ltsm_state_e state_o,
   output ucie_ltsm_pkg::mbinit_state_e mbinit_state_o,
@@ -69,6 +76,7 @@ module ucie_ltsm #(
   logic state_changed, substate_changed, timeout_enable, reset_min_met;
   logic sb_start, sb_done;
   logic train_start;
+  logic enter_trainerror;
 
   assign sb_start = (state_q == LTSM_SBINIT) && !sb_busy_o && !sb_done;
 
@@ -109,6 +117,19 @@ module ucie_ltsm #(
     .error_count_o(train_error_count_o)
   );
 
+  ucie_error_manager #(
+    .HANDSHAKE_TIMEOUT_CYCLES(TIMEOUT_TICKS)
+  ) u_error_manager (
+    .clk_i(clk_i), .rst_ni(rst_ni), .state_i(state_q),
+    .state_timeout_i(timeout_o), .sideband_protocol_error_i(sb_protocol_error_o),
+    .local_fatal_error_i(fatal_error_i), .handshake_done_i(error_handshake_done_i),
+    .clear_log_i(clear_error_log_i), .pending_o(error_pending_o),
+    .handshake_request_o(trainerror_handshake_request_o),
+    .handshake_timeout_o(error_handshake_timeout_o),
+    .enter_trainerror_o(enter_trainerror), .cause_o(error_cause_o),
+    .event_count_o(error_event_count_o)
+  );
+
   assign state_o = state_q;
   assign mbinit_state_o = mbi_q;
   assign mbtrain_state_o = mbt_q;
@@ -145,10 +166,7 @@ module ucie_ltsm #(
     mbi_d = mbi_q;
     mbt_d = mbt_q;
 
-    if ((fatal_error_i || sb_protocol_error_o) && (state_q != LTSM_RESET)) begin
-      if ((state_q == LTSM_SBINIT) || error_handshake_done_i || timeout_o)
-        state_d = LTSM_TRAINERROR;
-    end else if (timeout_o) begin
+    if (enter_trainerror) begin
       state_d = LTSM_TRAINERROR;
     end else begin
       unique case (state_q)

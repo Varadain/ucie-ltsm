@@ -2,6 +2,24 @@
 
 This directory contains small, reviewed artifacts intended for GitHub display. Raw simulator databases, VCD files, and Quartus build databases remain generated and ignored.
 
+## v0.4 retained recovery and FPGA CSR evidence
+
+The three SVGs under [`waveforms/v0.4-error-recovery`](waveforms/v0.4-error-recovery/) are rendered from self-checking Questa VCDs:
+
+```powershell
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/capture_error_waveform.do
+& 'C:\intelFPGA_lite\questa_fse\win64\vsim.exe' -c -do scripts/capture_fpga_wrapper_waveform.do
+python scripts/render_error_waveforms.py
+```
+
+- [`retained-handshake.svg`](waveforms/v0.4-error-recovery/retained-handshake.svg) shows a one-cycle local-fatal event, persistent pending/request state, ignored pending clear, bounded entry, and retained log.
+- [`timeout-and-priority.svg`](waveforms/v0.4-error-recovery/timeout-and-priority.svg) shows held-level de-duplication, manager timeout, immediate SBINIT-protocol entry, and simultaneous-cause priority.
+- [`fpga-csr-read-clear.svg`](waveforms/v0.4-error-recovery/fpga-csr-read-clear.svg) shows CSR state/status/cause/count reads, an ignored TRAINERROR clear, a successful RESET clear, and a zero invalid-address read.
+
+Every plotted signal label links to the [v0.4 signal/function guides](../docs/02_ltssm/signals.md#v04-error-recovery-signal-guide). The three diagrams under [`diagrams/v0.4-error-recovery`](diagrams/v0.4-error-recovery/) distinguish the recovery RTL path, independent randomized verification/checking path, and the compact FPGA CSR implementation boundary.
+
+All six v0.4 figures are original repository-native SVGs. They were checked repeatedly at full resolution, reduced GitHub width, and enlarged detail, plus a structural bounds/link/text pass. Boxes, arrows, labels, and text remain separated and unclipped; no raster content or private reference material is embedded.
+
 ## v0.3 DATATRAINCENTER1 evidence
 
 The two SVGs under [`waveforms/v0.3-advanced-training`](waveforms/v0.3-advanced-training/) are rendered from the self-checking LFSR engine test's Questa VCD:

@@ -17,6 +17,10 @@ module tb_ucie_ltsm;
   logic train_tx_valid_o, train_rx_valid_i, train_busy_o, train_done_o, train_pass_o;
   logic [15:0] train_tx_pattern_o, train_rx_pattern_i;
   logic [15:0] train_error_threshold_i, train_error_count_o;
+  logic clear_error_log_i, error_pending_o, trainerror_handshake_request_o;
+  logic error_handshake_timeout_o;
+  ltsm_error_cause_e error_cause_o;
+  logic [15:0] error_event_count_o;
 
   always #5 clk = ~clk;
   ucie_ltsm #(.CLK_HZ(100_000_000), .RESET_MIN_US(1), .TIMEOUT_US(2)) dut (.*,
@@ -35,7 +39,13 @@ module tb_ucie_ltsm;
                     .mbtrain_state_i(mbt), .train_rx_valid_i(train_rx_valid_i),
                     .train_busy_i(train_busy_o), .train_done_i(train_done_o),
                     .train_pass_i(train_pass_o), .train_error_count_i(train_error_count_o),
-                    .train_error_threshold_i(train_error_threshold_i));
+                    .train_error_threshold_i(train_error_threshold_i),
+                    .error_pending_i(error_pending_o),
+                    .handshake_request_i(trainerror_handshake_request_o),
+                    .handshake_timeout_i(error_handshake_timeout_o),
+                    .handshake_done_i(error_handshake_done),
+                    .clear_error_log_i(clear_error_log_i),.error_cause_i(error_cause_o),
+                    .error_event_count_i(error_event_count_o));
 
   task automatic pulse_done; begin phase_done=1; @(posedge clk); #1 phase_done=0; end endtask
   task automatic expect_state(input ltsm_state_e exp); begin
@@ -49,6 +59,7 @@ module tb_ucie_ltsm;
     retrain_target=RETRAIN_TXSELFCAL; pm_l1_req=0; pm_l2_req=0; pm_exit=0;
     sb_tx_ready_i=0; sb_rx_valid_i=0; sb_rx_message_i=SB_MSG_NOP;
     train_rx_valid_i=0; train_rx_pattern_i='0; train_error_threshold_i=16'd1;
+    clear_error_log_i=0;
     repeat(3) @(posedge clk); rst_n=1;
     supplies_stable=1; sideband_clk_ok=1; internal_clks_ok=1; link_train_trigger=1;
     wait(state==LTSM_SBINIT); pulse_done(); expect_state(LTSM_MBINIT);

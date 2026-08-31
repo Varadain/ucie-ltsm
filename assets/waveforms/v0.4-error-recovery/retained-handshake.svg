@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1660" height="850" viewBox="0 0 1660 850" role="img" aria-labelledby="title desc">
+<title id="title">v0.4 retained fault and bounded TRAINERROR entry</title>
+<desc id="desc">A one-cycle local-fatal pulse is retained; clear is ignored while pending; the request holds until the bounded entry Generated from a self-checking Questa VCD.</desc>
+<style>text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}.title{font-size:25px;font-weight:700}.subtitle{font-size:14px;fill:#536179}.label{font-size:14px;font-weight:650}.tick{font-size:12px;fill:#64748b}.band{font-size:12px;font-weight:700}.bus{font-size:11px;font-weight:700;fill:#fff}.guide{font-size:13px;font-weight:650;fill:#2563eb;text-decoration:underline}.digital{fill:none;stroke-width:2.8;stroke-linejoin:miter}.grid{stroke:#dbe2ea;stroke-width:1}</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text class="title" x="28" y="38">v0.4 retained fault and bounded TRAINERROR entry</text>
+<text class="subtitle" x="28" y="65">A one-cycle local-fatal pulse is retained; clear is ignored while pending; the request holds until the bounded entry</text>
+<text class="subtitle" x="28" y="90">Source: Questa 2023.3 · verification/tb_ucie_error_manager.sv · timescale 1 ps</text>
+<a href="../../../docs/02_ltssm/signals.md#v04-error-recovery-signal-guide"><text class="guide" x="1630" y="90" text-anchor="end">Signal definitions and functionality ↗</text></a>
+<rect x="262.00" y="112" width="252.28" height="31" rx="5" fill="#fee2e2"/>
+<text class="band" x="388.14" y="133" text-anchor="middle" style="fill:#991b1b">ONE-CYCLE FAULT</text>
+<rect x="514.28" y="112" width="457.26" height="31" rx="5" fill="#ede9fe"/>
+<text class="band" x="742.91" y="133" text-anchor="middle" style="fill:#5b21b6">PENDING · CLEAR IGNORED</text>
+<rect x="971.53" y="112" width="331.12" height="31" rx="5" fill="#ffedd5"/>
+<text class="band" x="1137.09" y="133" text-anchor="middle" style="fill:#9a3412">BOUNDED ENTRY · RETAINED LOG</text>
+<rect x="1302.65" y="112" width="315.35" height="31" rx="5" fill="#dcfce7"/>
+<text class="band" x="1460.33" y="133" text-anchor="middle" style="fill:#166534">RESET · ALLOWED CLEAR</text>
+<line class="grid" x1="262.00" y1="151" x2="262.00" y2="738"/>
+<text class="tick" x="262.00" y="162" text-anchor="middle">30</text>
+<line class="grid" x1="419.67" y1="151" x2="419.67" y2="738"/>
+<text class="tick" x="419.67" y="162" text-anchor="middle">40</text>
+<line class="grid" x1="577.35" y1="151" x2="577.35" y2="738"/>
+<text class="tick" x="577.35" y="162" text-anchor="middle">50</text>
+<line class="grid" x1="735.02" y1="151" x2="735.02" y2="738"/>
+<text class="tick" x="735.02" y="162" text-anchor="middle">60</text>
+<line class="grid" x1="892.70" y1="151" x2="892.70" y2="738"/>
+<text class="tick" x="892.70" y="162" text-anchor="middle">70</text>
+<line class="grid" x1="1050.37" y1="151" x2="1050.37" y2="738"/>
+<text class="tick" x="1050.37" y="162" text-anchor="middle">80</text>
+<line class="grid" x1="1208.05" y1="151" x2="1208.05" y2="738"/>
+<text class="tick" x="1208.05" y="162" text-anchor="middle">90</text>
+<line class="grid" x1="1365.72" y1="151" x2="1365.72" y2="738"/>
+<text class="tick" x="1365.72" y="162" text-anchor="middle">100</text>
+<line class="grid" x1="1523.40" y1="151" x2="1523.40" y2="738"/>
+<text class="tick" x="1523.40" y="162" text-anchor="middle">110</text>
+<rect x="262" y="165" width="1356" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-local-fatal"><text class="label" x="244" y="195" text-anchor="end" style="fill:#dc2626">local_fatal_error_i</text></a>
+<line x1="262" y1="190" x2="1618" y2="190" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#dc2626" d="M 262.00 203 H 356.60 V 177 H 514.28 V 203 H 1618.00"/>
+<rect x="262" y="223" width="1356" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-handshake-request"><text class="label" x="244" y="253" text-anchor="end" style="fill:#2563eb">handshake_request_o</text></a>
+<line x1="262" y1="248" x2="1618" y2="248" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#2563eb" d="M 262.00 261 H 356.60 V 235 H 1129.21 V 261 H 1618.00"/>
+<rect x="262" y="281" width="1356" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-pending"><text class="label" x="244" y="311" text-anchor="end" style="fill:#7c3aed">pending_o</text></a>
+<line x1="262" y1="306" x2="1618" y2="306" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#7c3aed" d="M 262.00 319 H 498.51 V 293 H 1129.21 V 319 H 1618.00"/>
+<rect x="262" y="339" width="1356" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-clear"><text class="label" x="244" y="369" text-anchor="end" style="fill:#64748b">clear_log_i</text></a>
+<line x1="262" y1="364" x2="1618" y2="364" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#64748b" d="M 262.00 377 H 514.28 V 351 H 671.95 V 377 H 1144.98 V 351 H 1302.65 V 377 H 1460.33 V 351 H 1618.00"/>
+<rect x="262" y="397" width="1356" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-handshake-done"><text class="label" x="244" y="427" text-anchor="end" style="fill:#0f766e">handshake_done_i</text></a>
+<line x1="262" y1="422" x2="1618" y2="422" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#0f766e" d="M 262.00 435 H 987.30 V 409 H 1144.98 V 435 H 1618.00"/>
+<rect x="262" y="455" width="1356" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-handshake-timeout"><text class="label" x="244" y="485" text-anchor="end" style="fill:#b45309">handshake_timeout_o</text></a>
+<line x1="262" y1="480" x2="1618" y2="480" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#b45309" d="M 262.00 493 H 971.53 V 467 H 1129.21 V 493 H 1618.00"/>
+<rect x="262" y="513" width="1356" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-enter-trainerror"><text class="label" x="244" y="543" text-anchor="end" style="fill:#be123c">enter_trainerror_o</text></a>
+<line x1="262" y1="538" x2="1618" y2="538" stroke="#94a3b8"/>
+<path class="digital" style="stroke:#be123c" d="M 262.00 551 H 971.53 V 525 H 1129.21 V 551 H 1618.00"/>
+<rect x="262" y="571" width="1356" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-state"><text class="label" x="244" y="601" text-anchor="end" style="fill:#334155">state_i</text></a>
+<line x1="262" y1="596" x2="1618" y2="596" stroke="#94a3b8"/>
+<rect x="262.00" y="580" width="882.98" height="32" fill="#15803d" stroke="#ffffff"/>
+<text class="bus" x="703.49" y="600" text-anchor="middle">ACTIVE</text>
+<rect x="1144.98" y="580" width="157.67" height="32" fill="#b91c1c" stroke="#ffffff"/>
+<text class="bus" x="1223.81" y="600" text-anchor="middle">TRAINERROR</text>
+<rect x="1302.65" y="580" width="157.67" height="32" fill="#64748b" stroke="#ffffff"/>
+<text class="bus" x="1381.49" y="600" text-anchor="middle">RESET</text>
+<rect x="1460.33" y="580" width="157.67" height="32" fill="#15803d" stroke="#ffffff"/>
+<text class="bus" x="1539.16" y="600" text-anchor="middle">ACTIVE</text>
+<rect x="262" y="629" width="1356" height="50" fill="#f8fafc"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-cause"><text class="label" x="244" y="659" text-anchor="end" style="fill:#9333ea">cause_o</text></a>
+<line x1="262" y1="654" x2="1618" y2="654" stroke="#94a3b8"/>
+<rect x="262.00" y="638" width="236.51" height="32" fill="#64748b" stroke="#ffffff"/>
+<text class="bus" x="380.26" y="658" text-anchor="middle">NONE</text>
+<rect x="498.51" y="638" width="1103.72" height="32" fill="#dc2626" stroke="#ffffff"/>
+<text class="bus" x="1050.37" y="658" text-anchor="middle">LOCAL FATAL</text>
+<rect x="1602.23" y="638" width="15.77" height="32" fill="#64748b" stroke="#ffffff"/>
+<rect x="262" y="687" width="1356" height="50" fill="#ffffff"/>
+<a href="../../../docs/02_ltssm/signals.md#wave-error-count"><text class="label" x="244" y="717" text-anchor="end" style="fill:#0284c7">event_count_o</text></a>
+<line x1="262" y1="712" x2="1618" y2="712" stroke="#94a3b8"/>
+<rect x="262.00" y="696" width="236.51" height="32" fill="#0284c7" stroke="#ffffff"/>
+<text class="bus" x="380.26" y="716" text-anchor="middle">0</text>
+<rect x="498.51" y="696" width="1103.72" height="32" fill="#0284c7" stroke="#ffffff"/>
+<text class="bus" x="1050.37" y="716" text-anchor="middle">1</text>
+<rect x="1602.23" y="696" width="15.77" height="32" fill="#0284c7" stroke="#ffffff"/>
+<rect x="262" y="165" width="1356" height="578" fill="none" stroke="#94a3b8"/>
+<text class="tick" x="940.00" y="826" text-anchor="middle">simulation time (ns)</text>
+</svg>

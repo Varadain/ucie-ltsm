@@ -21,6 +21,8 @@
 **/incremental_db/
 **/output_files/*
 !quartus/output_files/*.summary
+/quartus/output_files_wrapper/*
+!/quartus/output_files_wrapper/*.summary
 *.sof
 *.pof
 *.jdi

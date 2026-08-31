@@ -18,16 +18,18 @@
 | DT-DIR-01 | LFSR engine algorithm and boundaries | Independent lane seed/polynomial model, receive gaps, clean/corrupt samples, threshold equality, abort, 4096 all-error samples | All 16 lane outputs match; strict threshold behavior; abort clears; error counter saturates at 16'hffff on the 4096th sample | `tb_ucie_lfsr_training_engine` | Pass |
 | DT-RAND-01 | Seeded DATATRAINCENTER1 campaign | 32 trials/seed with randomized gaps, corruption count/location, threshold, outcome, abort point, and repeat attempt | Predictor matches patterns/count/result; pass advances; failure retries in place; abort clears; timeout reaches TRAINERROR | `datatrain_random_test`, seeds 701/802/903/1004/1105 | Pass |
 | DT-SVA-01 | Training integration invariants | All v0.3 directed and UVM stimulus | Busy is confined to CENTER1 plus the defined abort cycle; done pulses and is not busy; pass uses strict threshold; counts hold without accepted samples | `ucie_ltsm_sva` | Pass |
+| ER-DIR-01 | Error-manager retention and boundaries | Short/held faults, delayed/missing acknowledgement, simultaneous causes, clear timing, 65,536 accepted events | Request/pending persistence, timeout bound, priority, retained log, ignored clear and saturated counter match the reference expectations | `tb_ucie_error_manager` | Pass |
+| ER-RAND-01 | Integrated seeded recovery campaign | 36 trials/seed across seven origins, six recovery scenarios, randomized pulse/ack/residency controls | Cause/count predictor matches; all events enter TRAINERROR; pending clears; retained log and release behavior are exact | `recovery_random_test`, seeds 1201/1302/1403/1504/1605 | Pass |
+| ER-CLOSE-01 | Prior recovery gaps | L2 exit and TXSELFCAL/SPEEDIDLE/REPAIR retrain targets | L2 returns RESET; each retrain target selects the required MBTRAIN substate | `recovery_closure_test` | Pass |
+| ER-SVA-01 | Error handshake and retention invariants | Directed, deterministic and randomized recovery regressions | Fatal requests immediately, pending holds request, manager timeout enters TRAINERROR, pending clears and TRAINERROR log is stable | `ucie_ltsm_sva` | Pass |
+| FPGA-CSR-01 | Compact FPGA wrapper and CSR access | State progression, CSR reads, retained fatal event, protected/allowed clear and invalid address | Core status is readable without wide debug pins; clear policy is preserved; wrapper fits selected FPGA | `tb_ucie_ltsm_fpga_wrapper` | Pass |
 
-“Pass” reflects the fresh deterministic runs through August 28 and randomized/regression reruns on August 30, 2026, described in [questa.md](../06_results/questa.md) and [datatrain_lfsr.md](../06_results/datatrain_lfsr.md).
+“Pass” reflects the fresh deterministic and randomized regression reruns through August 31, 2026, described in [questa.md](../06_results/questa.md), [datatrain_lfsr.md](../06_results/datatrain_lfsr.md), [error_recovery.md](../06_results/error_recovery.md), and [fpga_csr_wrapper.md](../06_results/fpga_csr_wrapper.md).
 
 ## Planned scenarios required for stronger confidence
 
 | ID | Missing evidence | Expected focus |
 |---|---|---|
-| PLAN-01 | L2 exit | ACTIVE -> L1L2 -> RESET |
-| PLAN-02 | `RETRAIN_TXSELFCAL` | PHYRETRAIN -> MBTRAIN/`TXSELFCAL` |
-| PLAN-03 | `RETRAIN_REPAIR` | PHYRETRAIN -> MBTRAIN/`REPAIR` |
 | PLAN-04 | Stall timing | Stall restarts the counter and blocks MBINIT progress |
 | PLAN-05 | Timeout matrix | Each eligible top-level state and each substate reaches TRAINERROR at the intended boundary |
 | PLAN-06 | Fatal-error matrix | Every non-RESET state with handshake/escalation variations |
