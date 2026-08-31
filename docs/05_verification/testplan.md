@@ -22,6 +22,7 @@
 | ER-RAND-01 | Integrated seeded recovery campaign | 36 trials/seed across seven origins, six recovery scenarios, randomized pulse/ack/residency controls | Cause/count predictor matches; all events enter TRAINERROR; pending clears; retained log and release behavior are exact | `recovery_random_test`, seeds 1201/1302/1403/1504/1605 | Pass |
 | ER-CLOSE-01 | Prior recovery gaps | L2 exit and TXSELFCAL/SPEEDIDLE/REPAIR retrain targets | L2 returns RESET; each retrain target selects the required MBTRAIN substate | `recovery_closure_test` | Pass |
 | ER-SVA-01 | Error handshake and retention invariants | Directed, deterministic and randomized recovery regressions | Fatal requests immediately, pending holds request, manager timeout enters TRAINERROR, pending clears and TRAINERROR log is stable | `ucie_ltsm_sva` | Pass |
+| FPGA-CSR-01 | Compact FPGA wrapper and CSR access | State progression, CSR reads, retained fatal event, protected/allowed clear and invalid address | Core status is readable without wide debug pins; clear policy is preserved; wrapper fits selected FPGA | `tb_ucie_ltsm_fpga_wrapper` | Pass |
 
 “Pass” reflects the fresh deterministic and randomized regression reruns through August 31, 2026, described in [questa.md](../06_results/questa.md), [datatrain_lfsr.md](../06_results/datatrain_lfsr.md), and [error_recovery.md](../06_results/error_recovery.md).
 
