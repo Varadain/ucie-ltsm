@@ -45,6 +45,7 @@ waves.shm/
 *.key
 
 # Editor, cache, and operating-system files
+/tmp/
 .vscode/
 .idea/
 *.swp

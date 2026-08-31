@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1080" viewBox="0 0 1800 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Project LTSM scope mapped to UCIe 2.0 references</title>
+  <desc id="desc">An original project-specific diagram showing the implemented top-level controller path, integrated SBINIT and DATATRAINCENTER1 behavior, abstracted operations, retrain and power-management returns, and retained TRAINERROR recovery.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155"/>
+    </marker>
+    <style>
+      text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}
+      .title{font-size:31px;font-weight:750}.subtitle{font-size:16px;fill:#526176}
+      .head{font-size:19px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#475569}
+      .badge{font-size:13px;font-weight:700}.link{font-size:14px;font-weight:650;fill:#2563eb;text-decoration:underline}
+      .flow{fill:none;stroke:#334155;stroke-width:3;marker-end:url(#arrow)}
+      .return{fill:none;stroke:#7c3aed;stroke-width:2.5;marker-end:url(#arrow)}
+      .error{fill:none;stroke:#dc2626;stroke-width:2.5;marker-end:url(#arrow)}
+      .dash{fill:none;stroke:#64748b;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1800" height="1080" fill="#ffffff"/>
+  <text class="title" x="50" y="52">Project LTSM scope - original interpretation of the implemented RTL</text>
+  <text class="subtitle" x="50" y="82">State ordering follows the cited UCIe 2.0 locations; colors describe this repository's implementation depth, not specification ownership</text>
+  <a href="../../../docs/specification_figure_index.md#diagram-1-project-ltsm-scope"><text class="link" x="1750" y="82" text-anchor="end">Manual locators and derivation notes &#8599;</text></a>
+
+  <rect x="50" y="125" width="1700" height="340" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2.5"/>
+  <text class="head" x="80" y="162">Nominal top-level path</text>
+
+  <g id="reset">
+    <rect x="85" y="215" width="225" height="155" rx="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+    <text class="head" x="197" y="252" text-anchor="middle" fill="#1d4ed8">RESET</text>
+    <text class="body" x="197" y="285" text-anchor="middle">Minimum residence timer</text>
+    <text class="small" x="197" y="313" text-anchor="middle">supplies + clocks + trigger</text>
+    <text class="badge" x="197" y="345" text-anchor="middle" fill="#1d4ed8">IMPLEMENTED</text>
+  </g>
+  <g id="sbinit">
+    <rect x="365" y="215" width="225" height="155" rx="16" fill="#ecfdf5" stroke="#16a34a" stroke-width="2.5"/>
+    <text class="head" x="477" y="252" text-anchor="middle" fill="#15803d">SBINIT</text>
+    <text class="body" x="477" y="285" text-anchor="middle">DONE request / response</text>
+    <text class="small" x="477" y="313" text-anchor="middle">retry + mismatch + timeout</text>
+    <text class="badge" x="477" y="345" text-anchor="middle" fill="#15803d">INTEGRATED</text>
+  </g>
+  <g id="mbinit">
+    <rect x="645" y="215" width="225" height="155" rx="16" fill="#fff7ed" stroke="#f97316" stroke-width="2.5"/>
+    <text class="head" x="757" y="252" text-anchor="middle" fill="#9a3412">MBINIT</text>
+    <text class="body" x="757" y="285" text-anchor="middle">Six ordered substates</text>
+    <text class="small" x="757" y="313" text-anchor="middle">operations use phase_done_i</text>
+    <text class="badge" x="757" y="345" text-anchor="middle" fill="#9a3412">STATE SHELL</text>
+  </g>
+  <g id="mbtrain">
+    <rect x="925" y="195" width="265" height="195" rx="16" fill="#ecfdf5" stroke="#16a34a" stroke-width="3"/>
+    <text class="head" x="1057" y="235" text-anchor="middle" fill="#15803d">MBTRAIN</text>
+    <text class="body" x="1057" y="270" text-anchor="middle">Thirteen ordered substates</text>
+    <rect x="958" y="292" width="199" height="48" rx="9" fill="#d1fae5" stroke="#22c55e" stroke-width="1.8"/>
+    <text class="body" x="1057" y="321" text-anchor="middle">CENTER1 fully integrated</text>
+    <text class="small" x="1057" y="366" text-anchor="middle">other operations remain abstracted</text>
+  </g>
+  <g id="linkinit">
+    <rect x="1245" y="215" width="225" height="155" rx="16" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/>
+    <text class="head" x="1357" y="252" text-anchor="middle" fill="#6d28d9">LINKINIT</text>
+    <text class="body" x="1357" y="285" text-anchor="middle">Wait for rdi_active_i</text>
+    <text class="small" x="1357" y="313" text-anchor="middle">RDI transport abstracted</text>
+    <text class="badge" x="1357" y="345" text-anchor="middle" fill="#6d28d9">CONTROL ONLY</text>
+  </g>
+  <g id="active">
+    <rect x="1525" y="215" width="185" height="155" rx="16" fill="#dcfce7" stroke="#15803d" stroke-width="3"/>
+    <text class="head" x="1617" y="252" text-anchor="middle" fill="#166534">ACTIVE</text>
+    <text class="body" x="1617" y="285" text-anchor="middle">link_up_o = 1</text>
+    <text class="small" x="1617" y="313" text-anchor="middle">digital state result</text>
+    <text class="badge" x="1617" y="345" text-anchor="middle" fill="#166534">IMPLEMENTED</text>
+  </g>
+
+  <path class="flow" d="M310 292 H365"/><path class="flow" d="M590 292 H645"/>
+  <path class="flow" d="M870 292 H925"/><path class="flow" d="M1190 292 H1245"/>
+  <path class="flow" d="M1470 292 H1525"/>
+
+  <rect x="50" y="510" width="1700" height="335" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2.5"/>
+  <text class="head" x="80" y="550">Return and recovery paths implemented by this project</text>
+
+  <rect x="105" y="600" width="390" height="155" rx="16" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/>
+  <text class="head" x="300" y="637" text-anchor="middle" fill="#6d28d9">L1 / L2 power-management state</text>
+  <text class="body" x="300" y="674" text-anchor="middle">L1 exit - MBTRAIN.SPEEDIDLE</text>
+  <text class="body" x="300" y="704" text-anchor="middle">L2 exit - RESET</text>
+  <text class="small" x="300" y="735" text-anchor="middle">Power signaling itself remains abstracted</text>
+
+  <rect x="565" y="600" width="390" height="155" rx="16" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
+  <text class="head" x="760" y="637" text-anchor="middle" fill="#4338ca">PHYRETRAIN routing</text>
+  <text class="body" x="760" y="674" text-anchor="middle">TXSELFCAL / SPEEDIDLE / REPAIR</text>
+  <text class="body" x="760" y="704" text-anchor="middle">target selected by retrain_target_i</text>
+  <text class="small" x="760" y="735" text-anchor="middle">Physical retraining operations are abstracted</text>
+
+  <rect x="1025" y="585" width="620" height="185" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="3"/>
+  <text class="head" x="1335" y="625" text-anchor="middle" fill="#b91c1c">TRAINERROR retention and return</text>
+  <text class="body" x="1335" y="662" text-anchor="middle">eligible fault - retained cause/count - bounded request/ack - TRAINERROR</text>
+  <text class="body" x="1335" y="695" text-anchor="middle">return to RESET when not escalated and sideband transmission is idle</text>
+  <text class="small" x="1335" y="731" text-anchor="middle">Digital recovery control only; full RDI error escalation is outside scope</text>
+
+  <path class="return" d="M300 600 V570 H1057 V390"/>
+  <path class="return" d="M760 600 V570 H1100 V390"/>
+  <path class="error" d="M1617 370 V475 H1335 V585"/>
+  <path class="error" d="M1335 585 V485 H197 V370"/>
+  <text class="small" x="1440" y="452" fill="#b91c1c">fatal / timeout / protocol error</text>
+  <text class="small" x="675" y="561" fill="#6d28d9">controlled return to MBTRAIN</text>
+
+  <rect x="50" y="890" width="1700" height="140" rx="18" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
+  <text class="head" x="80" y="928" fill="#4338ca">Interpretation boundary</text>
+  <text class="body" x="80" y="963">Green: integrated transaction or result path. Blue/purple: implemented control and state routing. Orange: ordered state shell with abstracted physical operations.</text>
+  <text class="body" x="80" y="995">No analog PHY, channel, BER, electrical timing, complete RDI/DVSEC stack, official interoperability, or UCIe compliance is claimed.</text>
+  <a href="../../../docs/02_ltssm/README.md"><text class="link" x="1715" y="1012" text-anchor="end">Project state behavior &#8599;</text></a>
+</svg>

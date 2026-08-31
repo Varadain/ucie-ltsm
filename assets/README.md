@@ -2,6 +2,16 @@
 
 This directory contains small, reviewed artifacts intended for GitHub display. Raw simulator databases, VCD files, and Quartus build databases remain generated and ignored.
 
+## Original specification-reference diagrams
+
+The three SVGs under [`diagrams/specification-reference`](diagrams/specification-reference/) are original repository-native drawings informed by the private UCIe 2.0 reference and the checked project RTL:
+
+- [`project-ltsm-scope.svg`](diagrams/specification-reference/project-ltsm-scope.svg) maps the nominal, power-management, retrain, and retained-error paths to this project's implementation depth.
+- [`training-scope-map.svg`](diagrams/specification-reference/training-scope-map.svg) shows all ordered MBINIT/MBTRAIN states while distinguishing the integrated DATATRAINCENTER1 path from abstracted physical operations.
+- [`integrated-datatrain-order.svg`](diagrams/specification-reference/integrated-datatrain-order.svg) shows the verified START, PATTERN, END, retry, advance, abort, and TRAINERROR ordering.
+
+The [specification figure and section index](../docs/specification_figure_index.md) records the manual figure, section, table, and page locators used for each drawing. No specification page image, copied figure, table, extracted text, or embedded raster content is published.
+
 ## v0.4 retained recovery and FPGA CSR evidence
 
 The three SVGs under [`waveforms/v0.4-error-recovery`](waveforms/v0.4-error-recovery/) are rendered from self-checking Questa VCDs:

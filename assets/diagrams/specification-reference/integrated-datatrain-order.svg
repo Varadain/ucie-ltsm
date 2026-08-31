@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1160" viewBox="0 0 1800 1160" role="img" aria-labelledby="title desc">
+  <title id="title">Integrated DATATRAINCENTER1 message and pattern ordering</title>
+  <desc id="desc">An original sequence-oriented diagram showing START request and response, gated LFSR pattern sampling, pass or retry behavior, END request and response, DATATRAINVREF advance, and error-manager diversion to TRAINERROR.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#334155"/></marker>
+    <marker id="redarrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#dc2626"/></marker>
+    <style>
+      text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}
+      .title{font-size:31px;font-weight:750}.subtitle{font-size:16px;fill:#526176}
+      .head{font-size:18px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#475569}
+      .step{font-size:14px;font-weight:750;fill:#ffffff}.link{font-size:14px;font-weight:650;fill:#2563eb;text-decoration:underline}
+      .life{stroke:#94a3b8;stroke-width:2;stroke-dasharray:7 7}
+      .msg{fill:none;stroke:#2563eb;stroke-width:2.6;marker-end:url(#arrow)}
+      .data{fill:none;stroke:#16a34a;stroke-width:2.6;marker-end:url(#arrow)}
+      .ctrl{fill:none;stroke:#334155;stroke-width:2.5;marker-end:url(#arrow)}
+      .fault{fill:none;stroke:#dc2626;stroke-width:2.7;marker-end:url(#redarrow)}
+    </style>
+  </defs>
+  <rect width="1800" height="1160" fill="#ffffff"/>
+  <text class="title" x="50" y="52">Integrated DATATRAINCENTER1 - verified message and pattern order</text>
+  <text class="subtitle" x="50" y="82">Original project sequence view; transaction-level sideband and digital pattern control only</text>
+  <a href="../../../docs/specification_figure_index.md#diagram-3-integrated-datatraincenter1-order"><text class="link" x="1750" y="82" text-anchor="end">Manual locators and derivation notes &#8599;</text></a>
+
+  <g>
+    <rect x="85" y="130" width="270" height="70" rx="13" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+    <rect x="445" y="130" width="270" height="70" rx="13" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
+    <rect x="805" y="130" width="270" height="70" rx="13" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/>
+    <rect x="1165" y="130" width="270" height="70" rx="13" fill="#ecfdf5" stroke="#16a34a" stroke-width="2.5"/>
+    <rect x="1515" y="130" width="220" height="70" rx="13" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+    <text class="head" x="220" y="172" text-anchor="middle" fill="#1d4ed8">LTSM phase control</text>
+    <text class="head" x="580" y="172" text-anchor="middle" fill="#4338ca">Sideband sequencer</text>
+    <text class="head" x="940" y="172" text-anchor="middle" fill="#6d28d9">Partner model</text>
+    <text class="head" x="1300" y="172" text-anchor="middle" fill="#15803d">LFSR training engine</text>
+    <text class="head" x="1625" y="172" text-anchor="middle" fill="#b91c1c">Error manager</text>
+  </g>
+  <line class="life" x1="220" y1="200" x2="220" y2="1030"/><line class="life" x1="580" y1="200" x2="580" y2="1030"/>
+  <line class="life" x1="940" y1="200" x2="940" y2="1030"/><line class="life" x1="1300" y1="200" x2="1300" y2="1030"/>
+  <line class="life" x1="1625" y1="200" x2="1625" y2="1030"/>
+
+  <circle cx="55" cy="265" r="20" fill="#2563eb"/><text class="step" x="55" y="270" text-anchor="middle">1</text>
+  <rect x="100" y="230" width="270" height="70" rx="12" fill="#eff6ff" stroke="#60a5fa" stroke-width="2"/>
+  <text class="body" x="235" y="258" text-anchor="middle">Enter DATATRAINCENTER1</text><text class="small" x="235" y="283" text-anchor="middle">phase = SB_START</text>
+  <path class="ctrl" d="M370 265 H545"/>
+
+  <circle cx="55" cy="375" r="20" fill="#4f46e5"/><text class="step" x="55" y="380" text-anchor="middle">2</text>
+  <path class="msg" d="M580 340 H940"/><text class="body" x="760" y="329" text-anchor="middle" fill="#1d4ed8">DATACENTER1_START_REQ</text>
+  <path class="msg" d="M940 405 H580"/><text class="body" x="760" y="432" text-anchor="middle" fill="#1d4ed8">expected START_RESP</text>
+  <text class="small" x="580" y="463" text-anchor="middle">TX backpressure, response delay, retry, mismatch, timeout</text>
+
+  <circle cx="55" cy="535" r="20" fill="#16a34a"/><text class="step" x="55" y="540" text-anchor="middle">3</text>
+  <rect x="1015" y="485" width="570" height="155" rx="16" fill="#ecfdf5" stroke="#16a34a" stroke-width="2.5"/>
+  <text class="head" x="1300" y="522" text-anchor="middle" fill="#15803d">PATTERN phase</text>
+  <text class="body" x="1300" y="555" text-anchor="middle">START_RESP gates engine start; no sideband request is active</text>
+  <text class="body" x="1300" y="587" text-anchor="middle">accepted RX samples advance sixteen independent 23-bit LFSRs</text>
+  <text class="small" x="1300" y="617" text-anchor="middle">exact error count + saturation + strict count &lt; threshold result</text>
+  <path class="data" d="M580 540 H1015"/><text class="small" x="790" y="527" text-anchor="middle">phase handoff</text>
+
+  <circle cx="55" cy="705" r="20" fill="#f97316"/><text class="step" x="55" y="710" text-anchor="middle">4</text>
+  <rect x="100" y="665" width="500" height="100" rx="14" fill="#fff7ed" stroke="#f97316" stroke-width="2.5"/>
+  <text class="head" x="350" y="702" text-anchor="middle" fill="#9a3412">Pattern verdict</text>
+  <text class="body" x="350" y="735" text-anchor="middle">fail: remain in PATTERN and retry; END is suppressed</text>
+  <path class="ctrl" d="M1300 640 V680 H600"/>
+  <path class="ctrl" d="M600 730 H900 V610 H1015"/>
+  <text class="small" x="760" y="716" text-anchor="middle" fill="#9a3412">failed result restarts the PATTERN attempt</text>
+
+  <circle cx="55" cy="835" r="20" fill="#4f46e5"/><text class="step" x="55" y="840" text-anchor="middle">5</text>
+  <path class="msg" d="M580 800 H940"/><text class="body" x="760" y="789" text-anchor="middle" fill="#1d4ed8">pass gates DATACENTER1_END_REQ</text>
+  <path class="msg" d="M940 865 H580"/><text class="body" x="760" y="892" text-anchor="middle" fill="#1d4ed8">expected END_RESP</text>
+  <path class="ctrl" d="M580 865 H220"/>
+  <rect x="100" y="800" width="270" height="100" rx="12" fill="#dcfce7" stroke="#15803d" stroke-width="2.5"/>
+  <text class="head" x="235" y="837" text-anchor="middle" fill="#166534">Advance exactly once</text>
+  <text class="body" x="235" y="871" text-anchor="middle">to DATATRAINVREF</text>
+
+  <circle cx="55" cy="985" r="20" fill="#dc2626"/><text class="step" x="55" y="990" text-anchor="middle">!</text>
+  <rect x="1030" y="945" width="620" height="100" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+  <text class="head" x="1340" y="981" text-anchor="middle" fill="#b91c1c">Malformed response, state timeout, reset, or fatal event</text>
+  <text class="body" x="1340" y="1015" text-anchor="middle">abort sequencer/engine; retain classified event; divert to TRAINERROR as applicable</text>
+  <path class="fault" d="M580 925 V995 H1030"/><path class="fault" d="M1300 925 V945"/><path class="fault" d="M1625 925 V945"/>
+
+  <rect x="50" y="1080" width="1700" height="50" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+  <text class="small" x="75" y="1111">Verified with bypass disabled across five seeds / 180 trials. Transaction abstraction omits physical sideband framing, analog eye/Vref work, BER, and compliance.</text>
+  <a href="../../../docs/06_results/v1.0_integrated_training.md"><text class="link" x="1715" y="1111" text-anchor="end">Measured verification result &#8599;</text></a>
+</svg>

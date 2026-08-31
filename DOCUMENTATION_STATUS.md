@@ -7,6 +7,7 @@ Last audited: **August 31, 2026**
 - Repository landing page, navigation, scope, and private-reference policy.
 - Canonical project glossary with abbreviation long forms, state/substate expansions, signal conventions, verification terms, synthesis/timing terms, and units.
 - UCIe 2.0 reference identity and implementation/compliance boundary.
+- Original LTSM, training-scope, and integrated-message-order diagrams with a figure/section/table/page locator index; no copied specification artwork.
 - Current architecture, state hierarchy, transitions, sideband/training/error/CSR signals, timers, LFSR/recovery algorithms, and pseudocode.
 - RTL module hierarchy and algorithm-to-SystemVerilog mapping.
 - Directed test, UVM topology, assertions, scenario table, and traceability.

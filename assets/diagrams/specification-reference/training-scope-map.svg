@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1180" viewBox="0 0 1800 1180" role="img" aria-labelledby="title desc">
+  <title id="title">MBINIT and MBTRAIN implementation-depth map</title>
+  <desc id="desc">An original grouped flow showing all ordered MBINIT and MBTRAIN substates, highlighting the fully integrated DATATRAINCENTER1 start, pattern, and end phases while marking remaining physical training operations as abstracted.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#334155"/></marker>
+    <style>
+      text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}
+      .title{font-size:31px;font-weight:750}.subtitle{font-size:16px;fill:#526176}
+      .section{font-size:22px;font-weight:750}.head{font-size:17px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#475569}
+      .link{font-size:14px;font-weight:650;fill:#2563eb;text-decoration:underline}
+      .flow{fill:none;stroke:#334155;stroke-width:2.6;marker-end:url(#arrow)}
+      .groupflow{fill:none;stroke:#64748b;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1800" height="1180" fill="#ffffff"/>
+  <text class="title" x="50" y="52">MBINIT and MBTRAIN - implementation-depth reference map</text>
+  <text class="subtitle" x="50" y="82">Original grouping based on project RTL; manual figure and section locators are recorded separately</text>
+  <a href="../../../docs/specification_figure_index.md#diagram-2-training-scope-map"><text class="link" x="1750" y="82" text-anchor="end">Manual locators and derivation notes &#8599;</text></a>
+
+  <rect x="50" y="120" width="1700" height="300" rx="20" fill="#fff7ed" stroke="#f97316" stroke-width="2.5"/>
+  <text class="section" x="85" y="160" fill="#9a3412">MBINIT - ordered controller shell</text>
+  <text class="small" x="85" y="188">State order and timeout/stall behavior are implemented; the physical calibration, repair, and negotiation operations use phase_done_i.</text>
+
+  <g fill="#ffffff" stroke="#fb923c" stroke-width="2">
+    <rect x="95" y="240" width="220" height="105" rx="14"/><rect x="365" y="240" width="220" height="105" rx="14"/>
+    <rect x="635" y="240" width="220" height="105" rx="14"/><rect x="905" y="240" width="220" height="105" rx="14"/>
+    <rect x="1175" y="240" width="220" height="105" rx="14"/><rect x="1445" y="240" width="220" height="105" rx="14"/>
+  </g>
+  <text class="head" x="205" y="278" text-anchor="middle">PARAM</text><text class="small" x="205" y="312" text-anchor="middle">negotiation abstracted</text>
+  <text class="head" x="475" y="278" text-anchor="middle">CAL</text><text class="small" x="475" y="312" text-anchor="middle">calibration abstracted</text>
+  <text class="head" x="745" y="278" text-anchor="middle">REPAIRCLK</text><text class="small" x="745" y="312" text-anchor="middle">clock repair abstracted</text>
+  <text class="head" x="1015" y="278" text-anchor="middle">REPAIRVAL</text><text class="small" x="1015" y="312" text-anchor="middle">valid repair abstracted</text>
+  <text class="head" x="1285" y="278" text-anchor="middle">REVERSALMB</text><text class="small" x="1285" y="312" text-anchor="middle">mapping abstracted</text>
+  <text class="head" x="1555" y="278" text-anchor="middle">REPAIRMB</text><text class="small" x="1555" y="312" text-anchor="middle">lane repair abstracted</text>
+  <path class="flow" d="M315 292 H365"/><path class="flow" d="M585 292 H635"/><path class="flow" d="M855 292 H905"/>
+  <path class="flow" d="M1125 292 H1175"/><path class="flow" d="M1395 292 H1445"/>
+
+  <rect x="50" y="465" width="1700" height="575" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2.5"/>
+  <text class="section" x="85" y="510" fill="#1d4ed8">MBTRAIN - complete state order with one production transaction path</text>
+
+  <rect x="85" y="555" width="420" height="400" rx="17" fill="#eff6ff" stroke="#60a5fa" stroke-width="2.5"/>
+  <text class="head" x="295" y="591" text-anchor="middle" fill="#1d4ed8">Early training states</text>
+  <text class="small" x="295" y="619" text-anchor="middle">Ordered by RTL; physical work abstracted</text>
+  <g fill="#ffffff" stroke="#93c5fd" stroke-width="1.8">
+    <rect x="125" y="660" width="150" height="76" rx="11"/><rect x="315" y="660" width="150" height="76" rx="11"/>
+    <rect x="125" y="770" width="150" height="76" rx="11"/><rect x="315" y="770" width="150" height="76" rx="11"/>
+    <rect x="220" y="865" width="150" height="76" rx="11"/>
+  </g>
+  <text class="body" x="200" y="705" text-anchor="middle">VALVREF</text><text class="body" x="390" y="705" text-anchor="middle">DATAVREF</text>
+  <text class="body" x="200" y="815" text-anchor="middle">SPEEDIDLE</text><text class="body" x="390" y="815" text-anchor="middle">TXSELFCAL</text>
+  <text class="body" x="295" y="910" text-anchor="middle">RXCLKCAL</text>
+
+  <rect x="545" y="555" width="300" height="400" rx="17" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2.5"/>
+  <text class="head" x="695" y="591" text-anchor="middle" fill="#6d28d9">Valid-lane states</text>
+  <text class="small" x="695" y="619" text-anchor="middle">Ordered shell; analog search abstracted</text>
+  <rect x="590" y="680" width="210" height="90" rx="13" fill="#ffffff" stroke="#c4b5fd" stroke-width="2"/>
+  <text class="body" x="695" y="716" text-anchor="middle">VALTRAINCENTER</text><text class="small" x="695" y="745" text-anchor="middle">centering abstracted</text>
+  <rect x="590" y="810" width="210" height="90" rx="13" fill="#ffffff" stroke="#c4b5fd" stroke-width="2"/>
+  <text class="body" x="695" y="846" text-anchor="middle">VALTRAINVREF</text><text class="small" x="695" y="875" text-anchor="middle">Vref search abstracted</text>
+  <path class="flow" d="M695 770 V810"/>
+
+  <rect x="885" y="535" width="400" height="420" rx="19" fill="#ecfdf5" stroke="#16a34a" stroke-width="3.2"/>
+  <text class="head" x="1085" y="576" text-anchor="middle" fill="#15803d">DATATRAINCENTER1</text>
+  <text class="small" x="1085" y="606" text-anchor="middle">Production path; bypass default is off</text>
+  <rect x="935" y="650" width="300" height="70" rx="12" fill="#d1fae5" stroke="#22c55e" stroke-width="2"/>
+  <text class="body" x="1085" y="680" text-anchor="middle">START request / expected response</text><text class="small" x="1085" y="704" text-anchor="middle">backpressure + bounded retry</text>
+  <rect x="935" y="750" width="300" height="90" rx="12" fill="#ffffff" stroke="#22c55e" stroke-width="2"/>
+  <text class="body" x="1085" y="782" text-anchor="middle">PATTERN</text><text class="small" x="1085" y="808" text-anchor="middle">16 lane LFSRs + accepted samples</text><text class="small" x="1085" y="830" text-anchor="middle">strict threshold; failure retries in place</text>
+  <rect x="935" y="870" width="300" height="70" rx="12" fill="#d1fae5" stroke="#22c55e" stroke-width="2"/>
+  <text class="body" x="1085" y="900" text-anchor="middle">END request / expected response</text><text class="small" x="1085" y="924" text-anchor="middle">required before state advance</text>
+  <path class="flow" d="M1085 720 V750"/><path class="flow" d="M1085 840 V870"/>
+
+  <rect x="1325" y="555" width="390" height="400" rx="17" fill="#fff7ed" stroke="#f97316" stroke-width="2.5"/>
+  <text class="head" x="1520" y="591" text-anchor="middle" fill="#9a3412">Later training states</text>
+  <text class="small" x="1520" y="619" text-anchor="middle">Ordered by RTL; physical work abstracted</text>
+  <g fill="#ffffff" stroke="#fdba74" stroke-width="1.8">
+    <rect x="1365" y="660" width="140" height="76" rx="11"/><rect x="1535" y="660" width="140" height="76" rx="11"/>
+    <rect x="1365" y="770" width="140" height="76" rx="11"/><rect x="1535" y="770" width="140" height="76" rx="11"/>
+    <rect x="1365" y="870" width="140" height="76" rx="11"/><rect x="1535" y="870" width="140" height="76" rx="11"/>
+  </g>
+  <text class="body" x="1435" y="705" text-anchor="middle">DATATRAINVREF</text><text class="body" x="1605" y="705" text-anchor="middle">RXDESKEW</text>
+  <text class="body" x="1435" y="815" text-anchor="middle">DATACENTER2</text><text class="body" x="1605" y="815" text-anchor="middle">LINKSPEED</text>
+  <text class="body" x="1435" y="915" text-anchor="middle">REPAIR</text><text class="body" x="1605" y="915" text-anchor="middle">to LINKINIT</text>
+
+  <path class="groupflow" d="M505 735 H545"/><path class="groupflow" d="M845 735 H885"/><path class="groupflow" d="M1285 735 H1325"/>
+
+  <rect x="50" y="1070" width="1700" height="70" rx="15" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+  <text class="body" x="80" y="1101">Green is the verified START - PATTERN - END production path. Other colored groups preserve state ordering but do not claim analog training implementation.</text>
+  <text class="small" x="80" y="1128">The project is a digital-control/FPGA milestone, not PHY, BER, electrical, ASIC, interoperability, or compliance evidence.</text>
+  <a href="../../../docs/03_algorithm/README.md"><text class="link" x="1715" y="1128" text-anchor="end">Project algorithm &#8599;</text></a>
+</svg>

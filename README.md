@@ -276,7 +276,7 @@ To rebuild and export the reviewed functional netlist:
 
 ## Reference policy
 
-The design was studied against *UCIe Specification Revision 2.0, Version 1.0*, August 6, 2024. Specification PDFs and extracted text stay in `references_private/` and are not published. Public documentation paraphrases the relevant concepts and identifies useful section numbers. The official specification is available from the [UCIe Consortium](https://www.uciexpress.org/specifications).
+The design was studied against *UCIe Specification Revision 2.0, Version 1.0*, August 6, 2024. Specification PDFs and extracted text stay in `references_private/` and are not published. Public documentation paraphrases the relevant concepts and identifies useful section numbers. The [specification figure and section index](docs/specification_figure_index.md) provides original project diagrams with manual figure, section, table, and page locators. The official specification is available from the [UCIe Consortium](https://www.uciexpress.org/specifications).
 
 ## Contributing and status
 

@@ -1,6 +1,6 @@
 # UCIe 2.0 LTSM Requirements Traceability
 
-Source: *UCIe Specification Revision 2.0, Version 1.0*, August 6, 2024.
+Source: *UCIe Specification Revision 2.0, Version 1.0*, August 6, 2024. The [figure and section reference index](specification_figure_index.md) maps original project diagrams to manual page locators without reproducing specification artwork.
 
 | Requirement | Spec location | RTL/verification status |
 |---|---|---|

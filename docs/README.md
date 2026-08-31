@@ -15,6 +15,7 @@ The documentation follows the order in which a new reader usually needs the idea
 Supporting material:
 
 - [Project glossary](glossary.md)
+- [Specification figure and section reference index](specification_figure_index.md) - original diagrams with manual figure/section/page locators
 - [Requirements traceability](requirements_traceability.md)
 - [Repository audit and migration map](repository_audit.md)
 - [Incremental design, verification, and release workflow](development_workflow.md)
