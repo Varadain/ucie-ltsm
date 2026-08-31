@@ -2,7 +2,8 @@ $ErrorActionPreference = 'Stop'
 $questaHome = 'C:\intelFPGA_lite\questa_fse'
 $vsim = Join-Path $questaHome 'win64\vsim.exe'
 $tests = @('nominal_test','timeout_test','recovery_test','pm_test',
-           'sb_success_test','sb_retry_test','sb_error_test','sb_exhaust_test')
+           'sb_success_test','sb_retry_test','sb_error_test','sb_exhaust_test',
+           'recovery_closure_test')
 $logDir = Join-Path (Get-Location) 'verification\uvm\logs'
 New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 

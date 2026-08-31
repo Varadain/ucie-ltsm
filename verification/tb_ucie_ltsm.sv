@@ -39,7 +39,13 @@ module tb_ucie_ltsm;
                     .mbtrain_state_i(mbt), .train_rx_valid_i(train_rx_valid_i),
                     .train_busy_i(train_busy_o), .train_done_i(train_done_o),
                     .train_pass_i(train_pass_o), .train_error_count_i(train_error_count_o),
-                    .train_error_threshold_i(train_error_threshold_i));
+                    .train_error_threshold_i(train_error_threshold_i),
+                    .error_pending_i(error_pending_o),
+                    .handshake_request_i(trainerror_handshake_request_o),
+                    .handshake_timeout_i(error_handshake_timeout_o),
+                    .handshake_done_i(error_handshake_done),
+                    .clear_error_log_i(clear_error_log_i),.error_cause_i(error_cause_o),
+                    .error_event_count_i(error_event_count_o));
 
   task automatic pulse_done; begin phase_done=1; @(posedge clk); #1 phase_done=0; end endtask
   task automatic expect_state(input ltsm_state_e exp); begin

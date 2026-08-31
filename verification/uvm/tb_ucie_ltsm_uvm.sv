@@ -38,7 +38,13 @@ module tb_ucie_ltsm_uvm;
                     .mbtrain_state_i(intf.mbt),.train_rx_valid_i(intf.train_rx_valid),
                     .train_busy_i(intf.train_busy),.train_done_i(intf.train_done),
                     .train_pass_i(intf.train_pass),.train_error_count_i(intf.train_error_count),
-                    .train_error_threshold_i(intf.train_error_threshold));
+                    .train_error_threshold_i(intf.train_error_threshold),
+                    .error_pending_i(intf.error_pending),
+                    .handshake_request_i(intf.trainerror_handshake_request),
+                    .handshake_timeout_i(intf.error_handshake_timeout),
+                    .handshake_done_i(intf.error_handshake_done),
+                    .clear_error_log_i(intf.clear_error_log),.error_cause_i(intf.error_cause),
+                    .error_event_count_i(intf.error_event_count));
   initial begin
     intf.rst_n=0; intf.clear_controls(); repeat(3) @(posedge clk); #1 intf.rst_n=1;
   end
