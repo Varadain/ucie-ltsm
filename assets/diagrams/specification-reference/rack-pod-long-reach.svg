@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1060" viewBox="0 0 1800 1060" role="img" aria-labelledby="title desc">
+  <title id="title">Original rack and pod connectivity reference diagram</title>
+  <desc id="desc">A project-authored system context showing packages with internal UCIe chiplet links connected through conceptual long-reach transport to pooled accelerator, memory, and IO resources.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="11" markerHeight="11" refX="10" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L10,3 z" fill="#334155"/></marker>
+    <marker id="reachArrow" markerWidth="15" markerHeight="15" refX="14" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L0,10 L14,5 z" fill="#7c3aed"/></marker>
+    <style>
+      text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}.title{font-size:31px;font-weight:750}.subtitle{font-size:16px;fill:#526176}.head{font-size:20px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#526176}.badge{font-size:13px;font-weight:750}.link{font-size:14px;font-weight:650;fill:#2563eb;text-decoration:underline}.flow{fill:none;stroke:#334155;stroke-width:4;marker-end:url(#arrow)}.reach{fill:none;stroke:#7c3aed;stroke-width:8;stroke-linecap:round;stroke-dasharray:15 11;marker-end:url(#reachArrow)}
+    </style>
+  </defs>
+  <rect width="1800" height="1060" fill="#ffffff"/>
+  <text class="title" x="50" y="52">Rack / pod context: package-local UCIe at the transport edges</text>
+  <text class="subtitle" x="50" y="82">Original system-level interpretation — long-reach transport is context and is outside this RTL project</text>
+  <a href="../../../docs/specification_figure_index.md#diagram-5-rack-and-pod-long-reach-context"><text class="link" x="1750" y="82" text-anchor="end">Figure 1-2 locator and derivation notes &#8599;</text></a>
+
+  <rect x="50" y="135" width="500" height="700" rx="26" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+  <text class="head" x="85" y="180" fill="#1d4ed8">Compute shelf</text>
+  <text class="small" x="85" y="207">host packages expose a logical fabric endpoint</text>
+  <g>
+    <rect x="95" y="250" width="410" height="205" rx="20" fill="#ffffff" stroke="#60a5fa" stroke-width="2.5"/>
+    <text class="head" x="125" y="290">Host package 0</text>
+    <rect x="125" y="320" width="135" height="82" rx="14" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/><text class="body" x="192" y="369" text-anchor="middle">CPU die</text>
+    <rect x="320" y="320" width="150" height="82" rx="14" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/><text class="body" x="395" y="352" text-anchor="middle">fabric tile</text><text class="small" x="395" y="380" text-anchor="middle">UCIe endpoint</text>
+    <path class="flow" d="M260 361 H320"/>
+  </g>
+  <g>
+    <rect x="95" y="500" width="410" height="205" rx="20" fill="#ffffff" stroke="#60a5fa" stroke-width="2.5"/>
+    <text class="head" x="125" y="540">Host package 1</text>
+    <rect x="125" y="570" width="135" height="82" rx="14" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/><text class="body" x="192" y="619" text-anchor="middle">CPU die</text>
+    <rect x="320" y="570" width="150" height="82" rx="14" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/><text class="body" x="395" y="602" text-anchor="middle">fabric tile</text><text class="small" x="395" y="630" text-anchor="middle">UCIe endpoint</text>
+    <path class="flow" d="M260 611 H320"/>
+  </g>
+
+  <rect x="630" y="220" width="540" height="530" rx="28" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+  <text class="head" x="900" y="265" text-anchor="middle" fill="#6d28d9">Long-reach fabric domain</text>
+  <text class="small" x="900" y="296" text-anchor="middle">retimers, switches, media, and protocol transport</text>
+  <rect x="695" y="350" width="155" height="105" rx="18" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+  <text class="head" x="772" y="390" text-anchor="middle">Edge A</text><text class="small" x="772" y="422" text-anchor="middle">bridge / retimer</text>
+  <rect x="950" y="350" width="155" height="105" rx="18" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+  <text class="head" x="1027" y="390" text-anchor="middle">Edge B</text><text class="small" x="1027" y="422" text-anchor="middle">bridge / retimer</text>
+  <path class="reach" d="M850 402 H950"/>
+  <rect x="735" y="515" width="330" height="130" rx="20" fill="#ffffff" stroke="#a78bfa" stroke-width="2"/>
+  <text class="head" x="900" y="558" text-anchor="middle">Transport abstraction</text>
+  <text class="body" x="900" y="590" text-anchor="middle">electrical or optical reach</text>
+  <text class="small" x="900" y="620" text-anchor="middle">not implemented or validated here</text>
+  <path class="flow" d="M772 455 V515"/><path class="flow" d="M1027 515 V455"/>
+  <path class="reach" d="M470 361 C575 361 590 402 695 402"/>
+  <path class="reach" d="M470 611 C575 611 590 435 695 435"/>
+
+  <rect x="1250" y="135" width="500" height="700" rx="26" fill="#ecfdf5" stroke="#16a34a" stroke-width="3"/>
+  <text class="head" x="1285" y="180" fill="#15803d">Pooled-resource shelf</text>
+  <text class="small" x="1285" y="207">disaggregated resources behind endpoint packages</text>
+  <rect x="1295" y="250" width="410" height="150" rx="20" fill="#ffffff" stroke="#4ade80" stroke-width="2.5"/>
+  <rect x="1325" y="290" width="145" height="70" rx="14" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/><text class="small" x="1397" y="320" text-anchor="middle">UCIe fabric</text><text class="small" x="1397" y="342" text-anchor="middle">endpoint</text>
+  <rect x="1530" y="290" width="145" height="70" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/><text class="body" x="1602" y="333" text-anchor="middle">Accelerator</text>
+  <path class="flow" d="M1470 325 H1530"/>
+  <rect x="1295" y="445" width="410" height="120" rx="20" fill="#ffffff" stroke="#4ade80" stroke-width="2.5"/>
+  <text class="head" x="1325" y="487">Memory pool</text><text class="small" x="1325" y="521">capacity and bandwidth resource</text>
+  <rect x="1295" y="610" width="410" height="120" rx="20" fill="#ffffff" stroke="#4ade80" stroke-width="2.5"/>
+  <text class="head" x="1325" y="652">I/O pool</text><text class="small" x="1325" y="686">networking, storage, or device fan-out</text>
+  <path class="reach" d="M1105 402 C1180 402 1210 325 1295 325"/>
+
+  <rect x="50" y="880" width="1700" height="130" rx="20" fill="#fff7ed" stroke="#ea580c" stroke-width="2.5"/>
+  <text class="head" x="80" y="920" fill="#c2410c">Scope boundary</text>
+  <text class="body" x="80" y="956">UCIe appears here at package-local die-to-die endpoints. Rack transport, retimers, optical/electrical media, fabric software, pooling, and interoperability are not project deliverables.</text>
+  <text class="small" x="80" y="987">Source locator: UCIe 2.0, Figure 1-2, printed page 37. Original project drawing; no source photography or specification artwork is embedded.</text>
+</svg>

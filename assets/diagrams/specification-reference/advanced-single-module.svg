@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1100" viewBox="0 0 1800 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Original advanced-package single-module reference diagram</title>
+  <desc id="desc">A project-authored exploded functional view of one advanced-package module beneath a shared adapter, including PHY logic, sideband, forwarded clock, mainband aggregation, and valid or track signaling.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker>
+    <marker id="busArrow" markerWidth="16" markerHeight="16" refX="15" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L0,10 L15,5 z" fill="#0f766e"/></marker>
+    <style>
+      text{font-family:Inter,Segoe UI,Arial,s-serif;fill:#172033}.title{font-size:31px;font-weight:750}.subtitle{font-size:16px;fill:#526176}.head{font-size:20px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#526176}.badge{font-size:13px;font-weight:750}.link{font-size:14px;font-weight:650;fill:#2563eb;text-decoration:underline}.flow{fill:none;stroke:#475569;stroke-width:3;marker-end:url(#arrow)}.bus{fill:none;stroke:#0f766e;stroke-width:9;stroke-linecap:round;marker-end:url(#busArrow)}
+    </style>
+  </defs>
+  <rect width="1800" height="1100" fill="#ffffff"/>
+  <text class="title" x="50" y="52">Advanced package: one module as an exploded functional view</text>
+  <text class="subtitle" x="50" y="82">Original configuration guide — logical groupings are shown for readability and are not a placement drawing</text>
+  <a href="../../../docs/specification_figure_index.md#diagram-8-advanced-package-single-module"><text class="link" x="1750" y="82" text-anchor="end">Figure 1-10 locator and derivation notes &#8599;</text></a>
+
+  <rect x="100" y="145" width="1600" height="165" rx="26" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+  <text class="head" x="145" y="195" fill="#6d28d9">Die-to-die adapter</text>
+  <text class="body" x="145" y="230">presents one logical link and coordinates the module-facing physical interface</text>
+  <rect x="1170" y="180" width="450" height="80" rx="18" fill="#ffffff" stroke="#c4b5fd" stroke-width="2"/>
+  <text class="body" x="1395" y="213" text-anchor="middle">configuration and link-state coordination</text>
+  <text class="small" x="1395" y="241" text-anchor="middle">adapter behavior is outside this RTL project</text>
+
+  <rect x="245" y="375" width="1310" height="420" rx="32" fill="#f8fafc" stroke="#94a3b8" stroke-width="3"/>
+  <rect x="285" y="415" width="1230" height="70" rx="18" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+  <text class="head" x="900" y="458" text-anchor="middle" fill="#1d4ed8">Single advanced-package module</text>
+  <rect x="300" y="530" width="340" height="195" rx="22" fill="#ecfdf5" stroke="#16a34a" stroke-width="3"/>
+  <text class="head" x="470" y="575" text-anchor="middle" fill="#15803d">Digital PHY logic</text>
+  <text class="body" x="470" y="613" text-anchor="middle">training and lane control</text>
+  <text class="body" x="470" y="645" text-anchor="middle">sideband coordination</text>
+  <rect x="355" y="672" width="230" height="32" rx="16" fill="#dcfce7"/><text class="badge" x="470" y="694" text-anchor="middle" fill="#15803d">project-adjacent scope</text>
+  <rect x="730" y="530" width="340" height="195" rx="22" fill="#fff7ed" stroke="#ea580c" stroke-width="3"/>
+  <text class="head" x="900" y="575" text-anchor="middle" fill="#c2410c">Electrical interface</text>
+  <text class="body" x="900" y="613" text-anchor="middle">transmit / receive analog front end</text>
+  <text class="body" x="900" y="645" text-anchor="middle">channel-facing clock and data</text>
+  <rect x="785" y="672" width="230" height="32" rx="16" fill="#ffedd5"/><text class="badge" x="900" y="694" text-anchor="middle" fill="#c2410c">outside project scope</text>
+  <rect x="1160" y="530" width="300" height="195" rx="22" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+  <text class="head" x="1310" y="575" text-anchor="middle" fill="#1d4ed8">Module services</text>
+  <text class="body" x="1310" y="613" text-anchor="middle">sideband channel</text>
+  <text class="body" x="1310" y="645" text-anchor="middle">forwarded clock</text>
+  <text class="body" x="1310" y="677" text-anchor="middle">valid / track signaling</text>
+
+  <path class="flow" d="M470 310 V375"/><path class="flow" d="M900 310 V375"/><path class="flow" d="M1310 310 V375"/>
+  <path class="flow" d="M640 627 H730"/><path class="flow" d="M1070 627 H1160"/>
+
+  <rect x="170" y="850" width="1460" height="120" rx="24" fill="#ccfbf1" stroke="#0f766e" stroke-width="3"/>
+  <text class="head" x="210" y="895" fill="#0f766e">Mainband aggregation</text>
+  <path class="bus" d="M500 918 H1450"/>
+  <text class="body" x="500" y="953" text-anchor="middle">x64 or x32 reference configuration</text>
+  <text class="small" x="1450" y="953" text-anchor="end">lane-level electrical behavior is not modeled</text>
+
+  <rect x="50" y="1010" width="1700" height="60" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <text class="small" x="80" y="1047">Source locator: UCIe 2.0, Figure 1-10, printed page 42. Original project drawing; the module widths are reference configurations, not implemented lane datapaths.</text>
+</svg>

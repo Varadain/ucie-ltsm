@@ -4,13 +4,19 @@ This directory contains small, reviewed artifacts intended for GitHub display. R
 
 ## Original specification-reference diagrams
 
-The three SVGs under [`diagrams/specification-reference`](diagrams/specification-reference/) are original repository-native drawings informed by the private UCIe 2.0 reference and the checked project RTL:
+The nine SVGs under [`diagrams/specification-reference`](diagrams/specification-reference/) are original repository-native drawings informed by the private UCIe 2.0 reference and, where applicable, the checked project RTL:
 
 - [`project-ltsm-scope.svg`](diagrams/specification-reference/project-ltsm-scope.svg) maps the nominal, power-management, retrain, and retained-error paths to this project's implementation depth.
 - [`training-scope-map.svg`](diagrams/specification-reference/training-scope-map.svg) shows all ordered MBINIT/MBTRAIN states while distinguishing the integrated DATATRAINCENTER1 path from abstracted physical operations.
 - [`integrated-datatrain-order.svg`](diagrams/specification-reference/integrated-datatrain-order.svg) shows the verified START, PATTERN, END, retry, advance, abort, and TRAINERROR ordering.
+- [`package-chiplet-composition.svg`](diagrams/specification-reference/package-chiplet-composition.svg) places compute, accelerator, memory-control, and I/O roles around a package-local UCIe connectivity plane.
+- [`rack-pod-long-reach.svg`](diagrams/specification-reference/rack-pod-long-reach.svg) separates package-local UCIe endpoints from conceptual rack/pod transport and pooled resources.
+- [`standard-package-reference.svg`](diagrams/specification-reference/standard-package-reference.svg) combines an original package cross-section with clearly qualified standard-package reference-value cards.
+- [`ucie-layer-boundaries.svg`](diagrams/specification-reference/ucie-layer-boundaries.svg) maps protocol, adapter, and physical-layer responsibilities while highlighting the repository's limited digital-control island.
+- [`advanced-single-module.svg`](diagrams/specification-reference/advanced-single-module.svg) gives an exploded functional view of one advanced-package module.
+- [`standard-multimodule-comparison.svg`](diagrams/specification-reference/standard-multimodule-comparison.svg) compares two-module x32 and four-module x64 standard-package reference organizations.
 
-The [specification figure and section index](../docs/specification_figure_index.md) records the manual figure, section, table, and page locators used for each drawing. No specification page image, copied figure, table, extracted text, or embedded raster content is published.
+The [specification figure and section index](../docs/specification_figure_index.md) records the manual figure, section, table, and page locators used for each drawing. Reference values in the standard-package cards are not project measurements. No specification page image, copied figure, table layout, extracted text, or embedded raster content is published.
 
 ## v0.4 retained recovery and FPGA CSR evidence
 

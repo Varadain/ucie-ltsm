@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1120" viewBox="0 0 1800 1120" role="img" aria-labelledby="title desc">
+  <title id="title">Original standard-package two-module and four-module comparison</title>
+  <desc id="desc">A project-authored side-by-side comparison of two and four standard-package x16 modules coordinated beneath a shared die-to-die adapter.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker>
+    <style>
+      text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#172033}.title{font-size:31px;font-weight:750}.subtitle{font-size:16px;fill:#526176}.head{font-size:20px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#526176}.badge{font-size:13px;font-weight:750}.link{font-size:14px;font-weight:650;fill:#2563eb;text-decoration:underline}.flow{fill:none;stroke:#475569;stroke-width:3;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1800" height="1120" fill="#ffffff"/>
+  <text class="title" x="50" y="52">Standard package: scaling one logical link across x16 modules</text>
+  <text class="subtitle" x="50" y="82">Original comparison of two-module and four-module organization under a shared adapter</text>
+  <a href="../../../docs/specification_figure_index.md#diagram-9-standard-package-multi-module-configurations"><text class="link" x="1750" y="82" text-anchor="end">Figures 1-12 / 1-13 locators &#8599;</text></a>
+
+  <rect x="50" y="135" width="820" height="800" rx="28" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+  <text class="head" x="90" y="180" fill="#1d4ed8">Two-module configuration</text>
+  <text class="small" x="90" y="208">one logical link assembled from two standard-package modules</text>
+  <rect x="110" y="245" width="700" height="120" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+  <text class="head" x="460" y="292" text-anchor="middle" fill="#6d28d9">Shared die-to-die adapter</text>
+  <text class="small" x="460" y="327" text-anchor="middle">common link state, rate, and width coordination</text>
+  <rect x="110" y="400" width="700" height="65" rx="18" fill="#dbeafe" stroke="#60a5fa" stroke-width="2"/>
+  <text class="body" x="460" y="441" text-anchor="middle">synchronized module-control plane</text>
+  <g>
+    <rect x="125" y="520" width="315" height="290" rx="22" fill="#ffffff" stroke="#16a34a" stroke-width="2.5"/>
+    <text class="head" x="282" y="565" text-anchor="middle" fill="#15803d">Module 0</text>
+    <rect x="165" y="600" width="235" height="55" rx="14" fill="#dcfce7"/><text class="badge" x="282" y="635" text-anchor="middle" fill="#15803d">x16 mainband slice</text>
+    <text class="body" x="165" y="698">• PHY logic</text><text class="body" x="165" y="731">• sideband + forwarded clock</text><text class="body" x="165" y="764">• valid / track</text>
+    <rect x="480" y="520" width="315" height="290" rx="22" fill="#ffffff" stroke="#16a34a" stroke-width="2.5"/>
+    <text class="head" x="637" y="565" text-anchor="middle" fill="#15803d">Module 1</text>
+    <rect x="520" y="600" width="235" height="55" rx="14" fill="#dcfce7"/><text class="badge" x="637" y="635" text-anchor="middle" fill="#15803d">x16 mainband slice</text>
+    <text class="body" x="520" y="698">• PHY logic</text><text class="body" x="520" y="731">• sideband + forwarded clock</text><text class="body" x="520" y="764">• valid / track</text>
+  </g>
+  <path class="flow" d="M282 365 V400"/><path class="flow" d="M637 365 V400"/><path class="flow" d="M282 465 V520"/><path class="flow" d="M637 465 V520"/>
+  <rect x="180" y="845" width="560" height="52" rx="26" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/>
+  <text class="badge" x="460" y="878" text-anchor="middle" fill="#0f766e">2 × x16 = x32 aggregate reference width</text>
+
+  <rect x="930" y="135" width="820" height="800" rx="28" fill="#fff7ed" stroke="#ea580c" stroke-width="3"/>
+  <text class="head" x="970" y="180" fill="#c2410c">Four-module configuration</text>
+  <text class="small" x="970" y="208">one logical link assembled from four standard-package modules</text>
+  <rect x="990" y="245" width="700" height="120" rx="22" fill="#f5f3ff" stroke="#7c3aed" stroke-width="3"/>
+  <text class="head" x="1340" y="292" text-anchor="middle" fill="#6d28d9">Shared die-to-die adapter</text>
+  <text class="small" x="1340" y="327" text-anchor="middle">common link state, rate, and width coordination</text>
+  <rect x="990" y="400" width="700" height="65" rx="18" fill="#ffedd5" stroke="#fb923c" stroke-width="2"/>
+  <text class="body" x="1340" y="441" text-anchor="middle">synchronized module-control plane</text>
+  <g>
+    <rect x="990" y="520" width="160" height="290" rx="20" fill="#ffffff" stroke="#16a34a" stroke-width="2.5"/>
+    <text class="head" x="1070" y="563" text-anchor="middle" fill="#15803d">M0</text><rect x="1010" y="595" width="120" height="46" rx="13" fill="#dcfce7"/><text class="badge" x="1070" y="625" text-anchor="middle" fill="#15803d">x16</text><text class="small" x="1070" y="684" text-anchor="middle">PHY logic</text><text class="small" x="1070" y="716" text-anchor="middle">sideband</text><text class="small" x="1070" y="748" text-anchor="middle">FW clock</text><text class="small" x="1070" y="780" text-anchor="middle">valid / track</text>
+    <rect x="1170" y="520" width="160" height="290" rx="20" fill="#ffffff" stroke="#16a34a" stroke-width="2.5"/>
+    <text class="head" x="1250" y="563" text-anchor="middle" fill="#15803d">M1</text><rect x="1190" y="595" width="120" height="46" rx="13" fill="#dcfce7"/><text class="badge" x="1250" y="625" text-anchor="middle" fill="#15803d">x16</text><text class="small" x="1250" y="684" text-anchor="middle">PHY logic</text><text class="small" x="1250" y="716" text-anchor="middle">sideband</text><text class="small" x="1250" y="748" text-anchor="middle">FW clock</text><text class="small" x="1250" y="780" text-anchor="middle">valid / track</text>
+    <rect x="1350" y="520" width="160" height="290" rx="20" fill="#ffffff" stroke="#16a34a" stroke-width="2.5"/>
+    <text class="head" x="1430" y="563" text-anchor="middle" fill="#15803d">M2</text><rect x="1370" y="595" width="120" height="46" rx="13" fill="#dcfce7"/><text class="badge" x="1430" y="625" text-anchor="middle" fill="#15803d">x16</text><text class="small" x="1430" y="684" text-anchor="middle">PHY logic</text><text class="small" x="1430" y="716" text-anchor="middle">sideband</text><text class="small" x="1430" y="748" text-anchor="middle">FW clock</text><text class="small" x="1430" y="780" text-anchor="middle">valid / track</text>
+    <rect x="1530" y="520" width="160" height="290" rx="20" fill="#ffffff" stroke="#16a34a" stroke-width="2.5"/>
+    <text class="head" x="1610" y="563" text-anchor="middle" fill="#15803d">M3</text><rect x="1550" y="595" width="120" height="46" rx="13" fill="#dcfce7"/><text class="badge" x="1610" y="625" text-anchor="middle" fill="#15803d">x16</text><text class="small" x="1610" y="684" text-anchor="middle">PHY logic</text><text class="small" x="1610" y="716" text-anchor="middle">sideband</text><text class="small" x="1610" y="748" text-anchor="middle">FW clock</text><text class="small" x="1610" y="780" text-anchor="middle">valid / track</text>
+  </g>
+  <path class="flow" d="M1070 465 V520"/><path class="flow" d="M1250 465 V520"/><path class="flow" d="M1430 465 V520"/><path class="flow" d="M1610 465 V520"/>
+  <rect x="1060" y="845" width="560" height="52" rx="26" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/>
+  <text class="badge" x="1340" y="878" text-anchor="middle" fill="#0f766e">4 × x16 = x64 aggregate reference width</text>
+
+  <rect x="50" y="970" width="1700" height="105" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+  <text class="head" x="80" y="1010" fill="#b91c1c">Project boundary</text>
+  <text class="body" x="80" y="1042">The repository does not implement x16 lane datapaths, module bonding, electrical synchronization, or package channels. Source locators: Figures 1-12 and 1-13, printed page 43.</text>
+  <text class="small" x="80" y="1062">Original comparison layout; not a reproduction of specification artwork.</text>
+</svg>
