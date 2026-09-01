@@ -1,0 +1,7 @@
+seed,trials,start_requests,start_responses,end_requests,end_responses,retries,protocol_errors,pattern_passes,pattern_failures,reset_aborts,fatal_aborts,timeout_aborts,predictor_checks,uvm_errors,uvm_fatals
+1701,36,36,30,25,17,8,6,25,4,8,1,4,83,0,0
+1802,36,36,28,23,12,8,11,23,2,3,3,7,76,0,0
+1903,36,32,28,21,14,5,6,23,4,3,6,7,78,0,0
+2004,36,34,26,24,18,8,6,23,6,2,3,7,80,0,0
+2105,36,35,28,27,17,11,6,27,4,4,5,4,81,0,0
+aggregate,180,173,140,120,78,40,35,121,20,20,18,29,398,0,0

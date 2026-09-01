@@ -1,0 +1,58 @@
+\documentclass[journal]{IEEEtran}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{cite}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+
+\graphicspath{{../figures/pdf/}}
+\hyphenation{DATATRAIN-CENTER UCIe side-band}
+
+\begin{document}
+
+\title{A Specification-Traceable RTL and Verification Framework for a UCIe 2.0 Link-Training Control Subset}
+
+\author{Author Name(s) to Be Supplied Before Submission%
+\thanks{Author names, affiliations, e-mail addresses, ORCIDs, and biographies
+must be completed and approved before submission. This pre-submission draft is
+not anonymous because IEEE TVLSI is not a blind-submission venue.}}
+
+\markboth{Pre-Submission Technical Draft---September 2026}%
+{Author(s): UCIe 2.0-Derived Link-Training Control Subset}
+
+\maketitle
+
+\begin{abstract}
+This work presents a specification-traceable register-transfer-level and verification framework for a bounded Universal Chiplet Interconnect Express 2.0-derived link-training control problem. The synthesizable design combines a nine-state hierarchical controller, bounded sideband retry and response matching, a 16-lane 23-bit linear-feedback shift-register measurement engine, retained training-error classification, and a compact field-programmable gate array control/status-register wrapper. Production verification disables the abstract training bypass and independently predicts message order, accepted-sample lane state, strict error-threshold decisions, abort cause, and state advancement. Five fixed seeds execute 180 trials covering nine nominal, retry, malformed-response, pattern-failure, reset, fatal, and timeout classes; accepted logs contain no verification errors or fatals, and 398 independent predictor checks complete. On a Cyclone 10 LP device, the wide diagnostic top fails to fit at the 151-pin package limit, whereas the byte-register wrapper fits with 824 logic elements, 505 registers, and 119 pins. Internal 80-MHz timing reports positive setup and hold slack. The evidence supports a reproducible academic digital-control case study, not a complete physical layer, electrical link, interoperability result, or standards-compliance claim.
+\end{abstract}
+
+\begin{IEEEkeywords}
+chiplets, FPGA, link training, UCIe, UVM.
+\end{IEEEkeywords}
+
+\input{sections/01_introduction}
+\input{sections/02_architecture}
+\input{sections/03_verification}
+\input{sections/04_evaluation}
+\input{sections/05_related_work}
+\input{sections/05_discussion}
+\input{sections/06_conclusion}
+
+\section*{Acknowledgment and Tool-Use Disclosure}
+
+The authors must replace this draft text with complete funding, institutional,
+conflict-of-interest, and contributor acknowledgments. OpenAI Codex was used
+under author direction to assist with repository auditing, evidence
+organization, manuscript drafting, and generation of original project figures.
+The authors are responsible for independently checking every claim, citation,
+figure, result, and disclosure and for approving the final submitted text.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+% IEEE TVLSI requires biographies for regular papers. Add author photographs
+% and IEEEbiography environments only after author metadata is supplied.
+
+\end{document}

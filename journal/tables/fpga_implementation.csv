@@ -1,0 +1,5 @@
+top,stage,status,logic_elements,registers,pins,total_device_les,total_device_pins,worst_setup_slack_ns,worst_hold_slack_ns,qualification
+ucie_ltsm,map,successful,763,505,151,24624,151,,,mapping only
+ucie_ltsm,fit,failed,764,505,151,24624,151,,,pin demand prevents successful fit
+ucie_ltsm_fpga_wrapper,map,successful,823,505,119,24624,151,,,mapping result
+ucie_ltsm_fpga_wrapper,fit,successful,824,505,119,24624,151,1.013,0.179,internal 80-MHz clock only; no pin locations or external IO delays

@@ -1,0 +1,6 @@
+campaign,seeds,trials_per_seed,total_trials,outcome
+deterministic UVM,not randomized,9 tests,9 tests,pass
+randomized sideband,101/202/303/404/505,40,200,pass
+randomized LFSR training,701/802/903/1004/1105,32,160,pass
+randomized error recovery,1201/1302/1403/1504/1605,36,180,pass
+production integrated training,1701/1802/1903/2004/2105,36,180,pass

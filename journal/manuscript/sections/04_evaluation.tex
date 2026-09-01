@@ -1,0 +1,123 @@
+\section{Evaluation}
+\label{sec:evaluation}
+
+The evaluation asks two bounded questions: whether the production controller
+preserves the required START--PATTERN--END ordering under randomized delays and
+faults, and whether the same RTL is implementable through a practical FPGA
+observability boundary. It does not measure link throughput, latency, BER, or
+electrical behavior.
+
+\subsection{Environment and Reproducibility}
+
+Simulation used Questa Intel FPGA Starter Edition 2023.3. The committed
+PowerShell and Questa scripts compile the RTL, UVM packages, and assertions,
+then run fixed seed lists. The integrated testbench drives a 100-MHz simulation
+clock, reduces the training sample count to eight accepted samples, and fixes
+\texttt{ALLOW\_ABSTRACT\_DATATRAIN\_BYPASS} to zero. These changes shorten the
+experiment without changing the message-order, accepted-sample, threshold, or
+abort checks. The RTL default remains 4096 accepted samples.
+
+FPGA mapping, fitting, and timing analysis used Quartus Prime Lite
+23.1std.1, targeting a Cyclone 10 LP 10CL025YU256C8G. The SDC applies a
+12.5-ns (80-MHz) clock constraint and an asynchronous-reset false path. It does
+not assign package locations or external input/output delays; timing values are
+therefore internal-clock evidence, not board timing closure.
+
+\subsection{Production Integrated-Training Campaign}
+
+Five seeds each execute 36 trials. Every seed first guarantees all nine
+scenario classes and then adds seeded variations in response latency,
+backpressure, sample gaps, corruption, threshold, and abort phase. Table
+\ref{tab:integrated} reports the accepted per-seed summaries. A request need not
+receive a response in malformed-response, retry, or abort cases, and END is
+intentionally absent when the pattern does not pass. The resulting count
+asymmetry is therefore expected, not packet loss.
+
+\begin{table*}[t]
+\caption{Production Integrated-Training Results With Bypass Disabled}
+\label{tab:integrated}
+\centering
+\small
+\setlength{\tabcolsep}{4.2pt}
+\begin{tabular}{c r rr rr rr rr rrr r}
+\toprule
+Seed & Trials & \multicolumn{2}{c}{START} & \multicolumn{2}{c}{END} & Retry & Prot. & \multicolumn{2}{c}{Pattern} & \multicolumn{3}{c}{Abort} & Checks \\
+ & & Req. & Resp. & Req. & Resp. & & err. & Pass & Fail & Reset & Fatal & T/O & \\
+\midrule
+1701 & 36 & 36 & 30 & 25 & 17 & 8 & 6  & 25 & 4 & 8 & 1 & 4 & 83 \\
+1802 & 36 & 36 & 28 & 23 & 12 & 8 & 11 & 23 & 2 & 3 & 3 & 7 & 76 \\
+1903 & 36 & 32 & 28 & 21 & 14 & 5 & 6  & 23 & 4 & 3 & 6 & 7 & 78 \\
+2004 & 36 & 34 & 26 & 24 & 18 & 8 & 6  & 23 & 6 & 2 & 3 & 7 & 80 \\
+2105 & 36 & 35 & 28 & 27 & 17 & 11& 6  & 27 & 4 & 4 & 5 & 4 & 81 \\
+\midrule
+Total & 180 & 173 & 140 & 120 & 78 & 40 & 35 & 121 & 20 & 20 & 18 & 29 & 398 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The scenario-hit totals were 18 nominal passes, 20 failed-pattern retry/pass
+cases, 17 START retries, 16 malformed START responses, 23 END retries, 19
+malformed END responses, 20 reset aborts, 18 fatal aborts, and 29 state-timeout
+aborts. Thus all planned classes were observed, while the predictor performed
+398 independent order/value/cause checks. The accepted logs report zero UVM
+errors and zero UVM fatals, and the regression summary reports no assertion
+failures. These observations establish consistency for the committed stimuli;
+they are not an exhaustive proof.
+
+\subsection{Preserved Regression Gate}
+
+The integrated campaign was added without discarding earlier evidence. The
+release gate also ran nine deterministic UVM tests, 200 sideband trials over
+seeds 101--505, 160 LFSR-training trials over seeds 701--1105, and 180 recovery
+trials over seeds 1201--1605. Module-directed suites separately exercise the
+controller, sideband sequencer, LFSR engine, error manager, and wrapper CSR.
+All accepted runs completed without UVM errors/fatals or reported assertion
+failures. An ad-hoc ignored debug log is not part of this evidence set.
+
+\subsection{FPGA Mapping, Fit, and Timing}
+
+Table~\ref{tab:fpga} preserves both the positive and negative implementation
+results. The wide controller top maps to 763 logic
+elements and 505 registers, but demands all 151 device pins; its fitter run
+fails. Timing numbers emitted alongside that failed fit are not used as
+successful-fit evidence.
+
+The CSR wrapper fits successfully using 824 of 24,624 logic elements (3\%), 505
+registers, and 119 of 151 pins (79\%), with no virtual pins. Across the committed
+timing corners, the worst setup and hold slacks are +1.013 and +0.179 ns,
+respectively, and reported negative slack is zero. The wrapper adds a small
+amount of decode logic while reducing external pin demand by 32, demonstrating
+why serializing diagnostics is necessary for this device. Because external I/O
+constraints and physical pin locations are absent, the result supports
+internal synthesizability and fit only.
+
+\begin{table}[t]
+\caption{Cyclone 10 LP Implementation Summary}
+\label{tab:fpga}
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Metric & Core map & Core fit & Wrapper fit \\
+\midrule
+Status & success & failure & success \\
+Logic elements & 763 & 764 & 824 \\
+Registers & 505 & 505 & 505 \\
+Pins & 151 & 151 & 119 \\
+Setup slack (ns) & -- & -- & +1.013 \\
+Hold slack (ns) & -- & -- & +0.179 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Threats to Validity}
+
+The pseudo-random campaign uses explicit seeded \texttt{\$urandom\_range}
+choices and sampled counters because the Starter license does not support the
+native class-randomization and UCDB coverage flow required by the original
+plan. No native functional-coverage percentage or code coverage is claimed.
+The independent predictor reduces common-mode risk, but design and verification
+were developed in the same project. Reduced training counts accelerate
+simulation; they do not test full-duration drift. Finally, FPGA synthesis
+cannot substitute for a complete two-die model, board experiment, ASIC PPA, or
+electrical characterization.

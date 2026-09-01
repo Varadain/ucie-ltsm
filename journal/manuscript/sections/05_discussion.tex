@@ -1,0 +1,48 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{What the Evidence Supports}
+
+The strongest result is control-path consistency across independently predicted
+message order, per-lane pattern state, threshold decisions, and retained abort
+cause. The tests exercise not only nominal completion but also absence
+properties: END must not be sent after a failed pattern, DATATRAINVREF must not
+be entered before END closes, and illegal clear must not erase a retained
+TRAINERROR record. These checks are more informative for the modeled block than
+a link-level throughput number that the design cannot produce.
+
+The FPGA result also shows a practical architectural tradeoff. Exposing every
+diagnostic directly consumes the complete package-pin budget and fails to fit,
+although logic utilization is low. A byte CSR raises logic use from the mapped
+763-element core to a fitted 824-element wrapper while reducing pin demand by
+32. This is not a performance optimization; it is an observability boundary
+that makes the controller implementable on the selected package.
+
+\subsection{What the Evidence Does Not Support}
+
+The controller implements one detailed training operation while delegating most
+other substates to \texttt{phase\_done\_i}. The project therefore cannot claim a
+complete physical-layer controller. It has no analog front end, package channel,
+mainband datapath, protocol adapter, two-die interoperability setup, or official
+compliance suite. The Quartus constraint set has no board pin locations or
+external I/O delays, and no hardware was measured. There is no ASIC synthesis,
+place-and-route, power analysis, CDC/RDC signoff, formal proof, or native code
+coverage.
+
+The fixed-seed campaign improves reproducibility but samples a finite behavioral
+space. Explicit bin counters confirm that planned classes were exercised; they
+do not establish standard coverage closure. A stronger evaluation would run a
+licensed native randomization/coverage flow, publish functional and code
+coverage with justified exclusions, and use mutation or fault injection to
+measure checker sensitivity.
+
+\subsection{Next Experiments}
+
+Three extensions would most improve the scientific claim. First, replace more
+phase abstractions with independently checked MBINIT/MBTRAIN procedures and a
+two-end behavioral partner. Second, compare controller-only, integrated-engine,
+and CSR-wrapper configurations under identical FPGA or ASIC constraints.
+Third, add physical credibility through either a fully constrained board build
+and hardware experiment or a reproducible ASIC flow with library, PVT,
+constraint, area, and power methodology. Until then, the work is best described
+as an academic digital-control and verification framework.

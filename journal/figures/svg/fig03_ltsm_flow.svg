@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,4 L0,8 Z" fill="#172033"/></marker></defs>
+<rect width="1200" height="675" fill="#FFFDF5"/>
+<text x="600.0" y="38" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="bold" fill="#172033">Hierarchical LTSM control flow</text>
+<rect x="55" y="120" width="130" height="70" rx="12" fill="#E9ECEF" stroke="#172033" stroke-width="2.5"/>
+<text x="120.0" y="149" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">RESET</text>
+<rect x="225" y="120" width="130" height="70" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
+<text x="290.0" y="149" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">SBINIT</text>
+<rect x="395" y="120" width="130" height="70" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
+<text x="460.0" y="149" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">MBINIT</text>
+<text x="460.0" y="177" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">6 substates</text>
+<rect x="565" y="120" width="130" height="70" rx="12" fill="#F7E396" stroke="#172033" stroke-width="2.5"/>
+<text x="630.0" y="149" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">MBTRAIN</text>
+<text x="630.0" y="177" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">13 substates</text>
+<rect x="735" y="120" width="130" height="70" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
+<text x="800.0" y="149" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">LINKINIT</text>
+<rect x="905" y="120" width="130" height="70" rx="12" fill="#DFF0D8" stroke="#172033" stroke-width="2.5"/>
+<text x="970.0" y="149" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">ACTIVE</text>
+<text x="970.0" y="177" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">link_up = 1</text>
+<rect x="795" y="315" width="180" height="75" rx="12" fill="#E9E0F7" stroke="#172033" stroke-width="2.5"/>
+<text x="885.0" y="344" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">PHYRETRAIN</text>
+<text x="885.0" y="372" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">three targets</text>
+<rect x="1010" y="315" width="140" height="75" rx="12" fill="#DDEBF7" stroke="#172033" stroke-width="2.5"/>
+<text x="1080.0" y="344" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">L1 / L2</text>
+<text x="1080.0" y="372" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">low power</text>
+<rect x="425" y="500" width="330" height="85" rx="12" fill="#F8D7DA" stroke="#172033" stroke-width="2.5"/>
+<text x="590.0" y="529" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">TRAINERROR</text>
+<text x="590.0" y="557" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">retained cause + count</text>
+<text x="590.0" y="576" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">recovery or protected clear</text>
+<rect x="485" y="265" width="300" height="105" rx="12" fill="#F7E396" stroke="#172033" stroke-width="2.5"/>
+<text x="635.0" y="294" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Integrated MBTRAIN focus</text>
+<text x="635.0" y="322" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">DATATRAINCENTER1</text>
+<text x="635.0" y="341" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">START → PATTERN → END</text>
+<text x="635.0" y="360" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">then DATATRAINVREF</text>
+<path d="M 185 155 L 225 155" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 355 155 L 395 155" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 525 155 L 565 155" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 695 155 L 735 155" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 865 155 L 905 155" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 930 190 L 850 315" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 1000 190 L 1070 315" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 900 315 L 955 190" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 1110 315 L 1015 190" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 630 190 L 635 265" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="597.5" y="204.5" width="70" height="21" fill="#FFFDF5"/>
+<text x="632.5" y="219.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">CENTER1</text>
+<path d="M 425 542 L 185 190" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)" stroke-dasharray="8 6"/>
+<rect x="270.0" y="343.0" width="70" height="21" fill="#FFFDF5"/>
+<text x="305.0" y="358.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">recovery</text>
+<path d="M 600 425 L 600 500" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="544.0" y="439.5" width="112" height="21" fill="#FFFDF5"/>
+<text x="600.0" y="454.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">eligible error</text>
+<text x="185" y="450" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="bold" fill="#172033">Global timeout / sideband protocol / local fatal</text>
+<text x="845" y="285" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#172033">to retrain</text>
+<text x="955" y="285" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#172033">return</text>
+<text x="1045" y="285" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#172033">enter PM</text>
+<text x="1140" y="285" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#172033">wake</text>
+</svg>

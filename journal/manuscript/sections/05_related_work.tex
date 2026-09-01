@@ -1,0 +1,40 @@
+\section{Related Work and Positioning}
+\label{sec:related}
+
+Chiplet integration combines smaller dies through advanced packaging to improve
+reuse, yield options, and technology specialization, while introducing new
+interconnect, test, thermal, and integration challenges
+\cite{li2020chiplet,lau2021chiplets}. UCIe addresses the interoperability
+problem with a layered die-to-die standard. Sharma \emph{et al.} describe the
+architecture, circuit, channel, and packaging rationale behind UCIe 1.0
+\cite{sharma2022ucie}; later work examines memory/storage applications
+\cite{sharma2024memory} and circuit/package scaling toward three-dimensional
+integration \cite{nature2024ucie3d}. Those studies establish UCIe's system and
+physical context. This work does not reproduce their bandwidth, energy, or
+channel claims; it targets the digital training-control evidence boundary.
+
+Physical UCIe studies further illustrate why that boundary matters. Thermal and
+signal-integrity analysis of UCIe-A channels \cite{son2023thermal} and
+FPGA-based high-speed interface verification platforms \cite{chang2022fpga}
+operate with channel, transceiver, or measurement evidence that is absent here.
+Consequently, successful RTL simulation and FPGA fitting cannot imply BER,
+electrical margin, or interoperability.
+
+Verification practice commonly combines directed bring-up, constrained-random
+exploration, scoreboards, assertions, and coverage. IEEE Std 1800.2 defines the
+UVM framework \cite{ieee1800_2}. Vamsikrishna \emph{et al.} describe a unified
+testbench supporting directed, random, and pseudo-random operation selection,
+including a UCIe-oriented example \cite{vamsi2025unified}. Intel and Cadence
+report PHY-model simulation interoperability in which sideband transactions and
+high-level LTSM state stepping coordinate vector traffic
+\cite{cadenceIntelUcie}. These public accounts demonstrate mature methodology
+and commercial model use, but do not provide a directly comparable open RTL
+controller, independent lane-LFSR/message-order predictor, retained-error CSR,
+and fixed-seed evidence chain.
+
+The contribution here is therefore the auditable combination rather than any
+individual technique: a bounded UCIe 2.0-derived RTL control subset, an
+interface-derived predictor and SVA layer, explicit negative scenarios, and
+qualified FPGA evidence with a preserved failed-fit result. No “first” claim is
+made; public literature and proprietary implementations continue to evolve,
+including the newer UCIe 3.0 specification \cite{ucie30}.

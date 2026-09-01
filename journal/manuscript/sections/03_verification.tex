@@ -1,0 +1,63 @@
+\section{Specification-Traceable Verification}
+\label{sec:verification}
+
+The verification structure in Fig.~\ref{fig:verification} separates stimulus,
+observation, prediction, assertions, and coverage accounting. The separation is
+important for training logic: a scoreboard that predicts from the DUT's
+internal LFSR state or phase register can agree with the same defect it is meant
+to detect.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.86\textwidth]{fig07_verification.pdf}
+\caption{Verification architecture. The predictor reconstructs message order,
+per-lane LFSR state, thresholds, and error cause from interface observations.}
+\label{fig:verification}
+\end{figure*}
+
+\subsection{Directed and Randomized Layers}
+
+Directed tests isolate handshake and boundary semantics before integration.
+The sideband suite covers successful exchange, timeout/retry, retry exhaustion,
+response mismatch, and abort. LFSR tests cover nonzero seeds, the implemented
+polynomial, receive gaps, strict threshold equality, abort, the default
+4096-sample configuration, and 16-bit saturation. Error-manager tests cover
+cause priority, retention, immediate/acknowledged/timed entry, protected clear,
+and count saturation. Wrapper tests read version, state, status, training phase,
+cause/count, allowed and ignored clear operations, and invalid addresses.
+
+Nine deterministic UVM tests retain top-level state and transition checks.
+Separate seeded campaigns stress sideband, training, and recovery behavior.
+The production integrated test disables the abstract CENTER1 bypass and uses
+nine scenario classes: nominal completion; pattern failure followed by retry
+and pass; START retry; malformed START response; END retry; malformed END
+response; and reset, fatal, or state-timeout aborts. Backpressure, response
+latency, sample gaps, corruption, threshold, and abort phase vary within these
+classes.
+
+\subsection{Independent Predictor}
+
+The predictor observes transmitted requests, received responses, accepted
+training samples, and public controller/error status. It maintains its own
+23-bit state for each of 16 lanes, uses the specified project seed table and
+polynomial, advances only when a receive sample is accepted, and computes the
+expected mismatch count independently. It also maintains a protocol phase:
+START must close before pattern activity, END must not appear before a passing
+pattern, and DATATRAINVREF must not be reached until END closes. Abort scenarios
+check both clean cessation and retained cause attribution.
+
+\subsection{Assertions and Coverage Boundary}
+
+Concurrent assertions check that \texttt{link\_up} is exclusive to ACTIVE,
+timeout routes to TRAINERROR, reset cannot jump directly to ACTIVE, and states
+remain known. Integrated assertions restrict pattern activity to
+DATATRAINCENTER1/PATTERN, constrain requests to their phase, require an END
+response before production-mode advance, check the strict error threshold, and
+hold LFSR progress when no sample is accepted. Recovery properties cover
+pending request retention, bounded TRAINERROR entry, pending clear, log
+stability, and ignored clear in TRAINERROR.
+
+Explicit counters record scenario, phase, gap, corruption, threshold, retry,
+abort, and selected cross combinations. They demonstrate that planned classes
+were sampled, but are not reported as a standard functional-coverage percentage
+because no UCDB was produced under the available Starter license.

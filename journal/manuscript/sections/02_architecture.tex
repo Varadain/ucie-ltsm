@@ -1,0 +1,148 @@
+\section{Controller Scope and Architecture}
+\label{sec:architecture}
+
+\subsection{Boundary of the Model}
+
+UCIe separates protocol, die-to-die adapter, and physical-layer concerns, with
+the sideband supporting training, register access, and diagnostics
+\cite{sharma2022ucie,nature2024ucie3d}. This work addresses a digital-control
+slice within that broader stack. As Fig.~\ref{fig:scope} shows, the environment
+provides transaction-level sideband responses, training samples, and abstract
+phase completions. The controller returns state/status, sideband requests,
+training patterns, and retained diagnostics. Analog signaling, the package
+channel, mainband data transfer, complete adapter/protocol operation, and
+compliance are deliberately outside the boundary.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.91\textwidth]{fig01_scope.pdf}
+\caption{Implemented digital-control boundary. Gray/dashed content is not
+implemented or inferred from the simulation and FPGA evidence.}
+\label{fig:scope}
+\end{figure*}
+
+The modeled state and substate names follow UCIe Specification Revision 2.0,
+Version 1.0 \cite{ucie20}. Most MBINIT, MBTRAIN, and PHYRETRAIN operations are
+represented by an external \texttt{phase\_done\_i} condition. One training
+operation, DATATRAINCENTER1, is implemented through the sideband and LFSR
+engines. The distinction prevents a control-flow model from being mistaken for
+a complete PHY.
+
+\subsection{Module Decomposition}
+
+Fig.~\ref{fig:rtl} shows the synthesizable hierarchy. The top-level
+\texttt{ucie\_ltsm} owns state/substate registers, a residency timer, routing,
+and engine coordination. Three engines isolate operations whose temporal
+contracts differ from ordinary state progression.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.91\textwidth]{fig02_rtl_architecture.pdf}
+\caption{Modular RTL architecture. The wrapper does not alter the controller;
+it serializes internal status through a compact CSR interface.}
+\label{fig:rtl}
+\end{figure*}
+
+The sideband sequencer has IDLE, SEND, WAIT, and ERROR states. It holds the
+request under ready/valid backpressure, accepts only the expected response,
+retries a bounded number of response timeouts, and exposes protocol error and
+abort status. The current message enumeration includes NOP, SBINIT-DONE
+request/response, and DATACENTER1 START/END request/response. It is not a
+complete sideband packet layer.
+
+The LFSR engine maintains 16 independent 23-bit states. Eight nonzero seeds are
+repeated over the lanes, and the feedback polynomial is
+$x^{23}+x^{21}+x^{16}+x^8+x^5+x^2+1$. State and sample count advance only when
+\texttt{train\_rx\_valid\_i} accepts a sample. Mismatches accumulate in a
+16-bit saturating counter, and pass is asserted only when the final count is
+strictly less than the programmed threshold; equality fails. Fig.~\ref{fig:lfsr}
+summarizes the datapath and its independent reference boundary.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.86\textwidth]{fig05_lfsr_engine.pdf}
+\caption{LFSR measurement engine. Receive gaps freeze both the sample count and
+per-lane expected state.}
+\label{fig:lfsr}
+\end{figure*}
+
+The error manager accepts one eligible state-timeout, sideband-protocol, or
+local-fatal event. Simultaneous events use the fixed priority timeout,
+sideband, then fatal. A pending event holds the TRAINERROR request until an
+acknowledgment or manager timeout permits entry. Cause and a saturating 16-bit
+event count remain stable in TRAINERROR. A software clear is accepted only
+when no event is pending and the controller is outside TRAINERROR.
+
+\subsection{Hierarchical LTSM Control}
+
+The package enumerates nine top states: RESET, SBINIT, MBINIT, MBTRAIN,
+LINKINIT, ACTIVE, PHYRETRAIN, TRAINERROR, and L1/L2. MBINIT contains six
+substates and MBTRAIN contains thirteen. The nominal route progresses through
+initialization and training to ACTIVE. From ACTIVE, requests can select one of
+three retraining targets or enter the modeled low-power state; exit conditions
+return to ACTIVE. Eligible timeout, protocol, or fatal conditions route through
+the retained error manager to TRAINERROR, as shown in
+Fig.~\ref{fig:ltsmflow}.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.93\textwidth]{fig03_ltsm_flow.pdf}
+\caption{Hierarchical controller flow. Only DATATRAINCENTER1 is expanded here;
+other physical operations remain phase-completion abstractions.}
+\label{fig:ltsmflow}
+\end{figure*}
+
+One timer measures state/substate residency. It restarts on a state or substate
+change and can be stalled by the environment. Default parameters correspond to
+an 80-MHz controller clock, a 4-ms reset interval, an 8-ms residency timeout,
+a 256-cycle sideband response timeout, one retry, and 4096 training samples.
+Testbenches scale selected values for runtime while retaining the ordering
+properties under test.
+
+\subsection{Integrated DATATRAINCENTER1 Protocol}
+
+Production mode fixes the abstract CENTER1 bypass to zero. On entering
+DATATRAINCENTER1, the controller orders the sideband engine to send START and
+wait for its matching response. Only then may the LFSR engine begin. A failed
+pattern re-enters the pattern phase without emitting END; a passing pattern
+starts the END exchange. Advancement to DATATRAINVREF requires the matching END
+response. A mismatch, exhausted sideband retry, fatal event, state timeout, or
+reset aborts the sequence along its corresponding control path.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.93\textwidth]{fig04_integrated_sequence.pdf}
+\caption{Integrated CENTER1 transaction order. The independent predictor checks
+the same interface events without reading the DUT's private LFSR state.}
+\label{fig:center1}
+\end{figure*}
+
+This ordering, illustrated in Fig.~\ref{fig:center1}, creates two explicit
+commit barriers: the START response admits pattern activity, and the END
+response admits state advancement. Separating the sideband and pattern engines
+keeps retry time from advancing training state and keeps receive gaps from
+consuming the sideband timeout counter.
+
+\subsection{Retained Diagnostics and FPGA CSR}
+
+The compact wrapper preserves the controller interface internally but replaces
+wide state/error/training diagnostics with byte reads. Read addresses 0x00,
+0x01, and 0x02 expose top, MBINIT, and MBTRAIN state; 0x03 exposes status bits;
+0x04 exposes error cause; 0x05--0x06 and 0x07--0x08 expose retained-event and
+training-error counts; 0x09 returns version 0x04; and 0x0A exposes the integrated
+training phase. Writing bit 0 at 0x10 requests a protected log clear. Undefined
+reads return zero.
+
+Fig.~\ref{fig:recovery} connects the retained log, entry handshake, recovery
+route, CSR view, and assertion boundary. This observability choice is not only
+documentation convenience: Sec.~\ref{sec:evaluation} shows that exporting wide
+diagnostics prevents the chosen FPGA from fitting, whereas the CSR wrapper
+fits.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.86\textwidth]{fig06_error_recovery.pdf}
+\caption{Retained error and recovery flow. Clear is ignored while an event is
+pending or the state is TRAINERROR.}
+\label{fig:recovery}
+\end{figure*}

@@ -1,3 +1,9 @@
 # Preserve vendor-generated netlists byte-for-byte. Quartus emits intentional
 # trailing spaces in its banner and equation comments.
 synthesis/quartus/netlists/**/*.vo -text whitespace=-trailing-space
+
+# Journal publication outputs are binary even when their internal streams are
+# mostly ASCII. Prevent global Windows attributes from applying text diff/EOL
+# conversion to reproducible PDF and PNG artifacts.
+journal/**/*.pdf -text -diff
+journal/**/*.png -text -diff

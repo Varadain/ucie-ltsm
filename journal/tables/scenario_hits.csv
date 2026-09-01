@@ -1,0 +1,10 @@
+scenario_id,scenario,observed_hits
+0,nominal pass,18
+1,failed-pattern retry then pass,20
+2,START response retry,17
+3,malformed START response,16
+4,END response retry,23
+5,malformed END response,19
+6,reset abort,20
+7,fatal abort,18
+8,state-timeout abort,29

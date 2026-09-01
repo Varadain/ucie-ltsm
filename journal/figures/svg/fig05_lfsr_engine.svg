@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,4 L0,8 Z" fill="#172033"/></marker></defs>
+<rect width="1200" height="675" fill="#FFFDF5"/>
+<text x="600.0" y="38" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="bold" fill="#172033">Per-lane LFSR measurement engine</text>
+<rect x="50" y="90" width="210" height="140" rx="12" fill="#DDEBF7" stroke="#172033" stroke-width="2.5"/>
+<text x="155.0" y="119" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Inputs</text>
+<text x="155.0" y="147" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">start / abort</text>
+<text x="155.0" y="166" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">sample_valid</text>
+<text x="155.0" y="185" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">16 received bits</text>
+<text x="155.0" y="204" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">error threshold</text>
+<rect x="330" y="65" width="470" height="165" rx="12" fill="#F7E396" stroke="#172033" stroke-width="2.5"/>
+<text x="565.0" y="94" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#172033">16 independent 23-bit LFSRs</text>
+<text x="565.0" y="122" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="normal" fill="#172033">eight nonzero seeds repeated across lanes</text>
+<text x="565.0" y="142" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="normal" fill="#172033">polynomial: x²³+x²¹+x¹⁶+x⁸+x⁵+x²+1</text>
+<text x="565.0" y="162" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="normal" fill="#172033">advance only on accepted sample</text>
+<rect x="330" y="300" width="220" height="125" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
+<text x="440.0" y="329" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Mismatch compare</text>
+<text x="440.0" y="357" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">expected vs. received</text>
+<text x="440.0" y="376" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">per accepted sample</text>
+<rect x="610" y="300" width="220" height="125" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
+<text x="720.0" y="329" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">16-bit error count</text>
+<text x="720.0" y="357" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">saturates at 65,535</text>
+<text x="720.0" y="376" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">no wraparound</text>
+<rect x="900" y="90" width="245" height="130" rx="12" fill="#DFF0D8" stroke="#172033" stroke-width="2.5"/>
+<text x="1022.5" y="119" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Outputs</text>
+<text x="1022.5" y="147" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">busy / done</text>
+<text x="1022.5" y="166" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">passed</text>
+<text x="1022.5" y="185" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">error_count</text>
+<rect x="900" y="320" width="245" height="105" rx="12" fill="#DFF0D8" stroke="#172033" stroke-width="2.5"/>
+<text x="1022.5" y="349" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Decision</text>
+<text x="1022.5" y="377" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">pass iff errors &lt; threshold</text>
+<text x="1022.5" y="396" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">equality is failure</text>
+<rect x="330" y="515" width="500" height="85" rx="12" fill="#E9E0F7" stroke="#172033" stroke-width="2.5" stroke-dasharray="8 6"/>
+<text x="580.0" y="544" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Independent UVM reference</text>
+<text x="580.0" y="572" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">separate polynomial/state update and exact lane/error prediction</text>
+<path d="M 260 150 L 330 150" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 800 150 L 900 150" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 565 230 L 440 300" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 550 362 L 610 362" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 830 362 L 900 362" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 1022 320 L 1022 220" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 580 515 L 580 425" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)" stroke-dasharray="8 6"/>
+<rect x="536.0" y="447.0" width="88" height="21" fill="#FFFDF5"/>
+<text x="580.0" y="462.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">cross-check</text>
+</svg>

@@ -1,0 +1,50 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Chiplet-based systems partition functions across dies and reconnect them within
+a package. This decomposition can improve reuse and allow each function to use
+an appropriate process, but it moves system correctness into the die-to-die
+interface and package boundary \cite{li2020chiplet,lau2021chiplets}. UCIe
+defines an open layered interface intended to support such heterogeneous
+integration \cite{sharma2022ucie}. Within its physical-layer control, the Link
+Training State Machine (LTSM) coordinates reset, sideband initialization,
+mainband initialization and training, active operation, retraining, error, and
+low-power behavior \cite{ucie20}.
+
+An academic RTL model of this control is easy to overstate. Listing standard
+states does not implement their physical procedures; a passing nominal
+simulation does not test message ordering under backpressure; and an FPGA
+synthesis report does not establish a working UCIe link. Reproducible negative
+evidence is equally important: failed fits, malformed responses, pattern
+failure, abort timing, and retained error behavior define the boundary of what
+has actually been shown.
+
+This paper presents a source-available, specification-traceable RTL and
+verification framework for a UCIe 2.0-derived digital-control subset. The
+synthesizable design combines a nine-state hierarchical controller, a bounded
+retrying sideband sequencer, a 16-lane 23-bit LFSR measurement engine, retained
+TRAINERROR classification, and a compact FPGA CSR wrapper. Its detailed case
+study is the production DATATRAINCENTER1 path, in which START completion admits
+pattern measurement, pattern failure retries without END, and a matching END
+response gates advancement.
+
+The paper makes three bounded contributions:
+
+\begin{enumerate}
+\item a modular controller architecture that integrates sideband transaction,
+accepted-sample LFSR measurement, error retention, and compact observability
+without presenting the result as a complete UCIe PHY;
+\item an interface-derived UVM predictor and SVA layer that independently check
+message order, per-lane LFSR state, strict threshold semantics, abort cause, and
+state advancement; and
+\item a reproducible evidence chain comprising directed suites, preserved
+multi-seed campaigns, 180 production integrated trials across nine scenario
+classes, and qualified Quartus results that retain both a failed wide-top fit
+and a successful 119-pin CSR-wrapper fit.
+\end{enumerate}
+
+Section~\ref{sec:architecture} defines the implementation boundary and RTL.
+Section~\ref{sec:verification} describes prediction, assertions, and scenario
+accounting. Section~\ref{sec:evaluation} reports simulation and FPGA evidence.
+Sections~\ref{sec:related} and \ref{sec:discussion} position the contribution
+and state its limitations.

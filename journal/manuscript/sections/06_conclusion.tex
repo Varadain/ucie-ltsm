@@ -1,0 +1,20 @@
+\section{Conclusion}
+
+This work develops and audits a UCIe 2.0-derived digital-control subset rather
+than a complete link. The RTL joins hierarchical LTSM sequencing, bounded
+sideband transactions, per-lane LFSR measurement, retained error attribution,
+and a compact FPGA CSR. Production-mode verification keeps the abstract
+DATATRAINCENTER1 bypass disabled and uses an independent message-order/LFSR
+predictor, assertions, directed corner tests, and fixed-seed negative scenarios.
+Across 180 integrated trials, all nine planned scenario classes were observed
+with 398 predictor checks and no accepted-log UVM errors or fatals. Earlier
+sideband, training, recovery, deterministic, and directed suites also remain in
+the regression gate.
+
+On the selected Cyclone 10 LP, the wide diagnostic top fails to fit at 151
+pins, while the CSR wrapper fits with 824 logic elements, 505 registers, and
+119 pins. Its internal 80-MHz timing reports positive setup and hold slack, but
+the absence of board I/O constraints prevents a board-closure claim. The result
+is therefore a reproducible academic control/verification artifact. Complete
+training procedures, native coverage closure, hardware or ASIC evidence, and
+electrical/interoperability validation remain future work.
