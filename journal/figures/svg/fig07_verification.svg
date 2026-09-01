@@ -49,8 +49,8 @@
 <path d="M 890 135 L 955 135" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
 <path d="M 890 330 L 955 330" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
 <path d="M 1055 225 L 1055 270" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="991.0" y="224.5" width="128" height="21" fill="#FFFDF5"/>
-<text x="1055.0" y="239.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">compare + sample</text>
+<rect x="992.0" y="235.5" width="126" height="25" rx="5" fill="#ffffff" stroke="#56616F" stroke-width="0.8"/>
+<text x="1055.0" y="252.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">compare + sample</text>
 <path d="M 1055 390 L 1055 500" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
 <path d="M 775 390 L 775 500" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
 <path d="M 460 390 L 460 500" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>

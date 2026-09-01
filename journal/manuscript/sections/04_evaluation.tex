@@ -123,20 +123,14 @@ wrapper and is qualified as internal-clock evidence.}
 \label{fig:fpga-evidence}
 \end{figure*}
 
-The complete release gate is summarized in Fig.~\ref{fig:release-gate}. Trial
-counts are not combined into a coverage percentage: the campaigns exercise
-different interfaces and scenario spaces. Instead, the figure records which
-directed, deterministic, randomized, predictor, assertion, and implementation
-evidence was preserved together.
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.93\textwidth]{fig12_regression_evidence.pdf}
-\caption{Preserved release-gate evidence. Counts denote executed tests or
-trials, not equivalent coverage units; explicit sampled counters replace an
-unavailable native UCDB percentage.}
-\label{fig:release-gate}
-\end{figure*}
+The complete release gate is summarized by Table~\ref{tab:integrated}, the
+implementation results in Table~\ref{tab:fpga}, and a
+\href{https://github.com/Varadain/ucie-ltsm/blob/feature/v1.0-integrated-training/journal/figures/svg/fig12_regression_evidence.svg}{supplementary release-gate graphic}.
+Trial counts are not combined into a coverage percentage because the campaigns
+exercise different interfaces and scenario spaces. The supplementary graphic
+records which directed, deterministic, randomized, predictor, assertion, and
+implementation evidence was preserved together without duplicating those data
+as a full-width manuscript float.
 
 \subsection{Threats to Validity}
 

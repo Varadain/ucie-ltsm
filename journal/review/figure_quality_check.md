@@ -14,13 +14,17 @@ Status: **pass after four review passes**.
    checked canvas bounds, pairwise node overlap, text vertical capacity,
    arrow-point bounds, aspect-preserving PNG dimensions, and nonblank renders
    with `tools/qa_figures.py`.
-4. **Compiled-PDF pass:** rasterized and reviewed all twelve manuscript pages.
+4. **Compiled-PDF pass:** rasterized and reviewed all eleven manuscript pages.
    Removed section-level float barriers that caused sparse pages, flushed all
-   graphics before the bibliography, and confirmed that captions, labels,
-   tables, waveforms, and two-column text remain separated and legible.
+   graphics before the bibliography, balanced the final reference columns, and
+   retained the release-gate overview as a supplementary figure rather than an
+   otherwise isolated full-width manuscript float. Captions, labels, tables,
+   waveforms, and two-column text remain separated and legible.
 
 Final inventory: nine editable draw.io sources, twelve SVGs, twelve publication
 PDFs, and twelve PNG previews. The three waveform figures additionally retain
-their committed VCD sources and deterministic renderer scripts. No text/box
-overlap, mixed labels, clipped content, or ambiguous arrow direction remains.
-Color meaning is duplicated by text and line style for grayscale readability.
+their committed VCD sources and deterministic renderer scripts; eleven figures
+are embedded in the manuscript and the release-gate overview is supplementary.
+No text/box overlap, mixed labels, clipped content, or ambiguous arrow direction
+remains. Color meaning is duplicated by text and line style for grayscale
+readability.

@@ -3,7 +3,7 @@
 Status: **format pass; submission stop remains active**.
 
 - [x] IEEEtran journal format and embedded figures.
-- [x] Twelve letter-size pages in the compiled draft after adding three
+- [x] Eleven letter-size pages in the compiled draft after adding three
   VCD-backed waveforms and two evidence graphics.
 - [x] One-paragraph, self-contained abstract under 250 words.
 - [x] No citations, equations, or footnotes in the abstract.

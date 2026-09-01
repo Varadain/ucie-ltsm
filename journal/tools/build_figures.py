@@ -61,35 +61,36 @@ FIGURES = [
         "name": "fig01_scope", "title": "Implemented RTL and evidence boundary",
         "height": 560,
         "nodes": [
-            node(35, 150, 235, 195, "Testbench / link partner",
+            node(25, 155, 225, 190, "Testbench / link partner",
                  ["sideband ready-valid", "matching/malformed responses",
                   "16-bit samples + corruption", "phase_done for abstract phases"], "blue"),
-            node(330, 75, 500, 85, "ucie_ltsm controller",
+            node(330, 65, 530, 95, "ucie_ltsm controller",
                  ["9 top states; 6 MBINIT and 13 MBTRAIN substates", "residency timer + production CENTER1 coordinator"], "gold", size=17),
-            node(330, 195, 235, 105, "Sideband sequencer",
+            node(330, 205, 230, 100, "Sideband sequencer",
                  ["bounded timeout/retry", "exact response matching"], "gold2"),
-            node(595, 195, 235, 105, "LFSR engine",
+            node(630, 205, 230, 100, "LFSR engine",
                  ["16 independent 23-bit lanes", "accepted samples; strict threshold"], "gold2"),
-            node(330, 335, 235, 95, "Error manager",
+            node(330, 365, 230, 90, "Error manager",
                  ["priority + retained cause/count", "protected TRAINERROR clear"], "gold2"),
-            node(595, 335, 235, 95, "FPGA CSR wrapper",
+            node(630, 365, 230, 90, "FPGA CSR wrapper",
                  ["byte status reads", "separate practical top"], "green"),
-            node(905, 150, 255, 195, "External control / observer",
+            node(930, 155, 245, 190, "External control / observer",
                  ["retrain + L1/L2 requests", "fatal + recovery handshake",
                   "link/state/training status", "CSR read/write"], "green"),
-            node(70, 470, 1060, 75, "Excluded from reported evidence",
-                 ["Analog PHY/channel | BER/eye/lane rate | mainband datapath | complete adapter/protocol | compliance/interoperability"],
+            node(70, 470, 1060, 87, "Excluded from reported evidence",
+                 ["Analog PHY/channel | BER/eye/lane rate | mainband datapath",
+                  "Complete adapter/protocol | compliance/interoperability"],
                  "gray", dashed=True, size=15),
         ],
         "arrows": [
-            arrow(270, 205, 330, 205, "events"),
-            arrow(330, 265, 270, 265, "requests"),
-            arrow(565, 247, 595, 247, "samples"),
-            arrow(830, 205, 905, 205, "status"),
-            arrow(905, 275, 830, 275, "control"),
-            arrow(580, 160, 580, 195, "commands"),
-            arrow(447, 300, 447, 335, "fault"),
-            arrow(712, 300, 712, 335, "diagnostics"),
+            arrow(250, 220, 330, 220, "events"),
+            arrow(330, 285, 250, 285, "requests"),
+            arrow(560, 255, 630, 255, "samples"),
+            arrow(860, 220, 930, 220, "status"),
+            arrow(930, 285, 860, 285, "control"),
+            arrow(595, 160, 595, 205, "commands"),
+            arrow(445, 305, 445, 365, "fault"),
+            arrow(745, 305, 745, 365, "diagnostics"),
         ],
         "labels": [],
     },
@@ -97,27 +98,27 @@ FIGURES = [
         "name": "fig02_rtl_architecture", "title": "Synthesizable module hierarchy and interfaces",
         "height": 560,
         "nodes": [
-            node(35, 82, 220, 110, "Control inputs", ["reset + phase_done", "retrain + L1/L2", "fatal + clear"], "blue"),
-            node(35, 220, 220, 100, "Sideband interface", ["TX ready-valid + message", "RX valid + message"], "blue"),
-            node(35, 358, 220, 100, "Training interface", ["RX valid + 16-bit sample", "TX pattern + result"], "blue"),
-            node(330, 82, 315, 238, "ucie_ltsm", ["state/substate registers", "transition + residency timers",
+            node(25, 82, 215, 110, "Control inputs", ["reset + phase_done", "retrain + L1/L2", "fatal + clear"], "blue"),
+            node(25, 220, 215, 100, "Sideband interface", ["TX ready-valid + message", "RX valid + message"], "blue"),
+            node(25, 358, 215, 100, "Training interface", ["RX valid + 16-bit sample", "TX pattern + result"], "blue"),
+            node(320, 82, 310, 238, "ucie_ltsm", ["state/substate registers", "transition + residency timers",
                   "CENTER1 phase coordinator", "engine routing", "public status"], "gold", size=18),
-            node(735, 72, 420, 92, "ucie_sb_sequencer", ["IDLE / SEND / WAIT / ERROR", "bounded retry + response match"], "gold2"),
-            node(735, 205, 420, 102, "ucie_lfsr_training_engine", ["16 x 23-bit lane state", "sample-gated compare + saturating count"], "gold2"),
-            node(735, 348, 420, 102, "ucie_error_manager", ["timeout > sideband > fatal priority", "retained event + bounded entry"], "gold2"),
-            node(330, 390, 315, 104, "ucie_ltsm_fpga_wrapper", ["separate top instantiating ucie_ltsm", "CSR status mux + protected clear", "wide diagnostics kept internal"], "green", size=16),
+            node(790, 72, 380, 92, "ucie_sb_sequencer", ["IDLE / SEND / WAIT / ERROR", "bounded retry + response match"], "gold2"),
+            node(790, 205, 380, 102, "ucie_lfsr_training_engine", ["16 x 23-bit lane state", "sample-gated compare + saturating count"], "gold2"),
+            node(790, 348, 380, 102, "ucie_error_manager", ["timeout > sideband > fatal priority", "retained event + bounded entry"], "gold2"),
+            node(320, 390, 310, 104, "ucie_ltsm_fpga_wrapper", ["separate top instantiating ucie_ltsm", "CSR status mux + protected clear", "wide diagnostics kept internal"], "green", size=16),
         ],
         "arrows": [
-            arrow(255, 132, 330, 132),
-            arrow(255, 270, 330, 270),
-            arrow(255, 408, 330, 280, waypoints=[(290, 408), (290, 280)]),
-            arrow(645, 125, 735, 118, "command/status"),
-            arrow(645, 235, 735, 256, "start/result"),
-            arrow(645, 290, 735, 399, "event/entry"),
-            arrow(488, 390, 488, 320, "instantiates"),
-            arrow(735, 442, 645, 442, "retained status"),
+            arrow(240, 132, 320, 132),
+            arrow(240, 270, 320, 270),
+            arrow(240, 408, 320, 280, waypoints=[(280, 408), (280, 280)]),
+            arrow(630, 125, 790, 118, "command/status"),
+            arrow(630, 235, 790, 256, "start/result"),
+            arrow(630, 290, 790, 399, "event/entry"),
+            arrow(475, 390, 475, 320, "instantiates"),
+            arrow(790, 442, 630, 442, "retained status"),
         ],
-        "labels": [label(328, 526, "Wrapper changes observability, not controller behavior", 15, "bold", "start")],
+        "labels": [label(318, 526, "Wrapper changes observability, not controller behavior", 15, "bold", "start")],
     },
     {
         "name": "fig03_ltsm_flow", "title": "Hierarchical LTSM control flow",
@@ -336,9 +337,13 @@ def build_svg(fig):
         parts.append(f'<path d="{path}" fill="none" stroke="{a["color"]}" stroke-width="2.5" marker-end="url(#arrow)"{dash}/>')
         if a["label"]:
             mx = sum(p[0] for p in pts) / len(pts)
-            my = sum(p[1] for p in pts) / len(pts) - 8
-            tw = max(70, len(a["label"]) * 8)
-            parts.append(f'<rect x="{mx-tw/2}" y="{my-15}" width="{tw}" height="21" fill="{P["bg"]}"/>')
+            vertical = abs(a["y2"] - a["y1"]) > abs(a["x2"] - a["x1"])
+            my = sum(p[1] for p in pts) / len(pts) + (5 if vertical else -8)
+            tw = max(70, len(a["label"]) * 7 + 14)
+            parts.append(
+                f'<rect x="{mx-tw/2}" y="{my-17}" width="{tw}" height="25" '
+                f'rx="5" fill="#ffffff" stroke="{P["muted"]}" stroke-width="0.8"/>'
+            )
             svg_text(parts, mx, my, [a["label"]], 14, "bold")
     for t in fig.get("labels", []):
         svg_text(parts, t["x"], t["y"], [t["text"]], t["size"], t["weight"], t["anchor"], t["color"])
@@ -372,7 +377,7 @@ def build_drawio(fig, path):
         SubElement(cell, "mxGeometry", x=str(n["x"]), y=str(n["y"]), width=str(n["w"]), height=str(n["h"]), **{"as": "geometry"})
     for i, a in enumerate(fig["arrows"], 1):
         dashed = "1" if a["dashed"] else "0"
-        style = f"edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor={a['color']};dashed={dashed};fontFamily=Arial;fontSize=14;fontStyle=1;labelBackgroundColor={P['bg']};"
+        style = f"edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor={a['color']};dashed={dashed};fontFamily=Arial;fontSize=14;fontStyle=1;labelBackgroundColor=#ffffff;"
         cell = SubElement(root, "mxCell", id=f"e{i}", value=a["label"], style=style, edge="1", parent="1")
         geo = SubElement(cell, "mxGeometry", relative="1", **{"as": "geometry"})
         SubElement(geo, "mxPoint", x=str(a["x1"]), y=str(a["y1"]), **{"as": "sourcePoint"})
@@ -451,10 +456,11 @@ def pdf_arrow(c, a, height):
     c.setDash()
     if a["label"]:
         mx = sum(p[0] for p in pts) / len(pts)
-        my = sum(p[1] for p in pts) / len(pts) - 8
-        tw = max(70, len(a["label"]) * 8)
-        set_pdf_color(c, P["bg"])
-        c.rect(mx-tw/2, pdf_y(my, height)+2, tw, 21, fill=1, stroke=0)
+        vertical = abs(a["y2"] - a["y1"]) > abs(a["x2"] - a["x1"])
+        my = sum(p[1] for p in pts) / len(pts) + (5 if vertical else -8)
+        tw = max(70, len(a["label"]) * 7 + 14)
+        set_pdf_color(c, "#ffffff")
+        c.roundRect(mx-tw/2, pdf_y(my, height)-8, tw, 25, 5, fill=1, stroke=0)
         pdf_text(c, height, mx, my, [a["label"]], 14, "bold")
 
 

@@ -90,8 +90,8 @@ def main():
     try:
         pdfinfo = run("pdfinfo", str(JOURNAL / "manuscript" / "main.pdf"))
         match = re.search(r"^Pages:\s+(\d+)", pdfinfo, re.M)
-        if not match or int(match.group(1)) != 12:
-            errors.append("manuscript PDF is not the audited twelve-page build")
+        if not match or int(match.group(1)) != 11:
+            errors.append("manuscript PDF is not the audited eleven-page build")
     except Exception as exc:
         errors.append(f"pdfinfo failed: {exc}")
 
@@ -112,7 +112,7 @@ def main():
         print("JOURNAL_AUDIT_FAIL")
         print("\n".join(errors))
         raise SystemExit(1)
-    print(f"JOURNAL_AUDIT_PASS cited_refs={len(cited)} figures=12 pages=12")
+    print(f"JOURNAL_AUDIT_PASS cited_refs={len(cited)} figures=12 pages=11")
 
 
 if __name__ == "__main__":

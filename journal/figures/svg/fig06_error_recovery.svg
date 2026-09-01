@@ -34,23 +34,23 @@
 <text x="640.0" y="564" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">SVA invariants</text>
 <text x="640.0" y="592" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">pending holds request  |  entry is bounded  |  log is stable  |  illegal clear is ignored</text>
 <path d="M 290 145 L 360 145" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="269.0" y="122.0" width="112" height="21" fill="#FFFDF5"/>
+<rect x="269.0" y="120.0" width="112" height="25" rx="5" fill="#ffffff" stroke="#56616F" stroke-width="0.8"/>
 <text x="325.0" y="137.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">fixed priority</text>
 <path d="M 620 145 L 700 145" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="625.0" y="122.0" width="70" height="21" fill="#FFFDF5"/>
+<rect x="625.0" y="120.0" width="70" height="25" rx="5" fill="#ffffff" stroke="#56616F" stroke-width="0.8"/>
 <text x="660.0" y="137.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">request</text>
 <path d="M 920 145 L 985 145" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="888.5" y="122.0" width="128" height="21" fill="#FFFDF5"/>
+<rect x="889.5" y="120.0" width="126" height="25" rx="5" fill="#ffffff" stroke="#56616F" stroke-width="0.8"/>
 <text x="952.5" y="137.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">read-only status</text>
 <path d="M 490 210 L 490 330" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
 <path d="M 620 385 L 660 385 L 660 245 L 810 245 L 810 210" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="677.0" y="271.0" width="70" height="21" fill="#FFFDF5"/>
+<rect x="677.0" y="269.0" width="70" height="25" rx="5" fill="#ffffff" stroke="#56616F" stroke-width="0.8"/>
 <text x="712.0" y="286.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">entered</text>
 <path d="M 810 210 L 810 330" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)" stroke-dasharray="8 6"/>
-<rect x="775.0" y="247.0" width="70" height="21" fill="#FFFDF5"/>
-<text x="810.0" y="262.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">recover</text>
+<rect x="775.0" y="258.0" width="70" height="25" rx="5" fill="#ffffff" stroke="#56616F" stroke-width="0.8"/>
+<text x="810.0" y="275.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">recover</text>
 <path d="M 810 445 L 810 535" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)" stroke-dasharray="8 6"/>
-<rect x="775.0" y="467.0" width="70" height="21" fill="#FFFDF5"/>
-<text x="810.0" y="482.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">checked</text>
+<rect x="775.0" y="478.0" width="70" height="25" rx="5" fill="#ffffff" stroke="#56616F" stroke-width="0.8"/>
+<text x="810.0" y="495.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">checked</text>
 <text x="55" y="265" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="bold" fill="#172033">Priority is deterministic when events coincide</text>
 </svg>
