@@ -35,11 +35,14 @@ def main():
         if not (JOURNAL / rel).exists():
             errors.append(f"missing required artifact: {rel}")
 
+    expected_counts = {"source": 9, "svg": 12, "pdf": 12, "png": 12}
     for subdir, suffix in (("source", ".drawio"), ("svg", ".svg"),
                            ("pdf", ".pdf"), ("png", ".png")):
         files = sorted((JOURNAL / "figures" / subdir).glob(f"*{suffix}"))
-        if len(files) != 8:
-            errors.append(f"expected 8 {suffix} figures, found {len(files)}")
+        if len(files) != expected_counts[subdir]:
+            errors.append(
+                f"expected {expected_counts[subdir]} {suffix} figures, found {len(files)}"
+            )
         if suffix in (".drawio", ".svg"):
             for path in files:
                 try:
@@ -87,8 +90,8 @@ def main():
     try:
         pdfinfo = run("pdfinfo", str(JOURNAL / "manuscript" / "main.pdf"))
         match = re.search(r"^Pages:\s+(\d+)", pdfinfo, re.M)
-        if not match or int(match.group(1)) != 8:
-            errors.append("manuscript PDF is not the audited eight-page build")
+        if not match or int(match.group(1)) != 12:
+            errors.append("manuscript PDF is not the audited twelve-page build")
     except Exception as exc:
         errors.append(f"pdfinfo failed: {exc}")
 
@@ -109,7 +112,7 @@ def main():
         print("JOURNAL_AUDIT_FAIL")
         print("\n".join(errors))
         raise SystemExit(1)
-    print(f"JOURNAL_AUDIT_PASS cited_refs={len(cited)} figures=8 pages=8")
+    print(f"JOURNAL_AUDIT_PASS cited_refs={len(cited)} figures=12 pages=12")
 
 
 if __name__ == "__main__":

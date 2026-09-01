@@ -20,6 +20,9 @@ release tag or archival DOI rather than a moving branch.
 - concurrent assertions in `verification/ucie_ltsm_sva.sv`
 - fixed-seed regression scripts under `scripts/`
 - verification plan in `docs/05_verification/testplan.md`
+- VCD-backed reviewed captures under `build/waves/`
+- waveform renderers under `scripts/render_*waveforms.py`
+- signal definitions and waveform-anchor guide in `docs/02_ltssm/signals.md`
 
 ## FPGA evidence
 
@@ -31,7 +34,8 @@ release tag or archival DOI rather than a moving branch.
 
 - `journal/result_traceability.md`
 - machine-readable tables under `journal/tables/`
-- editable figure sources under `journal/figures/source/`
+- editable diagram sources under `journal/figures/source/`
+- matched SVG/PDF/PNG exports under `journal/figures/`
 - review checklists under `journal/review/`
 
 The private UCIe specification file under `references_private/` is not part of

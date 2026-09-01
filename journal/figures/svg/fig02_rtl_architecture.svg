@@ -1,53 +1,61 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560">
 <defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,4 L0,8 Z" fill="#172033"/></marker></defs>
-<rect width="1200" height="675" fill="#FFFDF5"/>
-<text x="600.0" y="38" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="bold" fill="#172033">Modular RTL architecture</text>
-<rect x="45" y="100" width="200" height="115" rx="12" fill="#DDEBF7" stroke="#172033" stroke-width="2.5"/>
-<text x="145.0" y="129" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Control inputs</text>
-<text x="145.0" y="157" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">reset / phase_done</text>
-<text x="145.0" y="176" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">retrain / PM</text>
-<text x="145.0" y="195" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">fatal / clear</text>
-<rect x="45" y="290" width="200" height="115" rx="12" fill="#DDEBF7" stroke="#172033" stroke-width="2.5"/>
-<text x="145.0" y="319" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Link-partner inputs</text>
-<text x="145.0" y="347" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">sideband ready/valid</text>
-<text x="145.0" y="366" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">training samples</text>
-<text x="145.0" y="385" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">backpressure</text>
-<rect x="320" y="70" width="350" height="360" rx="12" fill="#F7E396" stroke="#172033" stroke-width="2.5"/>
-<text x="495.0" y="99" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="bold" fill="#172033">ucie_ltsm</text>
-<text x="495.0" y="127" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#172033">state + substate registers</text>
-<text x="495.0" y="148" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#172033">residency timer</text>
-<text x="495.0" y="169" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#172033">next-state control</text>
-<text x="495.0" y="190" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#172033">production gate</text>
-<text x="495.0" y="211" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#172033">status outputs</text>
-<rect x="755" y="70" width="380" height="90" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
-<text x="945.0" y="99" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">ucie_sb_sequencer</text>
-<text x="945.0" y="127" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">SEND / WAIT / RETRY / ERROR</text>
-<rect x="755" y="205" width="380" height="105" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
+<rect width="1200" height="560" fill="#FFFDF5"/>
+<text x="600.0" y="38" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="bold" fill="#172033">Synthesizable module hierarchy and interfaces</text>
+<rect x="35" y="82" width="220" height="110" rx="12" fill="#DDEBF7" stroke="#172033" stroke-width="2.5"/>
+<text x="145.0" y="111" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Control inputs</text>
+<text x="145.0" y="139" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">reset + phase_done</text>
+<text x="145.0" y="158" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">retrain + L1/L2</text>
+<text x="145.0" y="177" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">fatal + clear</text>
+<rect x="35" y="220" width="220" height="100" rx="12" fill="#DDEBF7" stroke="#172033" stroke-width="2.5"/>
+<text x="145.0" y="249" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Sideband interface</text>
+<text x="145.0" y="277" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">TX ready-valid + message</text>
+<text x="145.0" y="296" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">RX valid + message</text>
+<rect x="35" y="358" width="220" height="100" rx="12" fill="#DDEBF7" stroke="#172033" stroke-width="2.5"/>
+<text x="145.0" y="387" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Training interface</text>
+<text x="145.0" y="415" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">RX valid + 16-bit sample</text>
+<text x="145.0" y="434" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">TX pattern + result</text>
+<rect x="330" y="82" width="315" height="238" rx="12" fill="#F7E396" stroke="#172033" stroke-width="2.5"/>
+<text x="487.5" y="111" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#172033">ucie_ltsm</text>
+<text x="487.5" y="139" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="normal" fill="#172033">state/substate registers</text>
+<text x="487.5" y="159" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="normal" fill="#172033">transition + residency timers</text>
+<text x="487.5" y="179" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="normal" fill="#172033">CENTER1 phase coordinator</text>
+<text x="487.5" y="199" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="normal" fill="#172033">engine routing</text>
+<text x="487.5" y="219" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="normal" fill="#172033">public status</text>
+<rect x="735" y="72" width="420" height="92" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
+<text x="945.0" y="101" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">ucie_sb_sequencer</text>
+<text x="945.0" y="129" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">IDLE / SEND / WAIT / ERROR</text>
+<text x="945.0" y="148" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">bounded retry + response match</text>
+<rect x="735" y="205" width="420" height="102" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
 <text x="945.0" y="234" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">ucie_lfsr_training_engine</text>
-<text x="945.0" y="262" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">16 lane states, accepted samples</text>
-<text x="945.0" y="281" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">strict threshold + saturation</text>
-<rect x="755" y="355" width="380" height="105" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
-<text x="945.0" y="384" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">ucie_error_manager</text>
-<text x="945.0" y="412" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">cause priority, pending retention</text>
-<text x="945.0" y="431" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">bounded entry + protected clear</text>
-<rect x="320" y="525" width="815" height="85" rx="12" fill="#DFF0D8" stroke="#172033" stroke-width="2.5"/>
-<text x="727.5" y="554" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">ucie_ltsm_fpga_wrapper</text>
-<text x="727.5" y="582" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">CSR 0x00–0x0A status  |  0x10 control  |  reduced external diagnostics</text>
-<path d="M 245 155 L 320 155" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
-<path d="M 245 345 L 320 345" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
-<path d="M 670 130 L 755 115" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="656.5" y="99.5" width="112" height="21" fill="#FFFDF5"/>
-<text x="712.5" y="114.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">command/status</text>
-<path d="M 670 250 L 755 255" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="664.5" y="229.5" width="96" height="21" fill="#FFFDF5"/>
-<text x="712.5" y="244.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">start/result</text>
-<path d="M 670 375 L 755 405" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="668.5" y="367.0" width="88" height="21" fill="#FFFDF5"/>
-<text x="712.5" y="382.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">event/entry</text>
-<path d="M 495 430 L 495 525" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="419.0" y="454.5" width="152" height="21" fill="#FFFDF5"/>
-<text x="495.0" y="469.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">state + diagnostics</text>
-<path d="M 945 460 L 945 525" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
-<rect x="897.0" y="469.5" width="96" height="21" fill="#FFFDF5"/>
-<text x="945.0" y="484.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">retained log</text>
+<text x="945.0" y="262" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">16 x 23-bit lane state</text>
+<text x="945.0" y="281" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">sample-gated compare + saturating count</text>
+<rect x="735" y="348" width="420" height="102" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
+<text x="945.0" y="377" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">ucie_error_manager</text>
+<text x="945.0" y="405" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">timeout &gt; sideband &gt; fatal priority</text>
+<text x="945.0" y="424" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">retained event + bounded entry</text>
+<rect x="330" y="390" width="315" height="104" rx="12" fill="#DFF0D8" stroke="#172033" stroke-width="2.5"/>
+<text x="487.5" y="419" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">ucie_ltsm_fpga_wrapper</text>
+<text x="487.5" y="447" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">separate top instantiating ucie_ltsm</text>
+<text x="487.5" y="466" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">CSR status mux + protected clear</text>
+<text x="487.5" y="485" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">wide diagnostics kept internal</text>
+<path d="M 255 132 L 330 132" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 255 270 L 330 270" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 255 408 L 290 408 L 290 280 L 330 280" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M 645 125 L 735 118" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="634.0" y="98.5" width="112" height="21" fill="#FFFDF5"/>
+<text x="690.0" y="113.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">command/status</text>
+<path d="M 645 235 L 735 256" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="642.0" y="222.5" width="96" height="21" fill="#FFFDF5"/>
+<text x="690.0" y="237.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">start/result</text>
+<path d="M 645 290 L 735 399" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="646.0" y="321.5" width="88" height="21" fill="#FFFDF5"/>
+<text x="690.0" y="336.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">event/entry</text>
+<path d="M 488 390 L 488 320" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="440.0" y="332.0" width="96" height="21" fill="#FFFDF5"/>
+<text x="488.0" y="347.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">instantiates</text>
+<path d="M 735 442 L 645 442" fill="none" stroke="#172033" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="630.0" y="419.0" width="120" height="21" fill="#FFFDF5"/>
+<text x="690.0" y="434.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#172033">retained status</text>
+<text x="328" y="526" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="bold" fill="#172033">Wrapper changes observability, not controller behavior</text>
 </svg>

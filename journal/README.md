@@ -29,8 +29,9 @@ electrical channel, BER, or interoperability/compliance behavior.
 - `target_journal_rules.md` — current TVLSI/IEEE preparation requirements.
 - `TVLSI_READINESS_GAP.md` — work still required before submission.
 - `manuscript/` — IEEEtran LaTeX source and compiled paper.
-- `figures/source/` — editable diagrams.net (`.drawio`) sources.
+- `figures/source/` — editable diagrams.net (`.drawio`) sources for diagrams.
 - `figures/svg/`, `figures/pdf/`, `figures/png/` — publication and review exports.
+- `build/waves/` plus `scripts/render_*waveforms.py` — VCD-backed waveform sources.
 - `figures/figure_sources.md` — provenance and permission status for every figure.
 - `tables/` — machine-readable result tables used by the manuscript.
 - `review/` — technical, claim, citation, figure, and journal-compliance audits.
@@ -49,8 +50,10 @@ pdflatex -interaction=nonstopmode -halt-on-error main.tex
 Pop-Location
 ```
 
-The figure builder generates editable draw.io sources and matched SVG, PDF,
-and PNG exports. The LaTeX build embeds PDF vector figures. `latexmk` may be
+The figure builder generates editable draw.io sources for nine diagrams and
+matched SVG, PDF, and PNG exports for all twelve figures. Three waveform
+figures are regenerated from committed Questa VCDs and renderer scripts. The
+LaTeX build embeds the PDF exports. `latexmk` may be
 used when Perl is installed; the explicit sequence above works with the audited
 MiKTeX installation. Rebuilds must not read from or write into
 `references_private/`.

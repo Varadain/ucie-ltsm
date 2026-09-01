@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600">
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,4 L0,8 Z" fill="#172033"/></marker></defs>
+<rect width="1200" height="600" fill="#FFFDF5"/>
+<text x="600.0" y="38" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="bold" fill="#172033">Preserved release-gate evidence</text>
+<rect x="45" y="85" width="220" height="115" rx="12" fill="#DDEBF7" stroke="#172033" stroke-width="2.5"/>
+<text x="155.0" y="114" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Directed modules</text>
+<text x="155.0" y="142" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">controller + sideband</text>
+<text x="155.0" y="161" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">LFSR + error manager</text>
+<text x="155.0" y="180" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">FPGA CSR wrapper</text>
+<rect x="305" y="85" width="220" height="115" rx="12" fill="#DDEBF7" stroke="#172033" stroke-width="2.5"/>
+<text x="415.0" y="114" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Deterministic UVM</text>
+<text x="415.0" y="142" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">9 named tests</text>
+<text x="415.0" y="161" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">state + transition checks</text>
+<rect x="565" y="70" width="270" height="145" rx="12" fill="#F7E396" stroke="#172033" stroke-width="2.5"/>
+<text x="700.0" y="99" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Production integrated</text>
+<text x="700.0" y="127" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">180 trials; seeds 1701-2105</text>
+<text x="700.0" y="146" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">9 guaranteed scenario classes</text>
+<text x="700.0" y="165" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">398 predictor checks</text>
+<text x="700.0" y="184" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">bypass disabled</text>
+<rect x="875" y="85" width="280" height="115" rx="12" fill="#DFF0D8" stroke="#172033" stroke-width="2.5"/>
+<text x="1015.0" y="114" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Qualified FPGA</text>
+<text x="1015.0" y="142" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">wide-top failed fit retained</text>
+<text x="1015.0" y="161" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">CSR wrapper fit + internal timing</text>
+<text x="1015.0" y="180" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">constraints explicitly bounded</text>
+<rect x="90" y="300" width="220" height="100" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
+<text x="200.0" y="329" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Sideband random</text>
+<text x="200.0" y="357" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">200 trials</text>
+<text x="200.0" y="376" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">seeds 101-505</text>
+<rect x="355" y="300" width="220" height="100" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
+<text x="465.0" y="329" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">LFSR random</text>
+<text x="465.0" y="357" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">160 trials</text>
+<text x="465.0" y="376" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">seeds 701-1105</text>
+<rect x="620" y="300" width="220" height="100" rx="12" fill="#FFF3BD" stroke="#172033" stroke-width="2.5"/>
+<text x="730.0" y="329" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Recovery random</text>
+<text x="730.0" y="357" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">180 trials</text>
+<text x="730.0" y="376" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">seeds 1201-1605</text>
+<rect x="885" y="300" width="220" height="100" rx="12" fill="#E9E0F7" stroke="#172033" stroke-width="2.5"/>
+<text x="995.0" y="329" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">Independent checks</text>
+<text x="995.0" y="357" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">predictor + SVA</text>
+<text x="995.0" y="376" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="normal" fill="#172033">explicit sampled counters</text>
+<rect x="170" y="485" width="860" height="72" rx="12" fill="#DFF0D8" stroke="#172033" stroke-width="2.5"/>
+<text x="600.0" y="514" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="bold" fill="#172033">Accepted release evidence</text>
+<text x="600.0" y="542" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="normal" fill="#172033">0 UVM errors | 0 UVM fatals | no reported assertion failures | fixed reproducible seeds</text>
+<text x="600" y="455" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#172033">All campaigns and implementation reports are retained by one release gate</text>
+</svg>

@@ -89,7 +89,7 @@ respectively, and reported negative slack is zero. The wrapper adds a small
 amount of decode logic while reducing external pin demand by 32, demonstrating
 why serializing diagnostics is necessary for this device. Because external I/O
 constraints and physical pin locations are absent, the result supports
-internal synthesizability and fit only.
+internal synthesizability and fit only \cite{quartusUG}.
 
 \begin{table}[t]
 \caption{Cyclone 10 LP Implementation Summary}
@@ -109,6 +109,34 @@ Hold slack (ns) & -- & -- & +0.179 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+Fig.~\ref{fig:fpga-evidence} retains the successful and failed implementation
+outcomes in one qualified data graphic. Reporting the failed wide-top fit is
+important: omitting it would hide the pin-cost reason for the CSR wrapper.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.92\textwidth]{fig08_fpga_results.pdf}
+\caption{Quartus implementation evidence for the same controller under two
+observability boundaries. Timing is reported only for the successfully fitted
+wrapper and is qualified as internal-clock evidence.}
+\label{fig:fpga-evidence}
+\end{figure*}
+
+The complete release gate is summarized in Fig.~\ref{fig:release-gate}. Trial
+counts are not combined into a coverage percentage: the campaigns exercise
+different interfaces and scenario spaces. Instead, the figure records which
+directed, deterministic, randomized, predictor, assertion, and implementation
+evidence was preserved together.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.93\textwidth]{fig12_regression_evidence.pdf}
+\caption{Preserved release-gate evidence. Counts denote executed tests or
+trials, not equivalent coverage units; explicit sampled counters replace an
+unavailable native UCDB percentage.}
+\label{fig:release-gate}
+\end{figure*}
 
 \subsection{Threats to Validity}
 

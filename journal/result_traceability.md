@@ -27,6 +27,9 @@ it can be independently recalculated.
 | R-18 | Wrapper internal setup/hold slack | +1.013 ns / +0.179 ns worst | `quartus/output_files_wrapper/ucie_ltsm_fpga.sta.summary` | Minimum across reported corners; 12.5-ns clock constraint; no external I/O delays |
 | R-19 | Core mapping | 763 LEs; 505 registers; 151 pins | `quartus/output_files/ucie_ltsm.map.summary` | Direct mapping result |
 | R-20 | Core fit | failed | `quartus/output_files/ucie_ltsm.fit.summary` | Pin demand is 151/151; do not use core STA as successful-fit timing evidence |
+| R-21 | LFSR waveform | eight accepted samples, receive gaps, zero errors, done/pass | `build/waves/datatrain_lfsr.vcd`; `scripts/render_datatrain_waveforms.py`; `verification/tb_ucie_lfsr_training_engine.sv` | Fig. 9 is a directed engine capture, not an integrated UVM trial |
+| R-22 | Retained TRAINERROR waveform | one-cycle fatal retained; protected clear ignored; bounded entry; post-recovery clear allowed | `build/waves/error_recovery.vcd`; `scripts/render_error_waveforms.py`; `verification/tb_ucie_error_manager.sv` | Fig. 10 is a self-checking module-directed capture |
+| R-23 | FPGA CSR waveform | retained cause/count reads; TRAINERROR clear ignored; RESET clear accepted; invalid read zero | `build/waves/fpga_csr_wrapper.vcd`; `scripts/render_error_waveforms.py`; `verification/tb_ucie_ltsm_fpga_wrapper.sv` | Fig. 11 is a wrapper-directed capture |
 
 ## Audit rule
 

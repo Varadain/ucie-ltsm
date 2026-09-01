@@ -15,6 +15,7 @@ from pathlib import Path
 from xml.etree.ElementTree import Element, SubElement, ElementTree
 
 from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -57,48 +58,66 @@ def label(x, y, text, size=16, weight="normal", anchor="middle", color="ink"):
 
 FIGURES = [
     {
-        "name": "fig01_scope", "title": "Implemented digital-control boundary",
+        "name": "fig01_scope", "title": "Implemented RTL and evidence boundary",
+        "height": 560,
         "nodes": [
-            node(55, 110, 220, 130, "Link partner / PHY model",
-                 ["ready-valid sideband", "sample/corruption stimulus", "phase completion"], "blue"),
-            node(340, 70, 520, 330, "UCIe 2.0-derived digital-control subset",
-                 ["Nine top-level LTSM states", "Sideband retry and message matching",
-                  "DATATRAINCENTER1 LFSR measurement", "Retained TRAINERROR cause/count",
-                  "Compact byte-addressed FPGA CSR"], "gold", size=18),
-            node(925, 110, 220, 130, "System consumer",
-                 ["link-up / state status", "retrain and PM requests", "CSR reads and clear"], "green"),
-            node(90, 500, 1020, 90, "Outside the evidence boundary",
-                 ["Analog PHY and channel  |  BER / eye / lane rate  |  Mainband datapath  |  Complete adapter/protocol  |  Compliance and interoperability"],
-                 "gray", dashed=True, size=17),
+            node(35, 150, 235, 195, "Testbench / link partner",
+                 ["sideband ready-valid", "matching/malformed responses",
+                  "16-bit samples + corruption", "phase_done for abstract phases"], "blue"),
+            node(330, 75, 500, 85, "ucie_ltsm controller",
+                 ["9 top states; 6 MBINIT and 13 MBTRAIN substates", "residency timer + production CENTER1 coordinator"], "gold", size=17),
+            node(330, 195, 235, 105, "Sideband sequencer",
+                 ["bounded timeout/retry", "exact response matching"], "gold2"),
+            node(595, 195, 235, 105, "LFSR engine",
+                 ["16 independent 23-bit lanes", "accepted samples; strict threshold"], "gold2"),
+            node(330, 335, 235, 95, "Error manager",
+                 ["priority + retained cause/count", "protected TRAINERROR clear"], "gold2"),
+            node(595, 335, 235, 95, "FPGA CSR wrapper",
+                 ["byte status reads", "separate practical top"], "green"),
+            node(905, 150, 255, 195, "External control / observer",
+                 ["retrain + L1/L2 requests", "fatal + recovery handshake",
+                  "link/state/training status", "CSR read/write"], "green"),
+            node(70, 470, 1060, 75, "Excluded from reported evidence",
+                 ["Analog PHY/channel | BER/eye/lane rate | mainband datapath | complete adapter/protocol | compliance/interoperability"],
+                 "gray", dashed=True, size=15),
         ],
         "arrows": [
-            arrow(275, 175, 340, 175, "stimulus"),
-            arrow(340, 215, 275, 215, "responses"),
-            arrow(860, 175, 925, 175, "status"),
-            arrow(925, 215, 860, 215, "requests"),
+            arrow(270, 205, 330, 205, "events"),
+            arrow(330, 265, 270, 265, "requests"),
+            arrow(565, 247, 595, 247, "samples"),
+            arrow(830, 205, 905, 205, "status"),
+            arrow(905, 275, 830, 275, "control"),
+            arrow(580, 160, 580, 195, "commands"),
+            arrow(447, 300, 447, 335, "fault"),
+            arrow(712, 300, 712, 335, "diagnostics"),
         ],
         "labels": [],
     },
     {
-        "name": "fig02_rtl_architecture", "title": "Modular RTL architecture",
+        "name": "fig02_rtl_architecture", "title": "Synthesizable module hierarchy and interfaces",
+        "height": 560,
         "nodes": [
-            node(45, 100, 200, 115, "Control inputs", ["reset / phase_done", "retrain / PM", "fatal / clear"], "blue"),
-            node(45, 290, 200, 115, "Link-partner inputs", ["sideband ready/valid", "training samples", "backpressure"], "blue"),
-            node(320, 70, 350, 360, "ucie_ltsm", ["state + substate registers", "residency timer", "next-state control", "production gate", "status outputs"], "gold", size=19),
-            node(755, 70, 380, 90, "ucie_sb_sequencer", ["SEND / WAIT / RETRY / ERROR"], "gold2"),
-            node(755, 205, 380, 105, "ucie_lfsr_training_engine", ["16 lane states, accepted samples", "strict threshold + saturation"], "gold2"),
-            node(755, 355, 380, 105, "ucie_error_manager", ["cause priority, pending retention", "bounded entry + protected clear"], "gold2"),
-            node(320, 525, 815, 85, "ucie_ltsm_fpga_wrapper", ["CSR 0x00–0x0A status  |  0x10 control  |  reduced external diagnostics"], "green"),
+            node(35, 82, 220, 110, "Control inputs", ["reset + phase_done", "retrain + L1/L2", "fatal + clear"], "blue"),
+            node(35, 220, 220, 100, "Sideband interface", ["TX ready-valid + message", "RX valid + message"], "blue"),
+            node(35, 358, 220, 100, "Training interface", ["RX valid + 16-bit sample", "TX pattern + result"], "blue"),
+            node(330, 82, 315, 238, "ucie_ltsm", ["state/substate registers", "transition + residency timers",
+                  "CENTER1 phase coordinator", "engine routing", "public status"], "gold", size=18),
+            node(735, 72, 420, 92, "ucie_sb_sequencer", ["IDLE / SEND / WAIT / ERROR", "bounded retry + response match"], "gold2"),
+            node(735, 205, 420, 102, "ucie_lfsr_training_engine", ["16 x 23-bit lane state", "sample-gated compare + saturating count"], "gold2"),
+            node(735, 348, 420, 102, "ucie_error_manager", ["timeout > sideband > fatal priority", "retained event + bounded entry"], "gold2"),
+            node(330, 390, 315, 104, "ucie_ltsm_fpga_wrapper", ["separate top instantiating ucie_ltsm", "CSR status mux + protected clear", "wide diagnostics kept internal"], "green", size=16),
         ],
         "arrows": [
-            arrow(245, 155, 320, 155), arrow(245, 345, 320, 345),
-            arrow(670, 130, 755, 115, "command/status"),
-            arrow(670, 250, 755, 255, "start/result"),
-            arrow(670, 375, 755, 405, "event/entry"),
-            arrow(495, 430, 495, 525, "state + diagnostics"),
-            arrow(945, 460, 945, 525, "retained log"),
+            arrow(255, 132, 330, 132),
+            arrow(255, 270, 330, 270),
+            arrow(255, 408, 330, 280, waypoints=[(290, 408), (290, 280)]),
+            arrow(645, 125, 735, 118, "command/status"),
+            arrow(645, 235, 735, 256, "start/result"),
+            arrow(645, 290, 735, 399, "event/entry"),
+            arrow(488, 390, 488, 320, "instantiates"),
+            arrow(735, 442, 645, 442, "retained status"),
         ],
-        "labels": [],
+        "labels": [label(328, 526, "Wrapper changes observability, not controller behavior", 15, "bold", "start")],
     },
     {
         "name": "fig03_ltsm_flow", "title": "Hierarchical LTSM control flow",
@@ -233,7 +252,50 @@ FIGURES = [
         "arrows": [arrow(540, 195, 660, 195, "replace wide diagnostics with CSR", dashed=True)],
         "labels": [],
     },
+    {
+        "name": "fig12_regression_evidence", "title": "Preserved release-gate evidence",
+        "height": 600,
+        "nodes": [
+            node(45, 85, 220, 115, "Directed modules", ["controller + sideband", "LFSR + error manager", "FPGA CSR wrapper"], "blue"),
+            node(305, 85, 220, 115, "Deterministic UVM", ["9 named tests", "state + transition checks"], "blue"),
+            node(565, 70, 270, 145, "Production integrated", ["180 trials; seeds 1701-2105", "9 guaranteed scenario classes", "398 predictor checks", "bypass disabled"], "gold"),
+            node(875, 85, 280, 115, "Qualified FPGA", ["wide-top failed fit retained", "CSR wrapper fit + internal timing", "constraints explicitly bounded"], "green"),
+            node(90, 300, 220, 100, "Sideband random", ["200 trials", "seeds 101-505"], "gold2"),
+            node(355, 300, 220, 100, "LFSR random", ["160 trials", "seeds 701-1105"], "gold2"),
+            node(620, 300, 220, 100, "Recovery random", ["180 trials", "seeds 1201-1605"], "gold2"),
+            node(885, 300, 220, 100, "Independent checks", ["predictor + SVA", "explicit sampled counters"], "purple"),
+            node(170, 485, 860, 72, "Accepted release evidence", ["0 UVM errors | 0 UVM fatals | no reported assertion failures | fixed reproducible seeds"], "green", size=17),
+        ],
+        "arrows": [],
+        "labels": [label(600, 455, "All campaigns and implementation reports are retained by one release gate", 16, "bold")],
+    },
 ]
+
+
+WAVEFORM_FIGURES = [
+    {
+        "name": "fig09_wave_lfsr",
+        "source": ROOT.parent / "assets" / "waveforms" / "v0.3-advanced-training" / "pattern-progression.svg",
+        "title_from": "v0.3 LFSR pattern progression",
+        "title_to": "Questa LFSR pattern progression",
+    },
+    {
+        "name": "fig10_wave_trainerror",
+        "source": ROOT.parent / "assets" / "waveforms" / "v0.4-error-recovery" / "retained-handshake.svg",
+        "title_from": "v0.4 retained fault and bounded TRAINERROR entry",
+        "title_to": "Retained fault and bounded TRAINERROR entry",
+    },
+    {
+        "name": "fig11_wave_csr",
+        "source": ROOT.parent / "assets" / "waveforms" / "v0.4-error-recovery" / "fpga-csr-read-clear.svg",
+        "title_from": "v0.4 FPGA CSR read, protected clear, and recovery",
+        "title_to": "FPGA CSR read, protected clear, and recovery",
+    },
+]
+
+
+def dimensions(fig):
+    return fig.get("width", W), fig.get("height", H)
 
 
 def svg_text(parts, x, y, lines, size, weight="normal", anchor="middle", color=None, gap=None):
@@ -249,11 +311,12 @@ def svg_text(parts, x, y, lines, size, weight="normal", anchor="middle", color=N
 
 
 def build_svg(fig):
+    width, height = dimensions(fig)
     parts = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">',
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
         '<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,4 L0,8 Z" fill="#172033"/></marker></defs>',
-        f'<rect width="{W}" height="{H}" fill="{P["bg"]}"/>',
-        f'<text x="{W/2}" y="38" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="bold" fill="{P["ink"]}">{html.escape(fig["title"])}</text>',
+        f'<rect width="{width}" height="{height}" fill="{P["bg"]}"/>',
+        f'<text x="{width/2}" y="38" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="bold" fill="{P["ink"]}">{html.escape(fig["title"])}</text>',
     ]
     for x in fig.get("lifelines", []):
         parts.append(f'<line x1="{x}" y1="130" x2="{x}" y2="520" stroke="{P["muted"]}" stroke-width="2" stroke-dasharray="7 6"/>')
@@ -290,9 +353,10 @@ def drawio_value(n):
 
 
 def build_drawio(fig, path):
+    width, height = dimensions(fig)
     mxfile = Element("mxfile", host="app.diagrams.net", modified="2026-09-01T00:00:00.000Z", agent="journal/tools/build_figures.py", version="24.7.17")
     diagram = SubElement(mxfile, "diagram", id=fig["name"], name="Page-1")
-    model = SubElement(diagram, "mxGraphModel", dx="1200", dy="675", grid="1", gridSize="10", guides="1", tooltips="1", connect="1", arrows="1", fold="1", page="1", pageScale="1", pageWidth=str(W), pageHeight=str(H), math="0", shadow="0", background=P["bg"])
+    model = SubElement(diagram, "mxGraphModel", dx=str(width), dy=str(height), grid="1", gridSize="10", guides="1", tooltips="1", connect="1", arrows="1", fold="1", page="1", pageScale="1", pageWidth=str(width), pageHeight=str(height), math="0", shadow="0", background=P["bg"])
     root = SubElement(model, "root")
     SubElement(root, "mxCell", id="0")
     SubElement(root, "mxCell", id="1", parent="0")
@@ -323,22 +387,24 @@ def build_drawio(fig, path):
         cell = SubElement(root, "mxCell", id=f"l{i}", value=html.escape(t["text"]), style=style, vertex="1", parent="1")
         SubElement(cell, "mxGeometry", x=str(t["x"] - (0 if align == "left" else 350)), y=str(t["y"]-22), width="700", height="30", **{"as": "geometry"})
     ElementTree(mxfile).write(path, encoding="utf-8", xml_declaration=True)
+    with path.open("a", encoding="utf-8") as stream:
+        stream.write("\n")
 
 
-def build_png(svg_path, png_path):
+def build_png(svg_path, png_path, width=1600):
     """Rasterize with the bundled sharp/libvips runtime (no Cairo dependency)."""
     node_bin = Path(r"C:\Users\dell\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe")
     node_modules = Path(r"C:\Users\dell\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\node_modules")
     if not node_bin.exists():
         node_bin = Path("node")
-    script = "const sharp=require('sharp'); sharp(process.argv[1]).resize(1600,900).png().toFile(process.argv[2]).catch(e=>{console.error(e);process.exit(1)});"
+    script = "const sharp=require('sharp'); sharp(process.argv[1]).resize({width:Number(process.argv[3])}).png().toFile(process.argv[2]).catch(e=>{console.error(e);process.exit(1)});"
     env = os.environ.copy()
     env["NODE_PATH"] = str(node_modules)
-    subprocess.run([str(node_bin), "-e", script, str(svg_path), str(png_path)], check=True, env=env)
+    subprocess.run([str(node_bin), "-e", script, str(svg_path), str(png_path), str(width)], check=True, env=env)
 
 
-def pdf_y(y):
-    return H - y
+def pdf_y(y, height):
+    return height - y
 
 
 def set_pdf_color(c, hex_color, stroke=False):
@@ -347,12 +413,12 @@ def set_pdf_color(c, hex_color, stroke=False):
     (c.setStrokeColorRGB if stroke else c.setFillColorRGB)(*rgb)
 
 
-def pdf_text(c, x, y, lines, size, weight="normal", anchor="middle", color=None, gap=None):
+def pdf_text(c, height, x, y, lines, size, weight="normal", anchor="middle", color=None, gap=None):
     set_pdf_color(c, color or P["ink"])
     c.setFont("Helvetica-Bold" if weight == "bold" else "Helvetica", size)
     gap = gap or int(size * 1.3)
     for i, item in enumerate(lines):
-        yy = pdf_y(y + i * gap)
+        yy = pdf_y(y + i * gap, height)
         if anchor == "start":
             c.drawString(x, yy, item)
         elif anchor == "end":
@@ -361,24 +427,24 @@ def pdf_text(c, x, y, lines, size, weight="normal", anchor="middle", color=None,
             c.drawCentredString(x, yy, item)
 
 
-def pdf_arrow(c, a):
+def pdf_arrow(c, a, height):
     set_pdf_color(c, a["color"], stroke=True)
     set_pdf_color(c, a["color"])
     c.setLineWidth(2.5)
     c.setDash(8, 6) if a["dashed"] else c.setDash()
     pts = [(a["x1"], a["y1"]), *a["waypoints"], (a["x2"], a["y2"])]
     path = c.beginPath()
-    path.moveTo(pts[0][0], pdf_y(pts[0][1]))
+    path.moveTo(pts[0][0], pdf_y(pts[0][1], height))
     for x, y in pts[1:]:
-        path.lineTo(x, pdf_y(y))
+        path.lineTo(x, pdf_y(y, height))
     c.drawPath(path, stroke=1, fill=0)
     x1, y1 = pts[-2]
     x2, y2 = pts[-1]
     angle = math.atan2(-(y2-y1), x2-x1)
     length, half = 12, 5
-    p1 = (x2, pdf_y(y2))
-    p2 = (x2 - length*math.cos(angle) + half*math.sin(angle), pdf_y(y2) - length*math.sin(angle) - half*math.cos(angle))
-    p3 = (x2 - length*math.cos(angle) - half*math.sin(angle), pdf_y(y2) - length*math.sin(angle) + half*math.cos(angle))
+    p1 = (x2, pdf_y(y2, height))
+    p2 = (x2 - length*math.cos(angle) + half*math.sin(angle), pdf_y(y2, height) - length*math.sin(angle) - half*math.cos(angle))
+    p3 = (x2 - length*math.cos(angle) - half*math.sin(angle), pdf_y(y2, height) - length*math.sin(angle) + half*math.cos(angle))
     head = c.beginPath()
     head.moveTo(*p1); head.lineTo(*p2); head.lineTo(*p3); head.close()
     c.drawPath(head, stroke=0, fill=1)
@@ -388,35 +454,59 @@ def pdf_arrow(c, a):
         my = sum(p[1] for p in pts) / len(pts) - 8
         tw = max(70, len(a["label"]) * 8)
         set_pdf_color(c, P["bg"])
-        c.rect(mx-tw/2, pdf_y(my)+2, tw, 21, fill=1, stroke=0)
-        pdf_text(c, mx, my, [a["label"]], 14, "bold")
+        c.rect(mx-tw/2, pdf_y(my, height)+2, tw, 21, fill=1, stroke=0)
+        pdf_text(c, height, mx, my, [a["label"]], 14, "bold")
 
 
 def build_pdf(fig, path):
-    c = canvas.Canvas(str(path), pagesize=(W, H), pageCompression=1)
+    width, height = dimensions(fig)
+    c = canvas.Canvas(str(path), pagesize=(width, height), pageCompression=1)
     set_pdf_color(c, P["bg"])
-    c.rect(0, 0, W, H, fill=1, stroke=0)
-    pdf_text(c, W/2, 38, [fig["title"]], 25, "bold")
+    c.rect(0, 0, width, height, fill=1, stroke=0)
+    pdf_text(c, height, width/2, 38, [fig["title"]], 25, "bold")
     for x in fig.get("lifelines", []):
         set_pdf_color(c, P["muted"], stroke=True)
         c.setLineWidth(2); c.setDash(7, 6)
-        c.line(x, pdf_y(130), x, pdf_y(520)); c.setDash()
+        c.line(x, pdf_y(130, height), x, pdf_y(520, height)); c.setDash()
     for n in fig["nodes"]:
         set_pdf_color(c, n["fill"])
         set_pdf_color(c, n["stroke"], stroke=True)
         c.setLineWidth(2.5); c.setDash(8, 6) if n["dashed"] else c.setDash()
-        c.roundRect(n["x"], H-n["y"]-n["h"], n["w"], n["h"], 12, fill=1, stroke=1)
+        c.roundRect(n["x"], height-n["y"]-n["h"], n["w"], n["h"], 12, fill=1, stroke=1)
         c.setDash()
         cx = n["x"] + n["w"] / 2
         title_y = n["y"] + 29
-        pdf_text(c, cx, title_y, [n["title"]], n["size"], "bold")
+        pdf_text(c, height, cx, title_y, [n["title"]], n["size"], "bold")
         if n["lines"]:
-            pdf_text(c, cx, title_y+28, n["lines"], max(13, n["size"]-3), gap=max(19, n["size"]+2))
+            pdf_text(c, height, cx, title_y+28, n["lines"], max(13, n["size"]-3), gap=max(19, n["size"]+2))
     for a in fig["arrows"]:
-        pdf_arrow(c, a)
+        pdf_arrow(c, a, height)
     for t in fig.get("labels", []):
-        pdf_text(c, t["x"], t["y"], [t["text"]], t["size"], t["weight"], t["anchor"], t["color"])
+        pdf_text(c, height, t["x"], t["y"], [t["text"]], t["size"], t["weight"], t["anchor"], t["color"])
     c.showPage(); c.save()
+
+
+def build_waveform_assets(item, no_pdf=False):
+    """Copy a VCD-rendered SVG into the paper and export review/publication forms."""
+    source = item["source"]
+    if not source.exists():
+        raise FileNotFoundError(source)
+    svg_path = SVG / f"{item['name']}.svg"
+    png_path = PNG / f"{item['name']}.png"
+    pdf_path = PDF / f"{item['name']}.pdf"
+    svg_data = source.read_text(encoding="utf-8")
+    svg_data = svg_data.replace(item["title_from"], item["title_to"])
+    svg_path.write_text(svg_data, encoding="utf-8")
+    build_png(svg_path, png_path, width=2400)
+    if not no_pdf:
+        root = ElementTree().parse(svg_path)
+        width = float(root.attrib["width"])
+        height = float(root.attrib["height"])
+        c = canvas.Canvas(str(pdf_path), pagesize=(width, height), pageCompression=1)
+        c.drawImage(ImageReader(str(png_path)), 0, 0, width=width, height=height,
+                    preserveAspectRatio=True, mask="auto")
+        c.showPage()
+        c.save()
 
 
 def main():
@@ -431,12 +521,15 @@ def main():
         pdf_path = PDF / f"{fig['name']}.pdf"
         drawio_path = SOURCE / f"{fig['name']}.drawio"
         svg_text_data = build_svg(fig)
-        svg_path.write_text(svg_text_data, encoding="utf-8")
+        svg_path.write_text(svg_text_data + "\n", encoding="utf-8")
         build_drawio(fig, drawio_path)
         build_png(svg_path, png_path)
         if not args.no_pdf:
             build_pdf(fig, pdf_path)
         print(fig["name"])
+    for item in WAVEFORM_FIGURES:
+        build_waveform_assets(item, args.no_pdf)
+        print(item["name"])
 
 
 if __name__ == "__main__":

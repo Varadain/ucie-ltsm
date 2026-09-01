@@ -4,25 +4,35 @@
 Chiplet integration combines smaller dies through advanced packaging to improve
 reuse, yield options, and technology specialization, while introducing new
 interconnect, test, thermal, and integration challenges
-\cite{li2020chiplet,lau2021chiplets}. UCIe addresses the interoperability
+\cite{li2020chiplet,lau2021chiplets,mahajan2019emib}. UCIe addresses the interoperability
 problem with a layered die-to-die standard. Sharma \emph{et al.} describe the
 architecture, circuit, channel, and packaging rationale behind UCIe 1.0
-\cite{sharma2022ucie}; later work examines memory/storage applications
+\cite{sharma2022ucie,sharma2023sop}; later work examines memory/storage applications
 \cite{sharma2024memory} and circuit/package scaling toward three-dimensional
 integration \cite{nature2024ucie3d}. Those studies establish UCIe's system and
 physical context. This work does not reproduce their bandwidth, energy, or
 channel claims; it targets the digital training-control evidence boundary.
 
 Physical UCIe studies further illustrate why that boundary matters. Thermal and
-signal-integrity analysis of UCIe-A channels \cite{son2023thermal} and
+signal-integrity analyses of UCIe channels
+\cite{son2023thermal,shin2023signal} and
 FPGA-based high-speed interface verification platforms \cite{chang2022fpga}
 operate with channel, transceiver, or measurement evidence that is absent here.
 Consequently, successful RTL simulation and FPGA fitting cannot imply BER,
 electrical margin, or interoperability.
 
+Chiplet test research also treats inter-die access, localization, and repair as
+separate system concerns. Physical-aware interconnect testing work, for
+example, evaluates test-pattern and repair decisions beyond ordinary
+functional RTL simulation \cite{cui2023physical}. The retained digital error
+record in this project improves controller observability, but is not a
+substitute for package-interconnect test or repair.
+
 Verification practice commonly combines directed bring-up, constrained-random
-exploration, scoreboards, assertions, and coverage. IEEE Std 1800.2 defines the
-UVM framework \cite{ieee1800_2}. Vamsikrishna \emph{et al.} describe a unified
+exploration, scoreboards, assertions, and coverage. IEEE Std 1800-2023 defines
+the language support for assertions, coverage, and constrained-random
+testbenches, while IEEE/IEC 62530-2-2023 defines UVM
+\cite{ieee1800_2023,ieee62530_2}. Vamsikrishna \emph{et al.} describe a unified
 testbench supporting directed, random, and pseudo-random operation selection,
 including a UCIe-oriented example \cite{vamsi2025unified}. Intel and Cadence
 report PHY-model simulation interoperability in which sideband transactions and

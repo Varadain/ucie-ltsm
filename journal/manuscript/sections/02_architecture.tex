@@ -16,8 +16,9 @@ compliance are deliberately outside the boundary.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.91\textwidth]{fig01_scope.pdf}
-\caption{Implemented digital-control boundary. Gray/dashed content is not
-implemented or inferred from the simulation and FPGA evidence.}
+\caption{Implemented RTL and evidence boundary. Colored blocks identify the
+synthesized modules and their test/observer interfaces; the pale dashed panel
+lists excluded physical-layer and full-protocol functions.}
 \label{fig:scope}
 \end{figure*}
 
@@ -38,8 +39,9 @@ contracts differ from ordinary state progression.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.91\textwidth]{fig02_rtl_architecture.pdf}
-\caption{Modular RTL architecture. The wrapper does not alter the controller;
-it serializes internal status through a compact CSR interface.}
+\caption{Synthesizable hierarchy. The controller instantiates the sideband,
+LFSR, and error engines. The separate FPGA top instantiates the same controller
+and serializes its wide diagnostics through a compact CSR interface.}
 \label{fig:rtl}
 \end{figure*}
 
@@ -64,6 +66,22 @@ summarizes the datapath and its independent reference boundary.
 \caption{LFSR measurement engine. Receive gaps freeze both the sample count and
 per-lane expected state.}
 \label{fig:lfsr}
+\end{figure*}
+
+Fig.~\ref{fig:wave-lfsr} is a VCD-backed module-directed capture rather than a
+hand-drawn timing sketch. The receive-valid gaps leave the expected lane state
+and error count unchanged; the accepted TX/RX samples match, so the engine
+asserts done and pass after the eighth accepted sample. Signal names in the
+standalone SVG link to the repository's public
+\href{https://github.com/Varadain/ucie-ltsm/blob/feature/v1.0-integrated-training/docs/02_ltssm/signals.md}{signal-definition guide}.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.97\textwidth]{fig09_wave_lfsr.pdf}
+\caption{Color-coded Questa waveform generated from
+\texttt{build/waves/datatrain\_lfsr.vcd}. The capture shows sample-gated LFSR
+progression, an exact zero mismatch count, and the final done/pass decision.}
+\label{fig:wave-lfsr}
 \end{figure*}
 
 The error manager accepts one eligible state-timeout, sideband-protocol, or
@@ -145,4 +163,33 @@ fits.
 \caption{Retained error and recovery flow. Clear is ignored while an event is
 pending or the state is TRAINERROR.}
 \label{fig:recovery}
+\end{figure*}
+
+The VCD-backed capture in Fig.~\ref{fig:wave-error} makes the temporal contract
+visible. A one-cycle fatal event is retained, the request remains asserted
+while pending, and a clear attempt is ignored before the bounded TRAINERROR
+entry. The retained cause and event count survive until recovery reaches an
+eligible clear state.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.97\textwidth]{fig10_wave_trainerror.pdf}
+\caption{Color-coded Questa waveform from the self-checking error-manager
+testbench. Colored phase bands identify fault capture, protected pending time,
+bounded TRAINERROR entry, and the allowed post-recovery clear.}
+\label{fig:wave-error}
+\end{figure*}
+
+Fig.~\ref{fig:wave-csr} then exposes the same retained behavior through the
+practical FPGA top. CSR reads observe state, cause, and count; a write to 0x10
+cannot clear TRAINERROR, but the same control succeeds after reset. The final
+invalid read returns zero as specified by the wrapper map.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.97\textwidth]{fig11_wave_csr.pdf}
+\caption{Color-coded Questa waveform from the FPGA-wrapper directed test. The
+CSR sequence reads retained diagnostics, demonstrates protected and allowed
+clear operations, and checks an undefined address.}
+\label{fig:wave-csr}
 \end{figure*}
